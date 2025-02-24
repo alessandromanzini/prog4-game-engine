@@ -8,10 +8,10 @@ RotatingComponent::RotatingComponent( GameObjectView& owner, float rotationSpeed
 {
 }
 
-void RotatingComponent::fixed_update( )
+void RotatingComponent::update( )
 {
 	const auto rotation{ rotation_speed_ * GameTime::get_instance( ).get_delta_time( ) };
-	auto transform = glm::rotate( glm::mat3x3{ 1.0 }, rotation ) 
-		* get_owner( ).get_local_transform( ).get_matrix( );
+	auto transform = 
+		glm::rotate( glm::mat3x3{ 1.0 }, rotation ) * get_owner( ).get_local_transform( ).get_matrix( );
 	get_owner( ).set_local_transform( transform );
 }

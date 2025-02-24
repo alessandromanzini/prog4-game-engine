@@ -28,8 +28,7 @@ void Transform::combine( const Transform& other )
 
 glm::vec2 Transform::get_position( ) const
 {
-	// can optimize this
-	return glm::vec2( matrix_ * glm::vec3( 0.f, 0.f, 1.f ) );
+	return matrix_[2];
 }
 
 const glm::mat3x3& Transform::get_matrix( ) const

@@ -41,6 +41,11 @@ void GameObjectView::set_local_transform( Transform&& transform )
 	gameobject_ptr_->set_local_transform( std::move( transform ) );
 }
 
+void GameObjectView::remove_component( BaseComponent& component )
+{
+	gameobject_ptr_->remove_component( component );
+}
+
 // PRIVATE CONSTRUCTOR
 GameObjectView::GameObjectView( GameObject& gameobject )
 	: gameobject_ptr_{ &gameobject }

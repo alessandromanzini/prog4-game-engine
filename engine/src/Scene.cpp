@@ -23,32 +23,31 @@ void Scene::remove( std::shared_ptr<GameObject> object )
 
 void Scene::remove_all( )
 {
-	for ( auto& object : objects_ )
+	for ( auto& pObject : objects_ )
 	{
-		object->mark_for_deletion( );
+		pObject->mark_for_deletion( );
 	}
 }
 
 void Scene::fixed_update( )
 {
-	for ( auto& object : objects_ )
+	for ( auto& pObject : objects_ )
 	{
-		object->fixed_update( );
+		pObject->fixed_update( );
 	}
 }
 
 void Scene::update( )
 {
-	for ( size_t i{}; i < objects_.size( ); ++i )
+	for ( auto& pObject : objects_ )
 	{
-		// Can optimize by calling mark_index_for_deletion from the game object
-		if ( objects_[i]->is_marked_for_deletion( ) )
+		if ( pObject->is_marked_for_deletion( ) )
 		{
-			deleter_.mark_index_for_deletion( i );
+			deleter_.mark_element_for_deletion( *pObject );
 		}
 		else
 		{
-			objects_[i]->update( );
+			pObject->update( );
 		}
 	}
 }

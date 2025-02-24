@@ -37,6 +37,12 @@ namespace engine
 		{
 		};
 
+		void mark_for_deletion( ) override
+		{
+			Deletable::mark_for_deletion( );
+			get_owner( ).remove_component( *this );
+		}
+
 	protected:
 		BaseComponent( GameObjectView& owner )
 			: owner_ref_{ owner }
@@ -52,6 +58,7 @@ namespace engine
 		GameObjectView& owner_ref_;
 
 	};
+
 }
 
 #endif // !BASECOMPONENT_H

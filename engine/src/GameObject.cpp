@@ -20,6 +20,11 @@ GameObject::GameObject( )
 {
 }
 
+GameObject::~GameObject( ) noexcept
+{
+	set_parent( nullptr );
+}
+
 void GameObject::fixed_update( )
 {
 	for ( const auto& [key, component] : components_ )
@@ -32,12 +37,7 @@ void GameObject::update( )
 {
 	for ( const auto& [key, component] : components_ )
 	{
-		// Can optimize by calling mark_index_for_deletion from the component
-		if ( component->is_marked_for_deletion( ) )
-		{
-			deleter_.mark_index_for_deletion( key );
-		}
-		else
+		if ( !component->is_marked_for_deletion( ) )
 		{
 			component->update( );
 		}
@@ -54,7 +54,10 @@ void GameObject::render( ) const
 
 void GameObject::cleanup( )
 {
-	deleter_.cleanup( components_ );
+	if ( deleter_.is_cleanup_needed( ) )
+	{
+		deleter_.cleanup( components_ );
+	}
 }
 
 void GameObject::mark_for_deletion( )
@@ -164,7 +167,7 @@ void GameObject::update_world_transform( )
 	{
 		if ( parent_ptr_ == nullptr )
 		{
-			set_world_transform( get_local_transform( ) );
+			world_transform_ = get_local_transform( );
 		}
 		else
 		{
@@ -172,4 +175,9 @@ void GameObject::update_world_transform( )
 		}
 		transform_dirty_ = false;
 	}
+}
+
+void GameObject::remove_component( BaseComponent& component )
+{
+	deleter_.mark_element_for_deletion( component );
 }

@@ -51,17 +51,15 @@ void load( )
 
 	auto pacmanGo = std::make_shared<engine::GameObject>( );
 	pacmanGo->add_component<engine::TextureComponent>( "pacman.png" );
-	// pacmanGo->add_component<engine::RotatingComponent>( glm::radians( 180.f ) );
+	pacmanGo->add_component<engine::RotatingComponent>( glm::radians( 180.f ) );
 	pacmanGo->set_parent( rotatorGo.get( ) );
 	pacmanGo->set_local_transform( glm::vec2{ 15.f, 0.f } );
 
 	auto mspacmanGo = std::make_shared<engine::GameObject>( );
 	mspacmanGo->add_component<engine::TextureComponent>( "ms-pacman.png" );
-	// mspacmanGo->add_component<engine::RotatingComponent>( glm::radians( -360.f ) );
+	mspacmanGo->add_component<engine::RotatingComponent>( glm::radians( -360.f ) );
 	mspacmanGo->set_parent( pacmanGo.get( ) );
 	mspacmanGo->set_local_transform( glm::vec2{ 50.f, 0.f } );
-
-	rotatorGo->set_world_transform( glm::vec2{ 525.f, 315.f } );
 
 	scene.add( bgGo );
 	scene.add( logoGo );

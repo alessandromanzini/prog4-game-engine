@@ -25,7 +25,7 @@ namespace engine
 	{
 	public:
 		GameObject( );
-		~GameObject( ) noexcept = default;
+		~GameObject( ) noexcept;
 
 		GameObject( const GameObject& other ) = delete;
 		GameObject( GameObject&& other ) noexcept = delete;
@@ -73,6 +73,8 @@ namespace engine
 		{
 			throw std::runtime_error( "Not implemented!" );
 		}
+
+		void remove_component( BaseComponent& component );
 
 	private:
 		std::unique_ptr<GameObjectView> view_ptr_{};

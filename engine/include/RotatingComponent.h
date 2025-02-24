@@ -11,7 +11,7 @@ namespace engine
 	public:
 		RotatingComponent( GameObjectView& owner, float rotationSpeed );
 
-		void fixed_update( ) override;
+		void update( ) override;
 
 	private:
 		float rotation_speed_{};

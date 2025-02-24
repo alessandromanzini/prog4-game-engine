@@ -14,8 +14,8 @@
 
 using namespace engine;
 
-FPS::FPS( GameObjectView&& owner )
-	: BaseComponent( std::move( owner ) )
+FPS::FPS( GameObjectView& owner )
+	: BaseComponent( owner )
 {
 
 }

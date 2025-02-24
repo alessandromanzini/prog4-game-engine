@@ -8,6 +8,7 @@ project(GameEngine)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 message(STATUS "C++20 support has been enabled by default.")
+# target_compile_features(${TARGET_NAME} PUBLIC cxx_std_20)
 
 if(EMSCRIPTEN)
     message(STATUS "Using Emscripten!")

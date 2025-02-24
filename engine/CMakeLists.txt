@@ -5,10 +5,12 @@ project(engine)
 
 # create library target
 add_library(${PROJECT_NAME}
+        "include/Deleter.h"
 	    "src/Font.cpp"
         "src/FPS.cpp"
         "src/GameObject.cpp"
         "src/GameObjectView.cpp"
+        "src/Transform.cpp" 
         "src/GameTime.cpp"
         "src/InputManager.cpp"
         "src/Minigin.cpp"
@@ -19,7 +21,7 @@ add_library(${PROJECT_NAME}
         "src/TextComponent.cpp"
         "src/TextureComponent.cpp"
         "src/Texture2D.cpp"
-        "src/Transform.cpp" )
+        "src/RotatingComponent.cpp" )
 
 # add glm
 include(glm_fetchcontent)

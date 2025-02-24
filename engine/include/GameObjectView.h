@@ -19,7 +19,12 @@ namespace engine
 		GameObjectView& operator=( const GameObjectView& ) = delete;
 		GameObjectView& operator=( GameObjectView&& ) noexcept = default;
 
-		Transform& get_transform( ) const;
+		[[nodiscard]] const Transform& get_world_transform( );
+		[[nodiscard]] const Transform& get_local_transform( ) const;
+		void set_world_transform( const Transform& transform );
+		void set_local_transform( const Transform& transform );
+		void set_world_transform( Transform&& transform );
+		void set_local_transform( Transform&& transform );
 
 		template <typename component_t>
 		component_t& get_component( ) const

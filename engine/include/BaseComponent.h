@@ -6,6 +6,7 @@
 // +--------------------------------+
 #include "Transform.h"
 #include "GameObjectView.h"
+#include "Deletable.h"
 
 // +--------------------------------+
 // | Standard Headers				|
@@ -14,7 +15,7 @@
 
 namespace engine
 {
-	class BaseComponent
+	class BaseComponent : public Deletable
 	{
 	public:
 		virtual ~BaseComponent( ) noexcept = default;
@@ -37,24 +38,18 @@ namespace engine
 		};
 
 	protected:
-		BaseComponent( GameObjectView&& owner )
-			: owner_{ std::move( owner ) }
+		BaseComponent( GameObjectView& owner )
+			: owner_ref_{ owner }
 		{
 		}
 
-		GameObjectView& get_owner( )
+		GameObjectView& get_owner( ) const
 		{
-			return owner_;
-		}
-		const GameObjectView& get_owner( ) const
-		{
-			return owner_;
+			return owner_ref_;
 		}
 
 	private:
-		GameObjectView owner_;
-
-		bool marked_for_deletion_{ false };
+		GameObjectView& owner_ref_;
 
 	};
 }

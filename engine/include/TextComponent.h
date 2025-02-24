@@ -12,7 +12,7 @@ namespace engine
 	class TextComponent final : public BaseComponent
 	{
 	public:
-		explicit TextComponent( GameObjectView&& owner, const std::string& text, std::shared_ptr<Font> pFont );
+		explicit TextComponent( GameObjectView& owner, const std::string& text, std::shared_ptr<Font> pFont );
 		~TextComponent( ) noexcept override = default;
 
 		TextComponent( const TextComponent& ) = delete;

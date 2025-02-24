@@ -26,7 +26,7 @@ void GameTime::reset( ) noexcept
 
 float GameTime::get_delta_time( ) const noexcept
 {
-	return delta_time_;
+	return *current_delta_ptr_;
 }
 
 float GameTime::get_fps( ) const
@@ -40,7 +40,20 @@ bool GameTime::get_required_fixed_update( ) const noexcept
 	return lag_ >= fixed_time_step_;
 }
 
-std::chrono::nanoseconds GameTime::get_sleep_time( ) const noexcept
+std::chrono::nanoseconds GameTime::get_sleep_time( ) const
 {
 	return last_time_ + milliseconds( ms_per_frame_ ) - high_resolution_clock::now( );
+}
+
+void GameTime::set_timing_type( TimingType type )
+{
+	switch ( type )
+	{
+	case TimingType::DELTA_TIME:
+		current_delta_ptr_ = &delta_time_;
+		break;
+	case TimingType::FIXED_DELTA_TIME:
+		current_delta_ptr_ = &fixed_time_step_;
+		break;
+	}
 }

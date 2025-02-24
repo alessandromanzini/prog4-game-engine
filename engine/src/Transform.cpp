@@ -1,123 +1,45 @@
 #include "Transform.h"
+
 #include <stdexcept>
 
 using namespace engine;
 
-// +--------------------------------+
-// | Transform						|
-// +--------------------------------+
-void Transform::set_parent( Transform* parent )
+Transform::Transform( const glm::vec2& translation )
 {
-	parent_ptr_ = parent;
+	matrix_ = glm::translate( matrix_, translation );
 }
 
-GlobalProxy Transform::global( )
+Transform::Transform( const glm::mat3x3& matrix )
+	: matrix_{ matrix }
 {
-	return GlobalProxy( this );
 }
 
-const GlobalProxyReadOnly Transform::global( ) const
+Transform::Transform( const glm::vec2& translation, float rotation, const glm::vec2& scale )
 {
-	return GlobalProxyReadOnly( this );
+	matrix_ = glm::translate( matrix_, translation )
+		* glm::rotate(matrix_, rotation)
+		* glm::scale( matrix_, scale );
 }
 
-LocalProxy Transform::local( )
+void Transform::combine( const Transform& other )
 {
-	return LocalProxy( this );
+	matrix_ = matrix_ * other.matrix_;
 }
 
-const LocalProxyReadOnly Transform::local( ) const
+glm::vec2 Transform::get_position( ) const
 {
-	return LocalProxyReadOnly( this );
+	// can optimize this
+	return glm::vec2( matrix_ * glm::vec3( 0.f, 0.f, 1.f ) );
 }
 
-// +--------------------------------+
-// | Global Proxy					|
-// +--------------------------------+
-GlobalProxy::GlobalProxy( Transform* pTransform ) : Proxy( pTransform )
+const glm::mat3x3& Transform::get_matrix( ) const
 {
-	if ( pTransform == nullptr )
-	{
-		throw std::invalid_argument( "Transform cannot be null!" );
-	}
+	return matrix_;
 }
 
-glm::vec2 GlobalProxy::get_position( ) const
+Transform Transform::operator+( const Transform& other ) const
 {
-	if ( transform_ptr_->parent_ptr_ != nullptr )
-	{
-		return transform_ptr_->parent_ptr_->global( ).get_position( ) + transform_ptr_->position_;
-	}
-	return transform_ptr_->position_;
-}
-
-void GlobalProxy::set_position( const glm::vec2& pos )
-{
-	if ( transform_ptr_->parent_ptr_ != nullptr )
-	{
-		transform_ptr_->position_ = pos - transform_ptr_->parent_ptr_->global( ).get_position( );
-	}
-	else
-	{
-		transform_ptr_->position_ = pos;
-	}
-}
-
-// +--------------------------------+
-// | Local Proxy					|
-// +--------------------------------+
-LocalProxy::LocalProxy( Transform* pTransform ) : Proxy( pTransform )
-{
-	if ( pTransform == nullptr )
-	{
-		throw std::invalid_argument( "Transform cannot be null!" );
-	}
-}
-
-glm::vec2 LocalProxy::get_position( ) const
-{
-	return transform_ptr_->position_;
-}
-
-void LocalProxy::set_position( const glm::vec2& pos )
-{
-	transform_ptr_->position_ = pos;
-}
-
-// +--------------------------------+
-// | Global Proxy Read Only			|
-// +--------------------------------+
-GlobalProxyReadOnly::GlobalProxyReadOnly( const Transform* pTransform )
-	: ProxyReadOnly( pTransform )
-{
-	if ( pTransform == nullptr )
-	{
-		throw std::invalid_argument( "Transform cannot be null!" );
-	}
-}
-
-glm::vec2 GlobalProxyReadOnly::get_position( ) const
-{
-	if ( transform_ptr_->parent_ptr_ != nullptr )
-	{
-		return transform_ptr_->parent_ptr_->global( ).get_position( ) + transform_ptr_->position_;
-	}
-	return transform_ptr_->position_;
-}
-
-// +--------------------------------+
-// | Local Proxy Read Only			|
-// +--------------------------------+
-LocalProxyReadOnly::LocalProxyReadOnly( const Transform* pTransform )
-	: ProxyReadOnly( pTransform )
-{
-	if ( pTransform == nullptr )
-	{
-		throw std::invalid_argument( "Transform cannot be null!" );
-	}
-}
-
-glm::vec2 LocalProxyReadOnly::get_position( ) const
-{
-	return transform_ptr_->position_;
+	Transform result{ *this };
+	result.combine( other );
+	return result;
 }

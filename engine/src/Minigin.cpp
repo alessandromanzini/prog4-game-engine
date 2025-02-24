@@ -135,9 +135,11 @@ void Minigin::run_one_frame()
 	while ( GameTime::get_instance( ).get_required_fixed_update( ) )
 	{
 		// Call the fixed update and tick the lag time
+		GameTime::get_instance( ).set_timing_type( TimingType::FIXED_DELTA_TIME );
 		SceneManager::get_instance( ).fixed_update( );
 		GameTime::get_instance( ).fixed_tick( );
 	}
+	GameTime::get_instance( ).set_timing_type( TimingType::DELTA_TIME );
 	SceneManager::get_instance().update();
 	Renderer::get_instance().render();
 

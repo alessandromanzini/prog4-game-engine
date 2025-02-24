@@ -12,7 +12,7 @@ namespace engine
 	class TextureComponent final : public BaseComponent
 	{
 	public:
-		explicit TextureComponent( GameObjectView&& owner, const std::string& filename );
+		explicit TextureComponent( GameObjectView& owner, const std::string& filename );
 		~TextureComponent( ) noexcept = default;
 
 		TextureComponent( const TextureComponent& ) = delete;

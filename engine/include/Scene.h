@@ -1,9 +1,8 @@
 #ifndef SCENE_H
 #define SCENE_H
 
-#include <unordered_set>
-
 #include "SceneManager.h"
+#include "Deleter.h"
 
 namespace engine
 {
@@ -28,20 +27,18 @@ namespace engine
 		void render( ) const;
 
 		void cleanup( );
-		bool is_cleanup_needed( ) const noexcept;
 
 		friend Scene& SceneManager::create_scene( const std::string& name );
 
 	private:
 		std::string name_;
 		std::vector<std::shared_ptr<GameObject>> objects_{};
-		std::unordered_set<size_t> indices_to_destroy_{};	// We choose a set because we don't want duplicates and we retain O(1) complexity for insertion, deletion, and search.
+
+		Deleter<GameObject> deleter_{};
 						
 		static unsigned int m_idCounter;
 
 		explicit Scene( const std::string& name );
-
-		void mark_index_for_deletion( size_t index );
 
 	};
 

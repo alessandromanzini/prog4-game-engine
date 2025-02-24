@@ -8,7 +8,7 @@ namespace engine
 	class FPS final : public BaseComponent
 	{
 	public:
-		explicit FPS( GameObjectView&& owner );
+		explicit FPS( GameObjectView& owner );
 		~FPS( ) noexcept = default;
 
 		FPS( const FPS& ) = delete;

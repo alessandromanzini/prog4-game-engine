@@ -9,8 +9,8 @@
 
 using namespace engine;
 
-TextComponent::TextComponent( GameObjectView&& owner, const std::string& text, std::shared_ptr<Font> pFont )
-	: BaseComponent( std::move( owner ) )
+TextComponent::TextComponent( GameObjectView& owner, const std::string& text, std::shared_ptr<Font> pFont )
+	: BaseComponent( owner )
 	, font_ptr_{ std::move( pFont ) }
 	, text_texture_ptr_{ nullptr }
 {
@@ -49,7 +49,7 @@ void TextComponent::render( ) const
 {
 	if ( text_texture_ptr_ != nullptr )
 	{
-		const auto& pos = get_owner( ).get_transform( ).global( ).get_position( );
+		const auto pos = get_owner( ).get_world_transform( ).get_position( );
 		Renderer::get_instance( ).render_texture( *text_texture_ptr_, pos.x, pos.y );
 	}
 }

@@ -6,7 +6,7 @@ namespace engine
 	class Deletable
 	{
 	public:
-		void mark_for_deletion( ) noexcept
+		virtual void mark_for_deletion( )
 		{
 			marked_for_deletion_ = true;
 		}

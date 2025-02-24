@@ -41,9 +41,10 @@ void Scene::update( )
 {
 	for ( size_t i{}; i < objects_.size( ); ++i )
 	{
+		// Can optimize by calling mark_index_for_deletion from the game object
 		if ( objects_[i]->is_marked_for_deletion( ) )
 		{
-			mark_index_for_deletion( i );
+			deleter_.mark_index_for_deletion( i );
 		}
 		else
 		{
@@ -62,23 +63,13 @@ void Scene::render( ) const
 
 void Scene::cleanup( )
 {
-	if ( is_cleanup_needed( ) )
+	if ( deleter_.is_cleanup_needed( ) )
 	{
-		// Remove elements in one pass using erase-remove idiom
-		// 'i' is the index of the object in the vector
-		// 'i' gets checked against the indices_to_destroy_ set, returning 0 for no match or 1 for match
-		std::erase_if( objects_,
-			[this, i = size_t( 0 )]( auto ) mutable { return indices_to_destroy_.count( i++ ); } );
-		indices_to_destroy_.clear( );
+		deleter_.cleanup( objects_ );
 	}
-}
 
-bool Scene::is_cleanup_needed( ) const noexcept
-{
-	return !indices_to_destroy_.empty( );
-}
-
-void Scene::mark_index_for_deletion( size_t index )
-{
-	indices_to_destroy_.insert( index );
+	for ( auto& object : objects_ )
+	{
+		object->cleanup( );
+	}
 }

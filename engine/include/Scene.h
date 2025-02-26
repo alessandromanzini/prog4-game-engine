@@ -3,14 +3,13 @@
 
 #include "SceneManager.h"
 #include "Deleter.h"
+#include "GameObject.h"
 
 namespace engine
 {
-	class GameObject;
 	class Scene final
 	{
 	public:
-		Scene( ) = default;
 		~Scene( ) noexcept = default;
 		
 		Scene( const Scene& )					= delete;
@@ -18,9 +17,14 @@ namespace engine
 		Scene& operator=( const Scene& ) 		= delete;
 		Scene& operator=( Scene&& ) noexcept 	= delete;
 
-		void add( std::shared_ptr<GameObject> object );
-		void remove( std::shared_ptr<GameObject> object );
+		void add( std::unique_ptr<GameObject> pObject );
+		void remove( GameObject* pObject );
 		void remove_all( );
+
+		GameObject* create_object( );
+
+		[[nodiscard]] const std::string& get_name( ) const;
+		[[nodiscard]] uint16_t get_id( ) const;
 
 		void fixed_update( );
 		void update( );
@@ -31,12 +35,13 @@ namespace engine
 		friend Scene& SceneManager::create_scene( const std::string& name );
 
 	private:
-		std::string name_;
-		std::vector<std::shared_ptr<GameObject>> objects_{};
+		static uint16_t s_id_counter_;
 
+		std::string name_;
+		uint16_t id_{};
+
+		std::vector<std::unique_ptr<GameObject>> objects_{};
 		Deleter<GameObject> deleter_{};
-						
-		static unsigned int m_idCounter;
 
 		explicit Scene( const std::string& name );
 

@@ -22,7 +22,10 @@ GameObject::GameObject( )
 
 GameObject::~GameObject( ) noexcept
 {
-	set_parent( nullptr );
+	if ( parent_ptr_ != nullptr )
+	{
+		parent_ptr_->remove_child( this );
+	}
 }
 
 void GameObject::fixed_update( )
@@ -37,10 +40,7 @@ void GameObject::update( )
 {
 	for ( const auto& [key, component] : components_ )
 	{
-		if ( !component->is_marked_for_deletion( ) )
-		{
-			component->update( );
-		}
+		component->update( );
 	}
 }
 
@@ -60,15 +60,6 @@ void GameObject::cleanup( )
 	}
 }
 
-void GameObject::mark_for_deletion( )
-{
-	Deletable::mark_for_deletion( );
-	for ( auto pChild : children_ )
-	{
-		pChild->mark_for_deletion( );
-	}
-}
-
 void GameObject::set_parent( GameObject* const pParent, bool keepWorldPosition /* = true */ )
 {
 	// Parent validation
@@ -77,29 +68,25 @@ void GameObject::set_parent( GameObject* const pParent, bool keepWorldPosition /
 		return;
 	}
 
-	// Remove self from parent's children if not root object
-	if ( parent_ptr_ != nullptr )
-	{
-		parent_ptr_->remove_child( this );
-	}
-
-	// Set new parent
-	// If new parent is nullptr, self becomes root object
-	// else, add self to new parent's children
 	if ( pParent == nullptr )
 	{
+		// If becoming root object, local transform becomes world space transform
 		set_local_transform( get_world_transform( ) );
 	}
 	else
 	{
+		// If parent is provided, we need to adjust the local transform to keep the world position
+		// and set it dirty to recalculate the world transform.
 		if ( keepWorldPosition )
 		{
-			set_local_transform( get_world_transform( ).get_position() - pParent->get_world_transform( ).get_position() );
+			set_local_transform( get_world_transform( ).get_position( ) - pParent->get_world_transform( ).get_position( ) );
 		}
 		set_transform_dirty( );
-
-		pParent->add_child( this );
 	}
+
+	// Re-parenting logic
+	if ( parent_ptr_ != nullptr ) parent_ptr_->remove_child( this );
+	if ( pParent != nullptr ) pParent->add_child( this );
 	parent_ptr_ = pParent;
 }
 
@@ -139,6 +126,30 @@ void GameObject::set_local_transform( Transform&& transform )
 	set_transform_dirty( );
 }
 
+void GameObject::remove_component( BaseComponent& component )
+{
+	deleter_.mark_element_for_deletion( &component );
+}
+
+std::vector<GameObject*>& GameObject::get_children( )
+{
+	return children_;
+}
+
+const std::vector<GameObject*>& GameObject::get_children( ) const
+{
+	return children_;
+}
+
+void GameObject::collect_children( std::vector<GameObject*>& children )
+{
+	for ( auto pChild : children_ )
+	{
+		children.push_back( pChild );
+		pChild->collect_children( children );
+	}
+}
+
 bool GameObject::is_child( GameObject* const pGameObject ) const
 {
 	for ( auto pChild : children_ )
@@ -161,6 +172,11 @@ void GameObject::remove_child( GameObject* pGameObject )
 	children_.erase( std::remove( children_.begin( ), children_.end( ), pGameObject ), children_.end( ) );
 }
 
+bool GameObject::has_children( ) const
+{
+	return !children_.empty( );
+}
+
 void GameObject::update_world_transform( )
 {
 	if ( transform_dirty_ )
@@ -175,9 +191,4 @@ void GameObject::update_world_transform( )
 		}
 		transform_dirty_ = false;
 	}
-}
-
-void GameObject::remove_component( BaseComponent& component )
-{
-	deleter_.mark_element_for_deletion( component );
 }

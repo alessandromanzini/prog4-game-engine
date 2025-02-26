@@ -1,7 +1,6 @@
 #ifndef DELETER_H
 #define DELETER_H
 
-#include <concepts>
 #include <memory>
 #include <vector>
 #include <unordered_set>
@@ -13,15 +12,15 @@ namespace engine
 	class Deleter final
 	{
 	public:
-		void mark_element_for_deletion( deletable_t& element )
+		void mark_element_for_deletion( deletable_t* element )
 		{
-			elements_to_destroy_.insert( &element );
+			elements_to_destroy_.insert( element );
 		}
 
-		void cleanup( std::vector<std::shared_ptr<deletable_t>>& deletables )
+		void cleanup( std::vector<std::unique_ptr<deletable_t>>& deletables )
 		{
 			std::erase_if( deletables,
-				[this]( auto pElement ) { return elements_to_destroy_.count( pElement.get() ); } );
+				[this]( auto& pElement ) { return elements_to_destroy_.count( pElement.get() ); } );
 			elements_to_destroy_.clear( );
 		}
 

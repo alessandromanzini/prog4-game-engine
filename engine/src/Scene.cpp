@@ -1,31 +1,52 @@
 #include "Scene.h"
+
 #include "GameObject.h"
 
 #include <algorithm>
 
 using namespace engine;
 
-unsigned int Scene::m_idCounter = 0;
+uint16_t Scene::s_id_counter_ = 0;
 
-Scene::Scene( const std::string& name ) : name_( name )
+void Scene::add( std::unique_ptr<GameObject> pObject )
 {
+	objects_.emplace_back( std::move( pObject ) );
 }
 
-void Scene::add( std::shared_ptr<GameObject> object )
+GameObject* Scene::create_object( )
 {
-	objects_.emplace_back( std::move( object ) );
+	return objects_.emplace_back( std::make_unique<GameObject>() ).get();
 }
 
-void Scene::remove( std::shared_ptr<GameObject> object )
+const std::string& Scene::get_name( ) const
 {
-	object->mark_for_deletion( );
+	return name_;
+}
+
+uint16_t Scene::get_id( ) const
+{
+	return id_;
+}
+
+void Scene::remove( GameObject* pObject )
+{
+	if ( pObject != nullptr )
+	{
+		deleter_.mark_element_for_deletion( pObject );
+
+		// Remove children as well
+		for ( auto pChild : pObject->get_children( ) )
+		{
+			remove( pChild );
+		}
+	}
 }
 
 void Scene::remove_all( )
 {
 	for ( auto& pObject : objects_ )
 	{
-		pObject->mark_for_deletion( );
+		deleter_.mark_element_for_deletion( pObject.get( ) );
 	}
 }
 
@@ -41,14 +62,7 @@ void Scene::update( )
 {
 	for ( auto& pObject : objects_ )
 	{
-		if ( pObject->is_marked_for_deletion( ) )
-		{
-			deleter_.mark_element_for_deletion( *pObject );
-		}
-		else
-		{
-			pObject->update( );
-		}
+		pObject->update( );
 	}
 }
 
@@ -62,13 +76,21 @@ void Scene::render( ) const
 
 void Scene::cleanup( )
 {
+	// Delete marked objects
 	if ( deleter_.is_cleanup_needed( ) )
 	{
 		deleter_.cleanup( objects_ );
 	}
 
+	// Cleanup objects
 	for ( auto& object : objects_ )
 	{
 		object->cleanup( );
 	}
+}
+
+Scene::Scene( const std::string& name ) 
+	: name_( name )
+	, id_( s_id_counter_++ )
+{
 }

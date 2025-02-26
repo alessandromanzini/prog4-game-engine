@@ -26,48 +26,40 @@ void load( )
 	auto& scene = engine::SceneManager::get_instance( ).create_scene( "Demo" );
 
 	// bg GameObject
-	auto bgGo = std::make_shared<engine::GameObject>( );
+	auto bgGo = scene.create_object( );
 	bgGo->add_component<engine::TextureComponent>( "background.tga" );
 
 	// DAE logo component
-	auto logoGo = std::make_shared<engine::GameObject>( );
+	auto logoGo = scene.create_object( );
 	logoGo->set_world_transform( glm::vec2{ 216.f, 180.f } );
 	logoGo->add_component<engine::TextureComponent>( "logo.tga" );
 
 	// Programming 4 Assignment text component
-	auto textGo = std::make_shared<engine::GameObject>( );
+	auto textGo = scene.create_object( );
 	textGo->set_world_transform( glm::vec2{ 80.f, 20.f } );
 	textGo->add_component<engine::TextComponent>( "Programming 4 Assignment", pFont );
 
 	// FPS GameObject
-	auto fpsGo = std::make_shared<engine::GameObject>( );
+	auto fpsGo = scene.create_object( );
 	fpsGo->set_world_transform( glm::vec2{ 20.f, 425.f } );
 	fpsGo->add_component<engine::TextComponent>( "", pFont );
 	fpsGo->add_component<engine::FPS>( );
 
 	// Rotating Pacman GameObject
-	auto rotatorGo = std::make_shared<engine::GameObject>( );
+	auto rotatorGo = scene.create_object( );
 	rotatorGo->set_world_transform( glm::vec2{ 125.f, 315.f } );
 
-	auto pacmanGo = std::make_shared<engine::GameObject>( );
+	auto pacmanGo = scene.create_object( );
 	pacmanGo->add_component<engine::TextureComponent>( "pacman.png" );
 	pacmanGo->add_component<engine::RotatingComponent>( glm::radians( 180.f ) );
-	pacmanGo->set_parent( rotatorGo.get( ) );
+	pacmanGo->set_parent( rotatorGo );
 	pacmanGo->set_local_transform( glm::vec2{ 15.f, 0.f } );
 
-	auto mspacmanGo = std::make_shared<engine::GameObject>( );
+	auto mspacmanGo = scene.create_object( );
 	mspacmanGo->add_component<engine::TextureComponent>( "ms-pacman.png" );
 	mspacmanGo->add_component<engine::RotatingComponent>( glm::radians( -360.f ) );
-	mspacmanGo->set_parent( pacmanGo.get( ) );
+	mspacmanGo->set_parent( pacmanGo );
 	mspacmanGo->set_local_transform( glm::vec2{ 50.f, 0.f } );
-
-	scene.add( bgGo );
-	scene.add( logoGo );
-	scene.add( textGo );
-	scene.add( fpsGo );
-	scene.add( rotatorGo );
-	scene.add( pacmanGo );
-	scene.add( mspacmanGo );
 }
 
 int main( int, char* [] )

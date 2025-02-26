@@ -12,8 +12,8 @@
 // +--------------------------------+
 // | Project Headers				|
 // +--------------------------------+
-#include "Deletable.h"
 #include "Deleter.h"
+#include "GameObject.h"
 #include "Transform.h"
 #include "type_utility.hpp"
 
@@ -21,7 +21,7 @@ namespace engine
 {
 	class BaseComponent;
 	class GameObjectView;
-	class GameObject final : public Deletable
+	class GameObject final
 	{
 	public:
 		GameObject( );
@@ -37,7 +37,6 @@ namespace engine
 		void render( ) const;
 
 		void cleanup( );
-		void mark_for_deletion( ) override;
 
 		void set_parent( GameObject* pParent, bool keepWorldPosition = true );
 
@@ -76,6 +75,10 @@ namespace engine
 
 		void remove_component( BaseComponent& component );
 
+		[[nodiscard]] std::vector<GameObject*>& get_children( );
+		[[nodiscard]] const std::vector<GameObject*>& get_children( ) const;
+		void collect_children( std::vector<GameObject*>& children );
+
 	private:
 		std::unique_ptr<GameObjectView> view_ptr_{};
 		GameObject* parent_ptr_{ nullptr };
@@ -92,6 +95,7 @@ namespace engine
 		[[nodiscard]] bool is_child( GameObject* pGameObject ) const;
 		void add_child( GameObject* pGameObject );
 		void remove_child( GameObject* pGameObject );
+		[[nodiscard]] bool has_children( ) const;
 
 		void set_transform_dirty( )
 		{

@@ -3,23 +3,24 @@
 #include <stdexcept>
 #include <SDL_ttf.h>
 
-using namespace engine;
-
-Font::Font( const std::string& fullPath, unsigned int size ) : font_ptr_{ nullptr }
+namespace engine
 {
-	font_ptr_ = TTF_OpenFont(fullPath.c_str(), size);
-	if ( font_ptr_ == nullptr)
+	Font::Font( const std::string& fullPath, unsigned int size ) : font_ptr_{ nullptr }
 	{
-		throw std::runtime_error(std::string("Failed to load font: ") + SDL_GetError());
+		font_ptr_ = TTF_OpenFont( fullPath.c_str( ), size );
+		if ( font_ptr_ == nullptr )
+		{
+			throw std::runtime_error( std::string( "Failed to load font: " ) + SDL_GetError( ) );
+		}
 	}
-}
 
-Font::~Font()
-{
-	TTF_CloseFont( font_ptr_ );
-}
+	Font::~Font( )
+	{
+		TTF_CloseFont( font_ptr_ );
+	}
 
-TTF_Font* Font::get_font( ) const
-{
-	return font_ptr_;
+	TTF_Font* Font::get_font( ) const
+	{
+		return font_ptr_;
+	}
 }

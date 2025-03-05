@@ -6,16 +6,17 @@
 #include "singletons/ResourceManager.h"
 #include "singletons/Renderer.h"
 
-using namespace engine;
-
-TextureComponent::TextureComponent( GameObjectView& owner, const std::string& filename )
-	: BaseComponent( owner )
+namespace engine
 {
-	texture_ptr_ = ResourceManager::get_instance( ).load_texture( filename );
-}
+	TextureComponent::TextureComponent( GameObjectView& owner, const std::string& filename )
+		: BaseComponent( owner )
+	{
+		texture_ptr_ = RESOURCE_MANAGER.load_texture( filename );
+	}
 
-void TextureComponent::render( ) const
-{
-	const auto pos = get_owner().get_world_transform( ).get_position( );
-	Renderer::get_instance( ).render_texture( *texture_ptr_, pos.x, pos.y );
+	void TextureComponent::render( ) const
+	{
+		const auto pos = get_owner( ).get_world_transform( ).get_position( );
+		RENDERER.render_texture( *texture_ptr_, pos.x, pos.y );
+	}
 }

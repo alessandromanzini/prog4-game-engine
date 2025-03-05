@@ -18,68 +18,69 @@
 // +--------------------------------+
 #include <stdexcept>
 
-using namespace engine;
-
 namespace fs = std::filesystem;
 
-ResourceManager& engine::RESOURCE_MANAGER = ResourceManager::get_instance( );
-
-void ResourceManager::init( const std::filesystem::path& dataPath )
+namespace engine
 {
-	data_path_ = dataPath;
+	ResourceManager& RESOURCE_MANAGER = ResourceManager::get_instance( );
 
-	if ( TTF_Init( ) != 0 )
+	void ResourceManager::init( const std::filesystem::path& dataPath )
 	{
-		throw std::runtime_error( std::string( "Failed to load support for fonts: " ) + SDL_GetError( ) );
-	}
-}
+		data_path_ = dataPath;
 
-std::shared_ptr<Texture2D> ResourceManager::load_texture( const std::string& file )
-{
-	const auto fullPath = data_path_ / file;
-	const auto filename = fs::path( fullPath ).filename( ).string( );
-	if ( loaded_textures_.find( filename ) == loaded_textures_.end( ) )
-	{
-		loaded_textures_.insert( std::pair( filename, std::make_shared<Texture2D>( fullPath.string( ) ) ) );
-	}
-	return loaded_textures_.at( filename );
-}
-
-std::shared_ptr<Font> ResourceManager::load_font( const std::string& file, uint8_t size )
-{
-	const auto fullPath = data_path_ / file;
-	const auto filename = fs::path( fullPath ).filename( ).string( );
-	const auto key = std::pair<std::string, uint8_t>( filename, size );
-	if ( loaded_fonts_.find( key ) == loaded_fonts_.end( ) )
-	{
-		loaded_fonts_.insert( std::pair( key, std::make_shared<Font>( fullPath.string( ), size ) ) );
-	}
-	return loaded_fonts_.at( key );
-}
-
-void ResourceManager::unload_unused_resources( )
-{
-	for ( auto it = loaded_textures_.begin( ); it != loaded_textures_.end( );)
-	{
-		if ( it->second.use_count( ) == 1 )
+		if ( TTF_Init( ) != 0 )
 		{
-			it = loaded_textures_.erase( it );
-		}
-		else
-		{
-			++it;
+			throw std::runtime_error( std::string( "Failed to load support for fonts: " ) + SDL_GetError( ) );
 		}
 	}
 
-	for ( auto it = loaded_fonts_.begin( ); it != loaded_fonts_.end( );)
+	std::shared_ptr<Texture2D> ResourceManager::load_texture( const std::string& file )
 	{
-		if ( it->second.use_count( ) == 1 )
+		const auto fullPath = data_path_ / file;
+		const auto filename = fs::path( fullPath ).filename( ).string( );
+		if ( loaded_textures_.find( filename ) == loaded_textures_.end( ) )
 		{
-			it = loaded_fonts_.erase( it );
+			loaded_textures_.insert( std::pair( filename, std::make_shared<Texture2D>( fullPath.string( ) ) ) );
 		}
-		else
+		return loaded_textures_.at( filename );
+	}
+
+	std::shared_ptr<Font> ResourceManager::load_font( const std::string& file, uint8_t size )
+	{
+		const auto fullPath = data_path_ / file;
+		const auto filename = fs::path( fullPath ).filename( ).string( );
+		const auto key = std::pair<std::string, uint8_t>( filename, size );
+		if ( loaded_fonts_.find( key ) == loaded_fonts_.end( ) )
 		{
-			++it;
+			loaded_fonts_.insert( std::pair( key, std::make_shared<Font>( fullPath.string( ), size ) ) );
+		}
+		return loaded_fonts_.at( key );
+	}
+
+	void ResourceManager::unload_unused_resources( )
+	{
+		for ( auto it = loaded_textures_.begin( ); it != loaded_textures_.end( );)
+		{
+			if ( it->second.use_count( ) == 1 )
+			{
+				it = loaded_textures_.erase( it );
+			}
+			else
+			{
+				++it;
+			}
+		}
+
+		for ( auto it = loaded_fonts_.begin( ); it != loaded_fonts_.end( );)
+		{
+			if ( it->second.use_count( ) == 1 )
+			{
+				it = loaded_fonts_.erase( it );
+			}
+			else
+			{
+				++it;
+			}
 		}
 	}
 }

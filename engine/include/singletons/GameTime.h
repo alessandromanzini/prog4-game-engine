@@ -54,6 +54,8 @@ namespace engine
 
 	};
 
+	extern GameTime& GAME_TIME;
+
 }
 
 #endif // GAMETIME_H

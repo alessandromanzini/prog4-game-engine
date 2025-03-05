@@ -5,23 +5,22 @@ project(engine)
 
 # create library target
 add_library(${PROJECT_NAME}
-        "include/Deleter.h"
-	    "src/Font.cpp"
-        "src/FPS.cpp"
+        "src/singletons/GameTime.cpp"
+        "src/singletons/InputSystem.cpp"
+        "src/singletons/ScenePool.cpp"
+        "src/singletons/Renderer.cpp"
+        "src/singletons/ResourceManager.cpp"
+        "src/components/TextComponent.cpp"
+        "src/components/TextureComponent.cpp"
+        "src/components/FPS.cpp"
+        "src/Minigin.cpp"
+        "src/Scene.cpp"
         "src/GameObject.cpp"
         "src/GameObjectView.cpp"
         "src/Transform.cpp" 
-        "src/GameTime.cpp"
-        "src/InputManager.cpp"
-        "src/Minigin.cpp"
-        "src/Renderer.cpp"
-        "src/ResourceManager.cpp"
-        "src/Scene.cpp"
-        "src/SceneManager.cpp"
-        "src/TextComponent.cpp"
-        "src/TextureComponent.cpp"
-        "src/Texture2D.cpp"
-        "src/RotatingComponent.cpp" )
+        "include/Deleter.h"
+	    "src/Font.cpp"
+        "src/Texture2D.cpp" )
 
 # add glm
 include(glm_fetchcontent)
@@ -65,8 +64,36 @@ endif()
 # headers for internal use.
 target_include_directories(${PROJECT_NAME}
 		PUBLIC "./include"
+		PUBLIC "./include/singletons"
+		PUBLIC "./include/components"
 		PRIVATE "./src"
+		PRIVATE "./src/singletons"
+		PRIVATE "./src/components"
         PUBLIC ${glm_SOURCE_DIR} )
+
+# add debug-only dependencies
+if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+# add imgui
+include(imgui_fetchcontent)
+
+target_include_directories( ${PROJECT_NAME} 
+        PUBLIC ${imgui_SOURCE_DIR}
+        PUBLIC ${imgui_SOURCE_DIR}/backends )
+
+# add required source files for imgui
+target_sources(${PROJECT_NAME} PRIVATE 
+    ${imgui_SOURCE_DIR}/imgui.cpp
+    ${imgui_SOURCE_DIR}/imgui_draw.cpp
+    ${imgui_SOURCE_DIR}/imgui_widgets.cpp
+    ${imgui_SOURCE_DIR}/imgui_tables.cpp
+    ${imgui_SOURCE_DIR}/backends/imgui_impl_SDL2.cpp
+    ${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp )
+
+# tell the program that we are using imgui
+target_compile_definitions(${PROJECT_NAME} PUBLIC _USE_IMGUI)
+message( STATUS "Debug mode enabled, _USE_IMGUI defined" )
+
+endif()
 
 # setup the target properties
 if(EMSCRIPTEN)

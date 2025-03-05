@@ -1,10 +1,26 @@
-#include <stdexcept>
-#include <cstring>
-#include "Renderer.h"
-#include "SceneManager.h"
+#include "singletons/Renderer.h"
+
+// +--------------------------------+
+// | Project Headers				|
+// +--------------------------------+
+#include "singletons/ScenePool.h"
 #include "Texture2D.h"
 
+#ifdef _USE_IMGUI
+#include "imgui.h"
+#include <backends/imgui_impl_sdl2.h>
+#include <backends/imgui_impl_opengl3.h>
+#endif
+
+// +--------------------------------+
+// | Standard Headers				|
+// +--------------------------------+
+#include <stdexcept>
+#include <cstring>
+
 using namespace engine;
+
+Renderer& engine::RENDERER = Renderer::get_instance( );
 
 int GetOpenGLDriverIndex()
 {
@@ -32,6 +48,8 @@ void Renderer::init(SDL_Window* window)
 	{
 		throw std::runtime_error(std::string("SDL_CreateRenderer Error: ") + SDL_GetError());
 	}
+
+	init_imgui( );
 }
 
 void Renderer::render() const
@@ -41,13 +59,19 @@ void Renderer::render() const
 	SDL_SetRenderDrawColor(renderer_ptr_, color.r, color.g, color.b, color.a);
 	SDL_RenderClear(renderer_ptr_);
 
-	SceneManager::get_instance().render();
+	SCENE_POOL.render();
+
+	start_imgui_render( );
+	SCENE_POOL.render_ui( );
+	end_imgui_render( );
 	
 	SDL_RenderPresent( renderer_ptr_ );
 }
 
 void Renderer::destroy()
 {
+	destroy_imgui( );
+
 	if (renderer_ptr_ != nullptr)
 	{
 		SDL_DestroyRenderer( renderer_ptr_ );
@@ -75,3 +99,39 @@ void Renderer::render_texture(const Texture2D& texture, const float x, const flo
 }
 
 SDL_Renderer* Renderer::get_SDL_renderer() const { return renderer_ptr_; }
+
+void Renderer::init_imgui( )
+{
+#ifdef _USE_IMGUI
+	IMGUI_CHECKVERSION( );
+	ImGui::CreateContext( );
+	ImGui_ImplSDL2_InitForOpenGL( window_ptr_, SDL_GL_GetCurrentContext( ) );
+	ImGui_ImplOpenGL3_Init( );
+#endif
+}
+
+void Renderer::destroy_imgui( )
+{
+#ifdef _USE_IMGUI
+	ImGui_ImplOpenGL3_Shutdown( );
+	ImGui_ImplSDL2_Shutdown( );
+	ImGui::DestroyContext( );
+#endif
+}
+
+void Renderer::start_imgui_render( ) const
+{
+#ifdef _USE_IMGUI
+	ImGui_ImplOpenGL3_NewFrame( );
+	ImGui_ImplSDL2_NewFrame( );
+	ImGui::NewFrame( );
+#endif
+}
+
+void Renderer::end_imgui_render( ) const
+{
+#ifdef _USE_IMGUI
+	ImGui::Render( );
+	ImGui_ImplOpenGL3_RenderDrawData( ImGui::GetDrawData( ) );
+#endif
+}

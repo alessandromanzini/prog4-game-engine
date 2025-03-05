@@ -1,9 +1,19 @@
 #include "Texture2D.h"
 
-#include "Renderer.h"
+// +--------------------------------+
+// | Project Headers				|
+// +--------------------------------+
+#include "singletons/Renderer.h"
 
+// +--------------------------------+
+// | SDL Headers					|
+// +--------------------------------+
 #include <SDL.h>
 #include <SDL_image.h>
+
+// +--------------------------------+
+// | Standard Headers				|
+// +--------------------------------+
 #include <stdexcept>
 
 using namespace engine;

@@ -8,10 +8,10 @@
 // +--------------------------------+
 // | Project Headers				|
 // +--------------------------------+
-#include "BaseComponent.h"
+#include "singletons/Renderer.h"
+#include "singletons/ResourceManager.h"
+#include "components/BaseComponent.h"
 #include "GameObjectView.h"
-#include "ResourceManager.h"
-#include "Renderer.h"
 
 using namespace engine;
 
@@ -25,6 +25,10 @@ GameObject::~GameObject( ) noexcept
 	if ( parent_ptr_ != nullptr )
 	{
 		parent_ptr_->remove_child( this );
+	}
+	for ( int i{}; i < children_.size( ); ++i )
+	{
+		children_[i]->set_parent( nullptr, false );
 	}
 }
 

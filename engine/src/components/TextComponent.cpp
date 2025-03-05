@@ -1,9 +1,15 @@
-#include "TextComponent.h"
+#include "components/TextComponent.h"
 
-#include "Renderer.h"
+// +--------------------------------+
+// | Project Headers				|
+// +--------------------------------+
+#include "singletons/Renderer.h"
 #include "Font.h"
 #include "Texture2D.h"
 
+// +--------------------------------+
+// | Standard Headers				|
+// +--------------------------------+
 #include <stdexcept>
 #include <SDL_ttf.h>
 

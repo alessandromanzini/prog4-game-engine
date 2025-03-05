@@ -1,10 +1,10 @@
-#include "FPS.h"
+#include "components/FPS.h"
 
 // +--------------------------------+
 // | Project Headers				|
 // +--------------------------------+
-#include "TextComponent.h"
-#include "GameTime.h"
+#include "singletons/GameTime.h"
+#include "components/TextComponent.h"
 
 // +--------------------------------+
 // | Standard Headers				|

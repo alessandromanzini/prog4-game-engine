@@ -1,9 +1,15 @@
+#include "singletons/InputSystem.h"
+
+// +--------------------------------+
+// | SDL Headers					|
+// +--------------------------------+
 #include <SDL.h>
-#include "InputManager.h"
 
 using namespace engine;
 
-bool InputManager::process_input()
+InputSystem& engine::INPUT_SYSTEM = InputSystem::get_instance( );
+
+bool InputSystem::process_input()
 {
 	SDL_Event e;
 	while (SDL_PollEvent(&e)) {

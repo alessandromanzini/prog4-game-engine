@@ -1,11 +1,18 @@
 #ifndef RESOURCEMANAGER_H
 #define RESOURCEMANAGER_H
 
+// +--------------------------------+
+// | Project Headers				|
+// +--------------------------------+
+#include "Singleton.h"
+
+// +--------------------------------+
+// | Standard Headers				|
+// +--------------------------------+
 #include <filesystem>
 #include <string>
 #include <memory>
 #include <map>
-#include "Singleton.h"
 
 namespace engine
 {
@@ -31,6 +38,9 @@ namespace engine
 		void unload_unused_resources( );
 
 	};
+
+	extern ResourceManager& RESOURCE_MANAGER;
+
 }
 
 #endif // !RESOURCEMANAGER_H

@@ -1,6 +1,10 @@
-#include "TextureComponent.h"
-#include "ResourceManager.h"
-#include "Renderer.h"
+#include "components/TextureComponent.h"
+
+// +--------------------------------+
+// | Project Headers				|
+// +--------------------------------+
+#include "singletons/ResourceManager.h"
+#include "singletons/Renderer.h"
 
 using namespace engine;
 

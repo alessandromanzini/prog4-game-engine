@@ -1,7 +1,6 @@
 #ifndef SCENE_H
 #define SCENE_H
 
-#include "SceneManager.h"
 #include "Deleter.h"
 #include "GameObject.h"
 
@@ -10,6 +9,7 @@ namespace engine
 	class Scene final
 	{
 	public:
+		explicit Scene( const std::string& name );
 		~Scene( ) noexcept = default;
 		
 		Scene( const Scene& )					= delete;
@@ -32,8 +32,6 @@ namespace engine
 
 		void cleanup( );
 
-		friend Scene& SceneManager::create_scene( const std::string& name );
-
 	private:
 		static uint16_t s_id_counter_;
 
@@ -42,8 +40,6 @@ namespace engine
 
 		std::vector<std::unique_ptr<GameObject>> objects_{};
 		Deleter<GameObject> deleter_{};
-
-		explicit Scene( const std::string& name );
 
 	};
 

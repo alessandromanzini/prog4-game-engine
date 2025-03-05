@@ -1,7 +1,7 @@
 # Game CMakeLists.txt, Author: Alessandro Manzini
 # Game project configuration specifics.
 #
-project(game)
+project(bubble_bobble)
 
 # set the target and platform
 if(EMSCRIPTEN)
@@ -16,10 +16,13 @@ else()
 endif()
 
 # set minigin as the default startup project
-set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${TARGET_NAME})
+if(MSVC)
+    set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT ${TARGET_NAME})
+endif()
 
 add_executable(${TARGET_NAME} ${TARGET_PARAM} 
-        "src/main.cpp")
+        "src/main.cpp"
+        "src/components/RotatingComponent.cpp" )
 
 # link library
 target_link_libraries(${PROJECT_NAME}
@@ -28,7 +31,11 @@ target_link_libraries(${PROJECT_NAME}
 # include program directories
 target_include_directories(${PROJECT_NAME}
 		PRIVATE "./include"
-		PRIVATE "./src" )
+		PRIVATE "./include/singletons"
+		PRIVATE "./include/compoments"
+		PRIVATE "./src"
+        PRIVATE "./src/singletons"
+		PRIVATE "./src/compoments")
 
 # copy the data directory to the build directory
 set(RESOURCES_SRC_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/resources")

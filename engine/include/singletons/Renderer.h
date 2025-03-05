@@ -20,9 +20,9 @@ namespace engine
 		void render_texture( const Texture2D& texture, float x, float y ) const;
 		void render_texture( const Texture2D& texture, float x, float y, float width, float height ) const;
 
-		SDL_Renderer* get_SDL_renderer( ) const;
+		[[nodiscard]] SDL_Renderer* get_SDL_renderer( ) const;
 
-		const SDL_Color& get_background_color( ) const
+		[[nodiscard]] const SDL_Color& get_background_color( ) const
 		{
 			return clear_color_;
 		}
@@ -37,7 +37,15 @@ namespace engine
 		SDL_Window* window_ptr_{};
 		SDL_Color clear_color_{};
 
+		void init_imgui( );
+		void destroy_imgui( );
+		void start_imgui_render( ) const;
+		void end_imgui_render( ) const;
+
 	};
+
+	extern Renderer& RENDERER;
+
 }
 
 #endif // !RENDERER_H

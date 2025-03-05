@@ -3,11 +3,11 @@
 // +--------------------------------+
 // | PROJECT HEADERS				|
 // +--------------------------------+
-#include "InputManager.h"
-#include "SceneManager.h"
-#include "Renderer.h"
-#include "ResourceManager.h"
-#include "GameTime.h"
+#include "singletons/InputSystem.h"
+#include "singletons/ScenePool.h"
+#include "singletons/Renderer.h"
+#include "singletons/ResourceManager.h"
+#include "singletons/GameTime.h"
 
 // +--------------------------------+
 // | STANDARD HEADERS				|
@@ -21,6 +21,9 @@
 #include <windows.h>
 #endif
 
+// +--------------------------------+
+// | SDL Headers					|
+// +--------------------------------+
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
@@ -97,13 +100,13 @@ Minigin::Minigin(const std::filesystem::path &dataPath)
 		throw std::runtime_error(std::string("SDL_CreateWindow Error: ") + SDL_GetError());
 	}
 
-	Renderer::get_instance().init(g_window_ptr);
-	ResourceManager::get_instance().init(dataPath);
+	RENDERER.init(g_window_ptr);
+	RESOURCE_MANAGER.init( dataPath );
 }
 
 Minigin::~Minigin()
 {
-	Renderer::get_instance().destroy();
+	RENDERER.destroy();
 	SDL_DestroyWindow(g_window_ptr);
 	g_window_ptr = nullptr;
 	SDL_Quit();
@@ -112,7 +115,7 @@ Minigin::~Minigin()
 void Minigin::run(const std::function<void()>& load)
 {
 	load();
-	GameTime::get_instance( ).reset( );
+	GAME_TIME.reset( );
 #ifndef __EMSCRIPTEN__
 	while (!quit_)
 		run_one_frame();
@@ -126,31 +129,31 @@ void Minigin::run_one_frame()
 	// +--------------------------------+
 	// | TIME CALCULATIONS ( ticking )	|
 	// +--------------------------------+
-	GameTime::get_instance( ).tick( );
+	GAME_TIME.tick( );
 
 	// +--------------------------------+
 	// | GAME LOOP						|
 	// +--------------------------------+
-	quit_ = !InputManager::get_instance().process_input();
-	while ( GameTime::get_instance( ).get_required_fixed_update( ) )
+	quit_ = !INPUT_SYSTEM.process_input();
+	while ( GAME_TIME.get_required_fixed_update( ) )
 	{
 		// Call the fixed update and tick the lag time
-		GameTime::get_instance( ).set_timing_type( TimingType::FIXED_DELTA_TIME );
-		SceneManager::get_instance( ).fixed_update( );
-		GameTime::get_instance( ).fixed_tick( );
+		GAME_TIME.set_timing_type( TimingType::FIXED_DELTA_TIME );
+		SCENE_POOL.fixed_update( );
+		GAME_TIME.fixed_tick( );
 	}
-	GameTime::get_instance( ).set_timing_type( TimingType::DELTA_TIME );
-	SceneManager::get_instance().update();
-	Renderer::get_instance().render();
+	GAME_TIME.set_timing_type( TimingType::DELTA_TIME );
+	SCENE_POOL.update();
+	RENDERER.render();
 
 	// +--------------------------------+
 	// | DESTROYED OBJECTS DELETION		|
 	// +--------------------------------+
-	SceneManager::get_instance( ).cleanup( );
+	SCENE_POOL.cleanup( );
 
 	// +--------------------------------+
 	// | SLEEPING						|
 	// +--------------------------------+
-	const auto sleepTime = GameTime::get_instance( ).get_sleep_time( );
+	const auto sleepTime = GAME_TIME.get_sleep_time( );
 	std::this_thread::sleep_for( sleepTime );
 }

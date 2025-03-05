@@ -1,7 +1,8 @@
-#ifndef SCENE_MANAGER_H
-#define SCENE_MANAGER_H
+#ifndef SCENEPOOL_H
+#define SCENEPOOL_H
 
 #include "Singleton.h"
+#include "Scene.h"
 
 #include <vector>
 #include <string>
@@ -9,8 +10,7 @@
 
 namespace engine
 {
-	class Scene;
-	class SceneManager final : public Singleton<SceneManager>
+	class ScenePool final : public Singleton<ScenePool>
 	{
 	public:
 		Scene& create_scene( const std::string& name );
@@ -18,6 +18,7 @@ namespace engine
 		void fixed_update( );
 		void update( );
 		void render( );
+		void render_ui( );
 
 		Scene& get_active_scene( ) const;
 		Scene& get_scene( const std::string& name ) const;
@@ -25,15 +26,17 @@ namespace engine
 
 		void cleanup( );
 
-		friend class Singleton<SceneManager>;
+		friend class Singleton<ScenePool>;
 
 	private:
-		std::vector<std::shared_ptr<Scene>> scenes_;
+		std::vector<std::unique_ptr<Scene>> scenes_;
 		Scene* active_scene_ptr_{ nullptr };
 
-		SceneManager( ) = default;
+		ScenePool( ) = default;
 
 	};
+
+	extern ScenePool& SCENE_POOL;
 }
 
-#endif // !SCENE_MANAGER_H
+#endif // !SCENEPOOL_H

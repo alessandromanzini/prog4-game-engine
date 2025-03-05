@@ -1,7 +1,9 @@
-#include "GameTime.h"
+#include "singletons/GameTime.h"
 
 using namespace engine;
 using namespace std::chrono;
+
+GameTime& engine::GAME_TIME = GameTime::get_instance( );
 
 void GameTime::tick( )
 {

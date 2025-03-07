@@ -4,14 +4,8 @@
 // +--------------------------------+
 // | Project Headers				|
 // +--------------------------------+
-#include "Transform.h"
 #include "GameObjectView.h"
 #include "Deletable.h"
-
-// +--------------------------------+
-// | Standard Headers				|
-// +--------------------------------+
-#include <memory>
 
 namespace engine
 {
@@ -58,6 +52,18 @@ namespace engine
 		GameObjectView& owner_ref_;
 
 	};
+
+	// +--------------------------------+
+	// | CONCEPTS						|
+	// +--------------------------------+
+	template <typename derived_t, typename... args_t>
+	concept DerivedComponentWithBaseContructor =
+		std::derived_from<derived_t, BaseComponent> and
+		std::constructible_from<derived_t, GameObjectView&, args_t...>;
+
+	template <typename derived_t>
+	concept DerivedComponent =
+		std::derived_from<derived_t, BaseComponent>;
 
 }
 

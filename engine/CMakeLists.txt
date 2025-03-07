@@ -9,6 +9,7 @@ add_library(${PROJECT_NAME}
         "src/singletons/InputSystem.cpp"
         "src/singletons/ScenePool.cpp"
         "src/singletons/Renderer.cpp"
+        "src/singletons/UIController.cpp"
         "src/singletons/ResourceManager.cpp"
         "src/components/TextComponent.cpp"
         "src/components/TextureComponent.cpp"
@@ -72,7 +73,7 @@ target_include_directories(${PROJECT_NAME}
         PUBLIC ${glm_SOURCE_DIR} )
 
 # add debug-only dependencies
-if (CMAKE_BUILD_TYPE STREQUAL "Debug")
+# if (CMAKE_BUILD_TYPE STREQUAL "Debug")
 # add imgui
 include(imgui_fetchcontent)
 
@@ -86,14 +87,14 @@ target_sources(${PROJECT_NAME} PRIVATE
     ${imgui_SOURCE_DIR}/imgui_draw.cpp
     ${imgui_SOURCE_DIR}/imgui_widgets.cpp
     ${imgui_SOURCE_DIR}/imgui_tables.cpp
+    ${imgui_SOURCE_DIR}/imgui_demo.cpp
     ${imgui_SOURCE_DIR}/backends/imgui_impl_SDL2.cpp
     ${imgui_SOURCE_DIR}/backends/imgui_impl_opengl3.cpp )
 
 # tell the program that we are using imgui
-target_compile_definitions(${PROJECT_NAME} PUBLIC _USE_IMGUI)
-message( STATUS "Debug mode enabled, _USE_IMGUI defined" )
-
-endif()
+# target_compile_definitions(${PROJECT_NAME} PUBLIC _USE_IMGUI)
+# message( STATUS "Debug mode enabled, _USE_IMGUI defined" )
+# endif()
 
 # setup the target properties
 if(EMSCRIPTEN)

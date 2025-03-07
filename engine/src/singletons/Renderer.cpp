@@ -4,13 +4,8 @@
 // | Project Headers				|
 // +--------------------------------+
 #include "singletons/ScenePool.h"
+#include "singletons/UIController.h"
 #include "Texture2D.h"
-
-#ifdef _USE_IMGUI
-#include "imgui.h"
-#include <backends/imgui_impl_sdl2.h>
-#include <backends/imgui_impl_opengl3.h>
-#endif
 
 // +--------------------------------+
 // | Standard Headers				|
@@ -48,8 +43,6 @@ namespace engine
 		{
 			throw std::runtime_error( std::string( "SDL_CreateRenderer Error: " ) + SDL_GetError( ) );
 		}
-
-		init_imgui( );
 	}
 
 	void Renderer::render( ) const
@@ -60,18 +53,13 @@ namespace engine
 		SDL_RenderClear( renderer_ptr_ );
 
 		SCENE_POOL.render( );
-
-		start_imgui_render( );
-		SCENE_POOL.render_ui( );
-		end_imgui_render( );
+		UI_CONTROLLER.render( );
 
 		SDL_RenderPresent( renderer_ptr_ );
 	}
 
 	void Renderer::destroy( )
 	{
-		destroy_imgui( );
-
 		if ( renderer_ptr_ != nullptr )
 		{
 			SDL_DestroyRenderer( renderer_ptr_ );
@@ -103,39 +91,4 @@ namespace engine
 		return renderer_ptr_;
 	}
 
-	void Renderer::init_imgui( )
-	{
-#ifdef _USE_IMGUI
-		IMGUI_CHECKVERSION( );
-		ImGui::CreateContext( );
-		ImGui_ImplSDL2_InitForOpenGL( window_ptr_, SDL_GL_GetCurrentContext( ) );
-		ImGui_ImplOpenGL3_Init( );
-#endif
-	}
-
-	void Renderer::destroy_imgui( )
-	{
-#ifdef _USE_IMGUI
-		ImGui_ImplOpenGL3_Shutdown( );
-		ImGui_ImplSDL2_Shutdown( );
-		ImGui::DestroyContext( );
-#endif
-	}
-
-	void Renderer::start_imgui_render( ) const
-	{
-#ifdef _USE_IMGUI
-		ImGui_ImplOpenGL3_NewFrame( );
-		ImGui_ImplSDL2_NewFrame( );
-		ImGui::NewFrame( );
-#endif
-	}
-
-	void Renderer::end_imgui_render( ) const
-	{
-#ifdef _USE_IMGUI
-		ImGui::Render( );
-		ImGui_ImplOpenGL3_RenderDrawData( ImGui::GetDrawData( ) );
-#endif
-	}
 }

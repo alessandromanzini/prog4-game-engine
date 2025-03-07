@@ -81,8 +81,4 @@ namespace engine
 		return **scene;
 	}
 
-	void ScenePool::render_ui( )
-	{
-		// TODO: add components for UI
-	}
 }

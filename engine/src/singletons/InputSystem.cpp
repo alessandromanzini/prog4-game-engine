@@ -1,5 +1,7 @@
 #include "singletons/InputSystem.h"
 
+#include "singletons/UIController.h"
+
 // +--------------------------------+
 // | SDL Headers					|
 // +--------------------------------+
@@ -26,7 +28,9 @@ namespace engine
 			{
 
 			}
-			// etc...
+
+			// Process events for imgui
+			UI_CONTROLLER.process_input( e );
 		}
 
 		return true;

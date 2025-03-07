@@ -2,20 +2,20 @@
 #define GAMEOBJECT_H
 
 // +--------------------------------+
-// | Standard Headers				|
-// +--------------------------------+
-#include <string>
-#include <memory>
-#include <unordered_map>
-#include <stdexcept>
-
-// +--------------------------------+
-// | Project Headers				|
+// | PROJECT HEADERS				|
 // +--------------------------------+
 #include "Deleter.h"
 #include "GameObject.h"
 #include "Transform.h"
 #include "type_utility.hpp"
+
+// +--------------------------------+
+// | STANDARD HEADERS				|
+// +--------------------------------+
+#include <string>
+#include <memory>
+#include <unordered_map>
+#include <stdexcept>
 
 namespace engine
 {
@@ -47,31 +47,16 @@ namespace engine
 		void set_local_transform( Transform&& transform );
 
 		template <typename component_t, typename... args_t>
-		void add_component( args_t&&... args )
-		{
-			// Initializing component with GameObjectView and arguments' perfect forwarding.
-			// We insert the element in the multimap with its compile-time type hash as the key.
-			auto component = std::make_unique<component_t>( *view_ptr_, std::forward<args_t>( args )... );
-			components_.insert( std::make_pair( type_utility::type_hash<component_t>( ), std::move( component ) ) );
-		}
+			requires DerivedComponentWithBaseContructor<component_t, args_t...>
+		component_t& add_component( args_t&&... args );
 
 		template <typename component_t>
-		component_t& get_component( ) const
-		{
-			// We find the component and reinterpret_cast it to the correct type. 
-			// This is safe because we know the type is correct.
-			// We use runtime assertion because component communication can be easily checked
-			// in development.
-			auto it = components_.find( type_utility::type_hash<component_t>( ) );
-			assert( it != components_.end( ) && "Component not found!" );
-			return reinterpret_cast<component_t&>( *it->second.get( ) );
-		}
+			requires DerivedComponent<component_t>
+		[[nodiscard]] component_t& get_component( ) const;
 
 		template <typename component_t>
-		component_t& get_components( ) const
-		{
-			throw std::runtime_error( "Not implemented!" );
-		}
+			requires DerivedComponent<component_t>
+		[[nodiscard]] component_t& get_components( ) const;
 
 		void remove_component( BaseComponent& component );
 
@@ -101,7 +86,7 @@ namespace engine
 		{
 			transform_dirty_ = true;
 
-			// optimize this
+			// TODO: optimize this
 			for ( auto pChild : children_ )
 			{
 				pChild->set_transform_dirty( );
@@ -110,6 +95,38 @@ namespace engine
 		void update_world_transform( );
 
 	};
+
+	template <typename component_t, typename... args_t>
+		requires DerivedComponentWithBaseContructor<component_t, args_t...>
+	component_t& GameObject::add_component( args_t&&... args )
+	{
+		// Initializing component with GameObjectView and arguments' perfect forwarding.
+		// We insert the element in the multimap with its compile-time type hash as the key.
+		auto component = std::make_unique<component_t>( *view_ptr_, std::forward<args_t>( args )... );
+		auto it = components_.insert( std::make_pair( type_utility::type_hash<component_t>( ), std::move( component ) ) );
+		return reinterpret_cast<component_t&>( *( it->second ) );
+	}
+
+	template <typename component_t>
+		requires DerivedComponent<component_t>
+	[[nodiscard]] component_t& GameObject::get_component( ) const
+	{
+		// We find the component and reinterpret_cast it to the correct type. 
+		// This is safe because we know the type is correct.
+		// We use runtime assertion because component communication can be easily checked
+		// in development.
+		auto it = components_.find( type_utility::type_hash<component_t>( ) );
+		assert( it != components_.end( ) && "Component not found!" );
+		return reinterpret_cast<component_t&>( *it->second.get( ) );
+	}
+
+	template <typename component_t>
+		requires DerivedComponent<component_t>
+	[[nodiscard]] component_t& GameObject::get_components( ) const
+	{
+		throw std::runtime_error( "Not implemented!" );
+	}
+
 }
 
 #endif // GAMEOBJECT_H

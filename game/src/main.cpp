@@ -11,11 +11,13 @@
 // | Project Headers				|
 // +--------------------------------+
 #include "singletons/ScenePool.h"
+#include "singletons/UIController.h"
 #include "singletons/ResourceManager.h"
 #include "components/TextureComponent.h"
 #include "components/TextComponent.h"
 #include "components/FPS.h"
 #include "components/RotatingComponent.h"
+#include "components/DemoUIComponent.h"
 #include "Minigin.h"
 #include "Scene.h"
 #include "GameObject.h"
@@ -67,7 +69,7 @@ void load( )
 	mspacmanGo->set_parent( pacmanGo );
 	mspacmanGo->set_local_transform( glm::vec2{ 50.f, 0.f } );
 
-	scene.remove( rotatorGo );
+	engine::UI_CONTROLLER.add_ui_component<game::DemoUIComponent>( );
 }
 
 int main( int, char* [] )

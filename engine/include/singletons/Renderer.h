@@ -1,8 +1,16 @@
 #ifndef RENDERER_H
 #define RENDERER_H
 
+// +--------------------------------+
+// | SDL HEADERS					|
+// +--------------------------------+
 #include <SDL.h>
+
+// +--------------------------------+
+// | PROJECT HEADERS				|
+// +--------------------------------+
 #include "Singleton.h"
+#include "UIController.h"
 
 namespace engine
 {
@@ -31,16 +39,13 @@ namespace engine
 		{
 			clear_color_ = color;
 		}
+
+		friend void UIController::init( );
 		
 	private:
 		SDL_Renderer* renderer_ptr_{};
 		SDL_Window* window_ptr_{};
 		SDL_Color clear_color_{};
-
-		void init_imgui( );
-		void destroy_imgui( );
-		void start_imgui_render( ) const;
-		void end_imgui_render( ) const;
 
 	};
 

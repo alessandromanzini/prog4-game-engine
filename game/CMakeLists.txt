@@ -22,7 +22,8 @@ endif()
 
 add_executable(${TARGET_NAME} ${TARGET_PARAM} 
         "src/main.cpp"
-        "src/components/RotatingComponent.cpp" )
+        "src/components/RotatingComponent.cpp"  
+        "src/components/DemoUIComponent.cpp" )
 
 # link library
 target_link_libraries(${PROJECT_NAME}

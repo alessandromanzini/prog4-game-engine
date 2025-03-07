@@ -6,6 +6,7 @@
 #include "singletons/InputSystem.h"
 #include "singletons/ScenePool.h"
 #include "singletons/Renderer.h"
+#include "singletons/UIController.h"
 #include "singletons/ResourceManager.h"
 #include "singletons/GameTime.h"
 
@@ -100,13 +101,18 @@ namespace engine
 			throw std::runtime_error( std::string( "SDL_CreateWindow Error: " ) + SDL_GetError( ) );
 		}
 
+		// Initialize singletons
 		RENDERER.init( g_window_ptr );
+		UI_CONTROLLER.init( );
 		RESOURCE_MANAGER.init( dataPath );
 	}
 
 	Minigin::~Minigin( )
 	{
+		// Destroy singletons
 		RENDERER.destroy( );
+		UI_CONTROLLER.destroy( );
+
 		SDL_DestroyWindow( g_window_ptr );
 		g_window_ptr = nullptr;
 		SDL_Quit( );
@@ -144,12 +150,14 @@ namespace engine
 		}
 		GAME_TIME.set_timing_type( TimingType::DELTA_TIME );
 		SCENE_POOL.update( );
+		UI_CONTROLLER.update( );
 		RENDERER.render( );
 
 		// +--------------------------------+
 		// | DESTROYED OBJECTS DELETION		|
 		// +--------------------------------+
 		SCENE_POOL.cleanup( );
+		UI_CONTROLLER.cleanup( );
 
 		// +--------------------------------+
 		// | SLEEPING						|

@@ -1,9 +1,15 @@
 #ifndef SCENEPOOL_H
 #define SCENEPOOL_H
 
+// +--------------------------------+
+// | PROJECT HEADERS				|
+// +--------------------------------+
 #include "Singleton.h"
 #include "Scene.h"
 
+// +--------------------------------+
+// | STANDARD HEADERS				|
+// +--------------------------------+
 #include <vector>
 #include <string>
 #include <memory>
@@ -18,7 +24,6 @@ namespace engine
 		void fixed_update( );
 		void update( );
 		void render( );
-		void render_ui( );
 
 		Scene& get_active_scene( ) const;
 		Scene& get_scene( const std::string& name ) const;

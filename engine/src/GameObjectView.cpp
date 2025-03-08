@@ -41,7 +41,7 @@ namespace engine
 		gameobject_ptr_->set_local_transform( std::move( transform ) );
 	}
 
-	void GameObjectView::remove_component( BaseComponent& component )
+	void GameObjectView::remove_component( Component& component )
 	{
 		gameobject_ptr_->remove_component( component );
 	}

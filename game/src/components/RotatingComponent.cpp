@@ -5,7 +5,7 @@ using namespace engine;
 namespace game
 {
 	RotatingComponent::RotatingComponent( GameObjectView& owner, float rotationSpeed )
-		: BaseComponent( owner )
+		: Component( owner )
 		, rotation_speed_{ rotationSpeed }
 	{
 	}

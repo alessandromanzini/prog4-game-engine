@@ -1,5 +1,5 @@
-#ifndef BASEUICOMPONENT_H
-#define BASEUICOMPONENT_H
+#ifndef UICOMPONENT_H
+#define UICOMPONENT_H
 
 // +--------------------------------+
 // | PROJECT HEADERS				|
@@ -14,32 +14,33 @@
 
 namespace engine
 {
-	class BaseUIComponent : public Deletable
+	class UIComponent : public Deletable
 	{
 	public:
-		virtual ~BaseUIComponent( ) noexcept = default;
+		virtual ~UIComponent( ) noexcept = default;
 
-		BaseUIComponent( const BaseUIComponent& ) = delete;
-		BaseUIComponent( BaseUIComponent&& ) noexcept = delete;
-		BaseUIComponent& operator=( const BaseUIComponent& ) = delete;
-		BaseUIComponent& operator=( BaseUIComponent&& ) noexcept = delete;
+		UIComponent( const UIComponent& ) = delete;
+		UIComponent( UIComponent&& ) noexcept = delete;
+		UIComponent& operator=( const UIComponent& ) = delete;
+		UIComponent& operator=( UIComponent&& ) noexcept = delete;
 
 		virtual void update( )
 		{
-		};
+		}
 
 		// UI needs the render to be non-const
 		virtual void render( )
 		{
-		};
+		}
 
-		void mark_for_deletion( ) override
+		void mark_for_deletion( ) override final
 		{
+			Deletable::mark_for_deletion( );
 			get_owner( ).remove_ui_component( *this );
 		}
 
 	protected:
-		BaseUIComponent( UIController& owner )
+		UIComponent( UIController& owner )
 			: owner_ref_{ owner }
 		{
 		}
@@ -59,12 +60,12 @@ namespace engine
 	// +--------------------------------+
 	template <typename derived_t, typename... args_t>
 	concept DerivedUIComponentWithBaseContructor =
-		std::derived_from<derived_t, BaseUIComponent> and
+		std::derived_from<derived_t, UIComponent> and
 		std::constructible_from<derived_t, UIController&, args_t...>;
 
 	template <typename derived_t>
 	concept DerivedUIComponent =
-		std::derived_from<derived_t, BaseUIComponent>;
+		std::derived_from<derived_t, UIComponent>;
 
 }
 

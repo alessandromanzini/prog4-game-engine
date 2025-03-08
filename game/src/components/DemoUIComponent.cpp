@@ -5,7 +5,7 @@
 namespace game
 {
 	DemoUIComponent::DemoUIComponent( engine::UIController& owner )
-		: BaseUIComponent( owner )
+		: UIComponent( owner )
 	{
 	}
 

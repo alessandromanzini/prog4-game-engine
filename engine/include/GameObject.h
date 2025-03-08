@@ -19,7 +19,7 @@
 
 namespace engine
 {
-	class BaseComponent;
+	class Component;
 	class GameObjectView;
 	class GameObject final
 	{
@@ -58,7 +58,7 @@ namespace engine
 			requires DerivedComponent<component_t>
 		[[nodiscard]] component_t& get_components( ) const;
 
-		void remove_component( BaseComponent& component );
+		void remove_component( Component& component );
 
 		[[nodiscard]] std::vector<GameObject*>& get_children( );
 		[[nodiscard]] const std::vector<GameObject*>& get_children( ) const;
@@ -72,8 +72,8 @@ namespace engine
 		Transform world_transform_{};
 		bool transform_dirty_{ false };
 
-		std::unordered_multimap<uint64_t, std::unique_ptr<BaseComponent>> components_{};
-		Deleter<BaseComponent> deleter_{};
+		std::unordered_multimap<uint64_t, std::unique_ptr<Component>> components_{};
+		Deleter<Component> deleter_{};
 
 		std::vector<GameObject*> children_{};
 

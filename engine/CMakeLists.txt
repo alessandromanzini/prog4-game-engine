@@ -14,6 +14,7 @@ add_library(${PROJECT_NAME}
         "src/components/TextComponent.cpp"
         "src/components/TextureComponent.cpp"
         "src/components/FPS.cpp"
+        "src/components/InputDisplayUIComponent.cpp"
         "src/Minigin.cpp"
         "src/Scene.cpp"
         "src/GameObject.cpp"
@@ -95,6 +96,10 @@ target_sources(${PROJECT_NAME} PRIVATE
 # target_compile_definitions(${PROJECT_NAME} PUBLIC _USE_IMGUI)
 # message( STATUS "Debug mode enabled, _USE_IMGUI defined" )
 # endif()
+
+# add xinput
+# TODO: REMOVE THIS AFTER ASSIGNMENT
+target_link_libraries(${PROJECT_NAME} PRIVATE xinput)
 
 # setup the target properties
 if(EMSCRIPTEN)

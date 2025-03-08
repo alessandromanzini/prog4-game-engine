@@ -10,7 +10,7 @@
 // +--------------------------------+
 #include "singletons/Renderer.h"
 #include "singletons/ResourceManager.h"
-#include "components/BaseComponent.h"
+#include "components/Component.h"
 #include "GameObjectView.h"
 
 namespace engine
@@ -130,7 +130,7 @@ namespace engine
 		set_transform_dirty( );
 	}
 
-	void GameObject::remove_component( BaseComponent& component )
+	void GameObject::remove_component( Component& component )
 	{
 		deleter_.mark_element_for_deletion( &component );
 	}

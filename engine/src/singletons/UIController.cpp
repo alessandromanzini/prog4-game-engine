@@ -4,7 +4,7 @@
 // | PROJECT HEADERS				|
 // +--------------------------------+
 #include "singletons/Renderer.h"
-#include "BaseUIComponent.h"
+#include "UIComponent.h"
 
 // +--------------------------------+
 // | IMGUI HEADERS					|
@@ -63,7 +63,7 @@ namespace engine
 		}
 	}
 
-	void UIController::remove_ui_component( BaseUIComponent& uiComponent )
+	void UIController::remove_ui_component( UIComponent& uiComponent )
 	{
 		deleter_.mark_element_for_deletion( &uiComponent );
 	}

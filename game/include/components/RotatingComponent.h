@@ -5,11 +5,11 @@
 // | Project Headers				|
 // +--------------------------------+
 #include "singletons/GameTime.h"
-#include "components/BaseComponent.h"
+#include "components/Component.h"
 
 namespace game
 {
-	class RotatingComponent final : public engine::BaseComponent
+	class RotatingComponent final : public engine::Component
 	{
 	public:
 		RotatingComponent( engine::GameObjectView& owner, float rotationSpeed );

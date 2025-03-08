@@ -17,6 +17,7 @@
 #include "components/TextComponent.h"
 #include "components/FPS.h"
 #include "components/RotatingComponent.h"
+#include "components/InputDisplayUIComponent.h"
 #include "components/DemoUIComponent.h"
 #include "Minigin.h"
 #include "Scene.h"
@@ -70,6 +71,7 @@ void load( )
 	mspacmanGo->set_local_transform( glm::vec2{ 50.f, 0.f } );
 
 	engine::UI_CONTROLLER.add_ui_component<game::DemoUIComponent>( );
+	engine::UI_CONTROLLER.add_ui_component<engine::InputDisplayUIComponent>( );
 }
 
 int main( int, char* [] )

@@ -19,7 +19,7 @@ union SDL_Event;
 
 namespace engine
 {
-	class BaseUIComponent;
+	class UIComponent;
 	class UIController final : public Singleton<UIController>
 	{
 	public:
@@ -45,13 +45,13 @@ namespace engine
 			requires DerivedUIComponent<component_t>
 		[[nodiscard]] component_t& get_ui_components( ) const;
 
-		void remove_ui_component( BaseUIComponent& component );
+		void remove_ui_component( UIComponent& component );
 
 		friend class Singleton<UIController>;
 
 	private:
-		std::unordered_multimap<uint64_t, std::unique_ptr<BaseUIComponent>> ui_components_{};
-		Deleter<BaseUIComponent> deleter_{};
+		std::unordered_multimap<uint64_t, std::unique_ptr<UIComponent>> ui_components_{};
+		Deleter<UIComponent> deleter_{};
 
 		UIController( ) = default;
 

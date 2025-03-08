@@ -32,7 +32,7 @@ namespace engine
 			return gameobject_ptr_->get_component<component_t>( );
 		}
 
-		void remove_component( BaseComponent& component );
+		void remove_component( Component& component );
 
 		friend class GameObject;
 

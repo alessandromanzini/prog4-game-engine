@@ -1,11 +1,11 @@
 #ifndef DEMOUICOMPONENT_H
 #define DEMOUICOMPONENT_H
 
-#include "BaseUIComponent.h"
+#include "UIComponent.h"
 
 namespace game
 {
-	class DemoUIComponent final : public engine::BaseUIComponent
+	class DemoUIComponent final : public engine::UIComponent
 	{
 	public:
 		DemoUIComponent( engine::UIController& owner );

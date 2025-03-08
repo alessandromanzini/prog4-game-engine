@@ -16,7 +16,7 @@
 namespace engine
 {
 	TextComponent::TextComponent( GameObjectView& owner, const std::string& text, std::shared_ptr<Font> pFont )
-		: BaseComponent( owner )
+		: Component( owner )
 		, font_ptr_{ std::move( pFont ) }
 		, text_texture_ptr_{ nullptr }
 	{

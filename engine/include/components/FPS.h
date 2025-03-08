@@ -1,11 +1,11 @@
 #ifndef FPS_H
 #define FPS_H
 
-#include "BaseComponent.h"
+#include "Component.h"
 
 namespace engine
 {
-	class FPS final : public BaseComponent
+	class FPS final : public Component
 	{
 	public:
 		explicit FPS( GameObjectView& owner );

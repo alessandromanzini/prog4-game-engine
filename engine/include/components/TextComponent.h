@@ -1,7 +1,7 @@
 #ifndef TEXTCOMPONENT_H
 #define TEXTCOMPONENT_H
 
-#include "BaseComponent.h"
+#include "Component.h"
 
 #include <string>
 
@@ -9,7 +9,7 @@ namespace engine
 {
 	class Font;
 	class Texture2D;
-	class TextComponent final : public BaseComponent
+	class TextComponent final : public Component
 	{
 	public:
 		explicit TextComponent( GameObjectView& owner, const std::string& text, std::shared_ptr<Font> pFont );

@@ -9,7 +9,7 @@
 namespace engine
 {
 	TextureComponent::TextureComponent( GameObjectView& owner, const std::string& filename )
-		: BaseComponent( owner )
+		: Component( owner )
 	{
 		texture_ptr_ = RESOURCE_MANAGER.load_texture( filename );
 	}

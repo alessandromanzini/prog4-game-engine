@@ -1,7 +1,7 @@
 #ifndef TEXTURECOMPONENT_H
 #define TEXTURECOMPONENT_H
 
-#include "BaseComponent.h"
+#include "Component.h"
 
 #include <string>
 #include <memory>
@@ -9,7 +9,7 @@
 namespace engine
 {
 	class Texture2D;
-	class TextureComponent final : public BaseComponent
+	class TextureComponent final : public Component
 	{
 	public:
 		explicit TextureComponent( GameObjectView& owner, const std::string& filename );

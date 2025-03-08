@@ -1,5 +1,5 @@
-#ifndef BASECOMPONENT_H
-#define BASECOMPONENT_H
+#ifndef COMPONENT_H
+#define COMPONENT_H
 
 // +--------------------------------+
 // | Project Headers				|
@@ -9,15 +9,15 @@
 
 namespace engine
 {
-	class BaseComponent : public Deletable
+	class Component : public Deletable
 	{
 	public:
-		virtual ~BaseComponent( ) noexcept = default;
+		virtual ~Component( ) noexcept = default;
 
-		BaseComponent( const BaseComponent& ) = delete;
-		BaseComponent( BaseComponent&& ) noexcept = delete;
-		BaseComponent& operator=( const BaseComponent& ) = delete;
-		BaseComponent& operator=( BaseComponent&& ) noexcept = delete;
+		Component( const Component& ) = delete;
+		Component( Component&& ) noexcept = delete;
+		Component& operator=( const Component& ) = delete;
+		Component& operator=( Component&& ) noexcept = delete;
 
 		virtual void fixed_update( )
 		{
@@ -31,14 +31,14 @@ namespace engine
 		{
 		};
 
-		void mark_for_deletion( ) override
+		void mark_for_deletion( ) override final
 		{
 			Deletable::mark_for_deletion( );
 			get_owner( ).remove_component( *this );
 		}
 
 	protected:
-		BaseComponent( GameObjectView& owner )
+		Component( GameObjectView& owner )
 			: owner_ref_{ owner }
 		{
 		}
@@ -58,13 +58,13 @@ namespace engine
 	// +--------------------------------+
 	template <typename derived_t, typename... args_t>
 	concept DerivedComponentWithBaseContructor =
-		std::derived_from<derived_t, BaseComponent> and
+		std::derived_from<derived_t, Component> and
 		std::constructible_from<derived_t, GameObjectView&, args_t...>;
 
 	template <typename derived_t>
 	concept DerivedComponent =
-		std::derived_from<derived_t, BaseComponent>;
+		std::derived_from<derived_t, Component>;
 
 }
 
-#endif // !BASECOMPONENT_H
+#endif // !COMPONENT_H

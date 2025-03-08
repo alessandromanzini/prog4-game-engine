@@ -15,7 +15,7 @@
 namespace engine
 {
 	FPS::FPS( GameObjectView& owner )
-		: BaseComponent( owner )
+		: Component( owner )
 	{
 
 	}

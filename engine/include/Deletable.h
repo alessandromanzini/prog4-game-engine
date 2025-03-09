@@ -6,6 +6,8 @@ namespace engine
 	class Deletable
 	{
 	public:
+		virtual ~Deletable( ) = default;
+
 		virtual void mark_for_deletion( )
 		{
 			marked_for_deletion_ = true;

@@ -26,7 +26,7 @@ namespace engine
 		{
 			parent_ptr_->remove_child( this );
 		}
-		for ( int i{}; i < children_.size( ); ++i )
+		for ( size_t i{}; i < children_.size( ); ++i )
 		{
 			children_[i]->set_parent( nullptr, false );
 		}

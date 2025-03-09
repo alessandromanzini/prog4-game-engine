@@ -5,6 +5,7 @@ project(engine)
 
 # create library target
 add_library(${PROJECT_NAME}
+        "src/bindings/InputMappingContext.cpp"
         "src/singletons/GameTime.cpp"
         "src/singletons/InputSystem.cpp"
         "src/singletons/ScenePool.cpp"
@@ -66,9 +67,11 @@ endif()
 # headers for internal use.
 target_include_directories(${PROJECT_NAME}
 		PUBLIC "./include"
+		PUBLIC "./include/bindings"
 		PUBLIC "./include/singletons"
 		PUBLIC "./include/components"
 		PRIVATE "./src"
+		PRIVATE "./src/bindings"
 		PRIVATE "./src/singletons"
 		PRIVATE "./src/components"
         PUBLIC ${glm_SOURCE_DIR} )

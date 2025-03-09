@@ -23,6 +23,7 @@ endif()
 add_executable(${TARGET_NAME} ${TARGET_PARAM} 
         "src/main.cpp"
         "src/components/RotatingComponent.cpp"  
+        "src/components/MoveComponent.cpp"  
         "src/components/DemoUIComponent.cpp" )
 
 # link library
@@ -32,6 +33,7 @@ target_link_libraries(${PROJECT_NAME}
 # include program directories
 target_include_directories(${PROJECT_NAME}
 		PRIVATE "./include"
+		PRIVATE "./include/bindings"
 		PRIVATE "./include/singletons"
 		PRIVATE "./include/compoments"
 		PRIVATE "./src"

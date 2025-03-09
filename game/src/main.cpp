@@ -16,7 +16,7 @@
 #include "components/TextureComponent.h"
 #include "components/TextComponent.h"
 #include "components/FPS.h"
-#include "components/RotatingComponent.h"
+#include "components/MoveComponent.h"
 #include "components/InputDisplayUIComponent.h"
 #include "components/DemoUIComponent.h"
 #include "Minigin.h"
@@ -54,24 +54,20 @@ void load( )
 	fpsGo->add_component<engine::TextComponent>( "", pFont );
 	fpsGo->add_component<engine::FPS>( );
 
-	// Rotating PacMan GameObject
-	auto rotatorGo = scene.create_object( );
-	rotatorGo->set_world_transform( glm::vec2{ 125.f, 315.f } );
-
+	// Move GameObject
 	auto pacmanGo = scene.create_object( );
 	pacmanGo->add_component<engine::TextureComponent>( "pacman.png" );
-	pacmanGo->add_component<game::RotatingComponent>( glm::radians( 180.f ) );
-	pacmanGo->set_parent( rotatorGo );
-	pacmanGo->set_local_transform( glm::vec2{ 15.f, 0.f } );
+	pacmanGo->add_component<game::MoveComponent>( 40.f, true );
+	pacmanGo->set_world_transform( glm::vec2{ 200.f, 375.f } );
 
 	auto mspacmanGo = scene.create_object( );
 	mspacmanGo->add_component<engine::TextureComponent>( "ms-pacman.png" );
-	mspacmanGo->add_component<game::RotatingComponent>( glm::radians( -360.f ) );
-	mspacmanGo->set_parent( pacmanGo );
-	mspacmanGo->set_local_transform( glm::vec2{ 50.f, 0.f } );
+	mspacmanGo->set_world_transform( glm::vec2{ 200.f, 325.f } );
+	mspacmanGo->add_component<game::MoveComponent>( 80.f, false );
 
 	engine::UI_CONTROLLER.add_ui_component<game::DemoUIComponent>( );
 	engine::UI_CONTROLLER.add_ui_component<engine::InputDisplayUIComponent>( );
+
 }
 
 int main( int, char* [] )

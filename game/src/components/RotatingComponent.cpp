@@ -1,9 +1,12 @@
 #include "components/RotatingComponent.h"
 
+#include "singletons/GameTime.h"
+
 using namespace engine;
 
 namespace game
 {
+
 	RotatingComponent::RotatingComponent( GameObjectView& owner, float rotationSpeed )
 		: Component( owner )
 		, rotation_speed_{ rotationSpeed }

@@ -18,6 +18,7 @@
 #include <windows.h>
 #include <Xinput.h>
 #include <cassert>
+#include <vector>
 
 namespace engine
 {
@@ -38,17 +39,7 @@ namespace engine
 
 		bool process_input( )
 		{
-			SDL_Event e;
-			while ( SDL_PollEvent( &e ) )
-			{
-				if ( e.type == SDL_QUIT )
-				{
-					return false;
-				}
-
-				// Process events for ImGui
-				UI_CONTROLLER.process_input( e );
-			}
+			bool result = poll_sdl( );
 
 			// Keep capturing controller until one is found
 			if ( !validate_controller( controller_index_ ) )
@@ -57,15 +48,16 @@ namespace engine
 			}
 			else
 			{
+				update_xinput( );
 				poll_xinput( );
 			}
 
-			return true;
+			return result;
 		}
 
 		[[nodiscard]] bool is_button_pressed( WORD mask, bool strict ) const
 		{
-			WORD evaluation = ( current_state_.Gamepad.wButtons & mask );
+			WORD evaluation = ( xinput_current_state_.Gamepad.wButtons & mask );
 			return strict && ( evaluation == mask ) || !strict && evaluation;
 		}
 
@@ -83,20 +75,29 @@ namespace engine
 
 		const XINPUT_STATE& get_current_state( ) const
 		{
-			return current_state_;
+			return xinput_current_state_;
+		}
+
+		InputMappingContext& get_input_mapping_context( )
+		{
+			return input_mapping_context_;
 		}
 
 	private:
 		static constexpr SHORT MAX_THUMB_VALUE = 32767;
 		static constexpr SHORT DEADZONE = static_cast<SHORT>( 0.24f * MAX_THUMB_VALUE );
 
-		XINPUT_STATE previous_state_{};
-		XINPUT_STATE current_state_{};
+		XINPUT_STATE xinput_previous_state_{};
+		XINPUT_STATE xinput_current_state_{};
 
 		DWORD controller_index_{ XUSER_MAX_COUNT };
 
 		WORD buttons_pressed_this_frame_{};
 		WORD buttons_released_this_frame_{};
+
+		std::vector<SDL_Keycode> keys_pressed_this_frame_{};
+
+		InputMappingContext input_mapping_context_{};
 
 		bool validate_controller( DWORD index ) const
 		{
@@ -153,22 +154,82 @@ namespace engine
 			}
 		}
 
-		void poll_xinput( )
+		bool poll_sdl( )
+		{
+			SDL_Event e;
+			while ( SDL_PollEvent( &e ) )
+			{
+				switch ( e.type )
+				{
+				case SDL_QUIT:
+					return false;
+
+				case SDL_KEYDOWN:
+					if ( std::find( keys_pressed_this_frame_.begin( ), keys_pressed_this_frame_.end( ), e.key.keysym.sym ) == keys_pressed_this_frame_.end( ) )
+					{
+						keys_pressed_this_frame_.push_back( e.key.keysym.sym );
+					}
+					break;
+
+				case SDL_KEYUP:
+					std::erase( keys_pressed_this_frame_, e.key.keysym.sym );
+					input_mapping_context_.dispatch( e.key.keysym.sym, false, TriggerEvent::Released );
+					break;
+
+				}
+
+				// Process events for ImGui
+				UI_CONTROLLER.process_input( e );
+			}
+
+			// Dispatch all keys pressed every frame
+			for ( auto key : keys_pressed_this_frame_ )
+			{
+				input_mapping_context_.dispatch( key, true, TriggerEvent::Pressed );
+			}
+
+			return true;
+		}
+
+		void update_xinput( )
 		{
 			// Save to the previous state and reset the current state
-			CopyMemory( &previous_state_, &current_state_, sizeof( XINPUT_STATE ) );
-			ZeroMemory( &current_state_, sizeof( XINPUT_STATE ) );
+			CopyMemory( &xinput_previous_state_, &xinput_current_state_, sizeof( XINPUT_STATE ) );
+			ZeroMemory( &xinput_current_state_, sizeof( XINPUT_STATE ) );
 
-			XInputGetState( controller_index_, &current_state_ );
-			clear_deadzone( current_state_ );
+			XInputGetState( controller_index_, &xinput_current_state_ );
+			clear_deadzone( xinput_current_state_ );
 
 			// XOR between previous and current to get differences
-			WORD buttonChanges = current_state_.Gamepad.wButtons ^ previous_state_.Gamepad.wButtons;
+			WORD buttonChanges = xinput_current_state_.Gamepad.wButtons ^ xinput_previous_state_.Gamepad.wButtons;
 
 			// AND between changes and current to get the buttons pressed this frame
-			buttons_pressed_this_frame_ = buttonChanges & current_state_.Gamepad.wButtons;
+			buttons_pressed_this_frame_ = buttonChanges & xinput_current_state_.Gamepad.wButtons;
 			// AND between changes and NOT current to get the buttons release this frame
-			buttons_released_this_frame_ = buttonChanges & ( ~current_state_.Gamepad.wButtons );
+			buttons_released_this_frame_ = buttonChanges & ( ~xinput_current_state_.Gamepad.wButtons );
+		}
+
+		void poll_xinput( ) const
+		{
+			if ( buttons_pressed_this_frame_ )
+			{
+				input_mapping_context_.dispatch( buttons_pressed_this_frame_, true, TriggerEvent::Pressed );
+			}
+			if ( buttons_released_this_frame_ )
+			{
+				input_mapping_context_.dispatch( buttons_released_this_frame_, false, TriggerEvent::Released );
+			}
+			if ( xinput_current_state_.Gamepad.wButtons )
+			{
+				// for every bit, we check if set and dispatch the signal
+				for ( WORD button = 1; button != 0; button <<= 1 )
+				{
+					if ( xinput_current_state_.Gamepad.wButtons & button )
+					{
+						input_mapping_context_.dispatch( button, true, TriggerEvent::Pressed );
+					}
+				}
+			}
 		}
 
 	};
@@ -213,6 +274,11 @@ namespace engine
 	{
 		const XINPUT_STATE& state = impl_ptr_->get_current_state( );
 		return { state.Gamepad.sThumbRX, state.Gamepad.sThumbRY };
+	}
+
+	InputMappingContext& InputSystem::get_input_mapping_context( )
+	{
+		return impl_ptr_->get_input_mapping_context();
 	}
 
 }

@@ -19,6 +19,7 @@
 #include "components/MoveComponent.h"
 #include "components/InputDisplayUIComponent.h"
 #include "components/DemoUIComponent.h"
+#include "bindings/InputUtils.h"
 #include "Minigin.h"
 #include "Scene.h"
 #include "GameObject.h"
@@ -31,6 +32,8 @@ namespace fs = std::filesystem;
 
 void load( )
 {
+	game::initialize_input( );
+
 	auto pFont = engine::RESOURCE_MANAGER.load_font( "Lingua.otf", 36 );
 	auto& scene = engine::SCENE_POOL.create_scene( "Demo" );
 
@@ -65,8 +68,8 @@ void load( )
 	mspacmanGo->set_world_transform( glm::vec2{ 200.f, 325.f } );
 	mspacmanGo->add_component<game::MoveComponent>( 80.f, false );
 
-	engine::UI_CONTROLLER.add_ui_component<game::DemoUIComponent>( );
-	engine::UI_CONTROLLER.add_ui_component<engine::InputDisplayUIComponent>( );
+	// engine::UI_CONTROLLER.add_ui_component<game::DemoUIComponent>( );
+	// engine::UI_CONTROLLER.add_ui_component<engine::InputDisplayUIComponent>( );
 
 }
 

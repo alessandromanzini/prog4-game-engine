@@ -5,8 +5,8 @@
 // | PROJECT HEADERS				|
 // +--------------------------------+
 #include "Singleton.h"
-#include "type_utility.hpp"
 #include "bindings/InputMappingContext.h"
+#include "bindings/BindingTypes.h"
 
 // +--------------------------------+
 // | GLM HEADERS					|
@@ -17,59 +17,36 @@
 // | STANDARD HEADERS				|
 // +--------------------------------+
 #include <memory>
+#include <unordered_set>
 
 namespace engine
 {
-	typedef unsigned short BTN_MASK;
-	enum class BTN_MASK_CODE : BTN_MASK
-	{
-		BTN_DPAD_UP		= 0x0001,
-		BTN_DPAD_DOWN   = 0x0002,
-		BTN_DPAD_LEFT   = 0x0004, 
-		BTN_DPAD_RIGHT  = 0x0008,
-		BTN_A			= 0x1000,
-		BTN_B			= 0x2000,
-		BTN_X			= 0x4000,
-		BTN_Y			= 0x8000
-	};
-
-	inline BTN_MASK code_to_mask( BTN_MASK_CODE code )
-	{
-		return static_cast<BTN_MASK>( code );
-	}
-
 	class InputSystem final : public Singleton<InputSystem>
 	{
 	public:
-		InputSystem( );
-
 		bool process_input( );
 
-		[[nodiscard]] bool is_controller_connected( ) const;
-
-		[[nodiscard]] bool is_button_pressed( BTN_MASK_CODE mask, bool strict = false ) const;
-		[[nodiscard]] bool is_button_released( BTN_MASK_CODE mask, bool strict = false ) const;
-		[[nodiscard]] bool is_button_down( BTN_MASK_CODE mask, bool strict = false ) const;
-
-		glm::vec2 get_LX( ) const;
-		glm::vec2 get_RX( ) const;
-
-		InputMappingContext& get_input_mapping_context( );
+		engine::InputMappingContext& get_input_mapping_context( );
 
 	private:
-		class InputSystemImpl;
-		std::unique_ptr<InputSystemImpl> impl_ptr_{ nullptr };
+		bool request_quit_{ false };
 
+		engine::InputMappingContext input_mapping_context_{};
+
+		std::unordered_set<binding::key_t> keys_pressed_this_frame_{};
+		std::unordered_set<binding::btn_t> buttons_pressed_this_frame_{};
+
+		void poll_sdl_events( );
+
+		void press_key( binding::key_t key );
+		void release_key( binding::key_t key );
+
+		void press_button( binding::btn_t button );
+		void release_button( binding::btn_t button );
+
+		void dispatch_pressed( );
+	
 	};
-
-	// +--------------------------------+
-	// | OPERATOR OVERLOADING			|
-	// +--------------------------------+
-	inline BTN_MASK_CODE operator|( BTN_MASK_CODE lhs, BTN_MASK_CODE rhs )
-	{
-		return static_cast<BTN_MASK_CODE>( static_cast<std::underlying_type<BTN_MASK_CODE>::type>( lhs ) |
-										   static_cast<std::underlying_type<BTN_MASK_CODE>::type>( rhs ) );
-	}
 
 	extern InputSystem& INPUT_SYSTEM;
 

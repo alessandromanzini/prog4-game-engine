@@ -5,8 +5,17 @@
 
 namespace type_utility
 {
+	// +--------------------------------+
+	// | HASH TYPES						|
+	// +--------------------------------+
+	typedef uint64_t size_hash_t;
+	typedef uint64_t hash_value_t;
+
+	// +--------------------------------+
+	// | TYPE NAME EVALUATION			|
+	// +--------------------------------+
 	template <typename class_t>
-	consteval std::string_view type_name( )
+	consteval [[nodiscard]] std::string_view type_name( )
 	{
 #if defined(__clang__) || defined(__GNUC__)
 		constexpr std::string_view function = __PRETTY_FUNCTION__;
@@ -28,33 +37,77 @@ namespace type_utility
 		return function.substr( start, end - start );
 	}
 
-	template <typename class_t>
-	consteval std::string_view type_name( class_t&& )
+	// +--------------------------------+
+	// | COMPILE TIME HASH CASTING		|
+	// +--------------------------------+
+	
+	/// <summary>
+	/// Byte-wise hash casting of a value.
+	/// </summary>
+	/// <param name="value">8 byte integer value to hash.</param>
+	constexpr [[nodiscard]] hash_value_t hash_cast( size_hash_t value )
 	{
-		return type_name<class_t>( );
+		constexpr hash_value_t FNV_OFFSET_BASIS_64 = 0xCBF29CE484222325;
+		constexpr hash_value_t FNV_PRIME_64 = 0x100000001B3;
+
+		hash_value_t hash = FNV_OFFSET_BASIS_64;
+
+		// Process each byte of the integer
+		for ( size_t i = 0; i < sizeof( value ); ++i )
+		{
+			hash ^= ( value >> ( i * 8 ) ) & 0xFF; // Extract byte
+			hash *= FNV_PRIME_64;
+		}
+
+		return hash;
 	}
 
-	template <typename class_t>
-	consteval uint64_t type_hash( )
+	/// <summary>
+	/// Char-wise hash casting of a string.
+	/// </summary>
+	/// <param name="view">String view of the value to hash.</param>
+	constexpr [[nodiscard]] hash_value_t hash_cast( std::string_view view )
 	{
 		// Simple 64-bit FNV-1a hash
-		constexpr uint64_t FNV_OFFSET_BASIS_64 = 0xCBF29CE484222325;
-		constexpr uint64_t FNV_PRIME_64 = 0x100000001B3;
+		constexpr hash_value_t FNV_OFFSET_BASIS_64 = 0xCBF29CE484222325;
+		constexpr hash_value_t FNV_PRIME_64 = 0x100000001B3;
 
-		uint64_t hash = FNV_OFFSET_BASIS_64;
-		for ( char c : type_name<class_t>( ) )
+		hash_value_t hash = FNV_OFFSET_BASIS_64;
+		for ( char c : view )
 		{
-			hash ^= static_cast<uint64_t>( c );
+			hash ^= static_cast<hash_value_t>( c );
 			hash *= FNV_PRIME_64;
 		}
 		return hash;
 	}
 
+	template <typename generic_t>
+	constexpr [[nodiscard]] hash_value_t hash_cast( generic_t value )
+	{
+		return hash_cast( static_cast<size_hash_t>( value ) );
+	}
+
+	// +--------------------------------+
+	// | TYPE HASHING UTILITY			|
+	// +--------------------------------+
 	template <typename class_t>
-	consteval uint64_t type_hash( class_t&& )
+	consteval [[nodiscard]] std::string_view type_name( class_t&& )
+	{
+		return type_name<class_t>( );
+	}
+
+	template <typename class_t>
+	consteval [[nodiscard]] hash_value_t type_hash( )
+	{
+		return hash_cast( type_name<class_t>( ) );
+	}
+
+	template <typename class_t>
+	consteval [[nodiscard]] hash_value_t type_hash( class_t&& )
 	{
 		return type_hash<class_t>( );
 	}
+
 }
 
 #endif // !TYPE_UTILITY_HPP

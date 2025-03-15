@@ -100,10 +100,6 @@ target_sources(${PROJECT_NAME} PRIVATE
 # message( STATUS "Debug mode enabled, _USE_IMGUI defined" )
 # endif()
 
-# add xinput
-# TODO: REMOVE THIS AFTER ASSIGNMENT
-target_link_libraries(${PROJECT_NAME} PRIVATE xinput)
-
 # setup the target properties
 if(EMSCRIPTEN)
     set(EMSCRIPTEN_COMPILE_FLAGS "${EMSCRIPTEN_LINK_FLAGS} -sUSE_SDL=2 -sUSE_SDL_IMAGE=2 -sUSE_SDL_TTF=2 -g")

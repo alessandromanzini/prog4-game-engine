@@ -2,20 +2,21 @@
 
 #include "singletons/GameTime.h"
 #include "singletons/InputSystem.h"
-#include "bindings/IABMove.h"
-
-using engine::BTN_MASK_CODE;
-using engine::code_to_mask;
+#include "bindings/InputUtils.h"
+#include "bindings/MoveCommand.h"
 
 namespace game
 {
-	MoveComponent::MoveComponent( engine::GameObjectView& owner, float movementSpeed, bool gamepad )
+	MoveComponent::MoveComponent( engine::GameObjectView& owner, float movementSpeed, bool /* gamepad */ )
 		: Component{ owner }
+		, move_command_ptr_{ std::make_unique<MoveCommand>( *this ) }
 		, movement_speed_{ movementSpeed }
 	{
 		auto& imc{ engine::INPUT_SYSTEM.get_input_mapping_context( ) };
 
-		if ( gamepad )
+		imc.bind_input_action( engine::UID( IA::Move ), move_command_ptr_.get() );
+
+		/*if ( gamepad )
 		{
 			imc.bind_input_action<IABMove>( code_to_mask( BTN_MASK_CODE::BTN_DPAD_UP ), std::bind( &MoveComponent::move, this, glm::vec2{ 0.f, -1.f }, std::placeholders::_1 ) );
 			imc.bind_input_action<IABMove>( code_to_mask( BTN_MASK_CODE::BTN_DPAD_DOWN ), std::bind( &MoveComponent::move, this, glm::vec2{ 0.f, 1.f }, std::placeholders::_1 ) );
@@ -28,7 +29,14 @@ namespace game
 			imc.bind_input_action<IABMove>( SDLK_s, std::bind( &MoveComponent::move, this, glm::vec2{ 0.f, 1.f }, std::placeholders::_1 ) );
 			imc.bind_input_action<IABMove>( SDLK_a, std::bind( &MoveComponent::move, this, glm::vec2{ -1.f, 0.f }, std::placeholders::_1 ) );
 			imc.bind_input_action<IABMove>( SDLK_d, std::bind( &MoveComponent::move, this, glm::vec2{ 1.f, 0.f }, std::placeholders::_1 ) );
-		}
+		}*/
+	}
+
+	MoveComponent::~MoveComponent( ) noexcept
+	{
+		auto& imc{ engine::INPUT_SYSTEM.get_input_mapping_context( ) };
+
+		imc.unbind_input_action( engine::UID( IA::Move ), move_command_ptr_.get( ) );
 	}
 
 	void MoveComponent::update( )

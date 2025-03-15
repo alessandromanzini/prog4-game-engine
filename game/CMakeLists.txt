@@ -24,7 +24,8 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
         "src/main.cpp"
         "src/components/RotatingComponent.cpp"  
         "src/components/MoveComponent.cpp"  
-        "src/components/DemoUIComponent.cpp" )
+        "src/components/DemoUIComponent.cpp"  
+        "src/bindings/InputUtils.cpp" )
 
 # link library
 target_link_libraries(${PROJECT_NAME}
@@ -33,12 +34,13 @@ target_link_libraries(${PROJECT_NAME}
 # include program directories
 target_include_directories(${PROJECT_NAME}
 		PRIVATE "./include"
-		PRIVATE "./include/bindings"
-		PRIVATE "./include/singletons"
+		# PRIVATE "./include/singletons"
 		PRIVATE "./include/compoments"
+		PRIVATE "./include/bindings"
 		PRIVATE "./src"
-        PRIVATE "./src/singletons"
-		PRIVATE "./src/compoments")
+        # PRIVATE "./src/singletons"
+		PRIVATE "./src/compoments"
+        PRIVATE "./src/bindings" )
 
 # copy the data directory to the build directory
 set(RESOURCES_SRC_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/resources")

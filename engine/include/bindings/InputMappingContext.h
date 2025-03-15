@@ -1,90 +1,62 @@
 #ifndef INPUTMAPPINGCONTEXT_H
 #define INPUTMAPPINGCONTEXT_H
 
-#include "InputActionBuilder.h"
-
 // +--------------------------------+
-// | SDL HEADERS					|
+// | PROJECT HEADERS				|
 // +--------------------------------+
-#include <SDL.h>
+#include "bindings/BindingTypes.h"
+#include "bindings/InputAction.h"
+#include "UID.h"
 
 // +--------------------------------+
 // | STANDARD HEADERS				|
 // +--------------------------------+
-#include <functional>
-#include <variant>
 #include <unordered_map>
 #include <vector>
+#include <list>
 
 namespace engine
 {
+	class Command;
 	class InputMappingContext final
 	{
 	public:
-		InputMappingContext( ) = default;
-		virtual ~InputMappingContext( ) noexcept = default;
+		void register_input_action( UID uid, binding::key_t key, input_action_variant_t inputAction, const binding::trigger_bitset_t& triggers );
+		void register_input_action( UID uid, binding::btn_t button, input_action_variant_t inputAction, const binding::trigger_bitset_t& triggers );
 
-		template <DerivedInputActionBuilder builder_t>
-		void bind_input_action( unsigned short mask, const std::function<void( typename builder_t::value_type )>& command, InputAction<typename builder_t::value_type> overrides = {} );
+		void bind_input_action( UID uid, Command* pCommand );
+		void unbind_input_action( UID uid, Command* pCommand );
 
-		template <DerivedInputActionBuilder builder_t>
-		void bind_input_action( SDL_Keycode code, const std::function<void( typename builder_t::value_type )>& command, InputAction<typename builder_t::value_type> overrides = {} );
+		void signal( binding::key_t key, bool value, binding::TriggerEvent trigger );
+		void signal( binding::btn_t button, bool value, binding::TriggerEvent trigger );
 
-		void dispatch( unsigned short input, action_value_variant_t value, TriggerEvent trigger ) const;
-		void dispatch( SDL_Keycode input, action_value_variant_t value, TriggerEvent trigger ) const;
+		void dispatch( ) const;
 
 	private:
-		std::unordered_map<unsigned short, std::vector<command_variant_t>> button_pressed_commands_{};
-		std::unordered_map<unsigned short, std::vector<command_variant_t>> button_released_commands_{};
+		// These maps hold the inputs mapped to the input actions containing binding information.
+		std::unordered_map<binding::key_t, std::vector<InputActionBinding>> keyboard_actions_{};
+		std::unordered_map<binding::btn_t, std::vector<InputActionBinding>> gamepad_actions_{};
 
-		std::unordered_map<SDL_Keycode, std::vector<command_variant_t>> key_pressed_commands_{};
-		std::unordered_map<SDL_Keycode, std::vector<command_variant_t>> key_released_commands_{};
+		// This map holds the triggers for each action.
+		std::unordered_map<UID, binding::trigger_bitset_t> action_triggers_{};
+
+		// This queue holds the signaled events to be dispatched.
+		std::vector<InputActionContext> signaled_inputs_{};
+
+		// These maps hold the commands to be called when the corresponding input action is signaled.
+		std::unordered_map<UID, std::list<Command*>> triggered_commands_{};
+		std::unordered_map<UID, std::list<Command*>> pressed_commands_{};
+		std::unordered_map<UID, std::list<Command*>> released_commands_{};
+
+		void register_input_action( UID uid, input_action_variant_t inputAction, const binding::trigger_bitset_t& triggers, std::vector<InputActionBinding>& actions );
+		void signal( UID uid, bool value, binding::TriggerEvent trigger );
+
+		[[nodiscard]] bool is_input_action_registered( UID uid, const std::vector<InputActionBinding>& bindings ) const;
+		[[nodiscard]] bool is_input_action_registered_for_any( UID uid ) const;
+		[[nodiscard]] bool is_input_action_registered_for_key( UID uid, binding::key_t key ) const;
+		[[nodiscard]] bool is_input_action_registered_for_button( UID uid, binding::btn_t button ) const;
 
 	};
-
-	template <DerivedInputActionBuilder builder_t>
-	void InputMappingContext::bind_input_action( unsigned short mask, const std::function<void( typename builder_t::value_type )>& command, InputAction<typename builder_t::value_type> /* overrides = {} */ )
-	{
-		// TODO: implement modifiers, overrides
-
-		// Build the input action and the binding
-		InputAction<typename builder_t::value_type> ia;
-		builder_t{}.build( ia );
-
-		if ( ia.triggers.test( static_cast<trigger_mask_t>( TriggerEvent::Pressed ) ) )
-		{
-			button_pressed_commands_[mask].push_back( command );
-		}
-		if ( ia.triggers.test( static_cast<trigger_mask_t>( TriggerEvent::Released ) ) )
-		{
-			button_released_commands_[mask].push_back( command );
-		}
-	}
-
-	template <DerivedInputActionBuilder builder_t>
-	void InputMappingContext::bind_input_action( SDL_Keycode code, const std::function<void( typename builder_t::value_type )>& command, InputAction<typename builder_t::value_type> /* overrides = {} */ )
-	{
-		// TODO: implement modifiers, overrides
-
-		// Build the input action and the binding
-		InputAction<typename builder_t::value_type> ia;
-		builder_t{}.build( ia );
-
-		if ( ia.triggers.test( static_cast<trigger_mask_t>( TriggerEvent::Pressed ) ) )
-		{
-			key_pressed_commands_[code].push_back( command );
-		}
-		if ( ia.triggers.test( static_cast<trigger_mask_t>( TriggerEvent::Released ) ) )
-		{
-			key_released_commands_[code].push_back( command );
-		}
-	}
-
-	// +--------------------------------+
-	// | CONCEPTS						|
-	// +--------------------------------+
-	template <typename context_t>
-	concept DerivedInputMappingContext = std::derived_from<context_t, InputMappingContext>;
 
 }
 

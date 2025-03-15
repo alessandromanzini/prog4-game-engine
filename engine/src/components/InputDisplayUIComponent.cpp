@@ -12,9 +12,9 @@ void engine::InputDisplayUIComponent::render( )
 {
 	ImGui::Begin( "Input Display" );
 
-	ImGui::Text( "Controller status:" );
+	/*ImGui::Text( "Controller status:" );
 	ImGui::SameLine( );
-	if ( INPUT_SYSTEM.is_controller_connected( ) )
+	if ( SDL_NumJoysticks( ) )
 	{
 		ImGui::TextColored( ImVec4{ .1f, .8f, .1f, 1.f }, "connected" );
 	}
@@ -77,7 +77,7 @@ void engine::InputDisplayUIComponent::render( )
 	else
 	{
 		ImGui::TextColored( ImVec4{ .4f, .4f, .4f, 1.f }, "idle" );
-	}
+	}*/
 
 	ImGui::End( );
 }

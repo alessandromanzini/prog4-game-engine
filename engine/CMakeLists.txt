@@ -6,24 +6,28 @@ project(engine)
 # create library target
 add_library(${PROJECT_NAME}
         "src/bindings/InputMappingContext.cpp"
+
+        "include/ecs/Deleter.h"
+        "src/ecs/GameObject.cpp"
+        "src/ecs/GameObjectView.cpp"
+        "src/ecs/Scene.cpp"
+        "src/ecs/Transform.cpp"
+
+        "src/ecs/components/FPS.cpp"
+        "src/ecs/components/InputDisplayUIComponent.cpp"
+        "src/ecs/components/TextComponent.cpp"
+        "src/ecs/components/TextureComponent.cpp"
+
+	    "src/framework/Font.cpp"
+        "src/framework/Minigin.cpp"
+        "src/framework/Texture2D.cpp"
+
         "src/singletons/GameTime.cpp"
         "src/singletons/InputSystem.cpp"
-        "src/singletons/ScenePool.cpp"
         "src/singletons/Renderer.cpp"
-        "src/singletons/UIController.cpp"
         "src/singletons/ResourceManager.cpp"
-        "src/components/TextComponent.cpp"
-        "src/components/TextureComponent.cpp"
-        "src/components/FPS.cpp"
-        "src/components/InputDisplayUIComponent.cpp"
-        "src/Minigin.cpp"
-        "src/Scene.cpp"
-        "src/GameObject.cpp"
-        "src/GameObjectView.cpp"
-        "src/Transform.cpp" 
-        "include/Deleter.h"
-	    "src/Font.cpp"
-        "src/Texture2D.cpp" )
+        "src/singletons/ScenePool.cpp"
+        "src/singletons/UIController.cpp" )
 
 # add glm
 include(glm_fetchcontent)
@@ -68,12 +72,18 @@ endif()
 target_include_directories(${PROJECT_NAME}
 		PUBLIC "./include"
 		PUBLIC "./include/bindings"
+		PUBLIC "./include/ecs"
+		PUBLIC "./include/ecs/components"
+		PUBLIC "./include/event"
+		PUBLIC "./include/framework"
 		PUBLIC "./include/singletons"
-		PUBLIC "./include/components"
 		PRIVATE "./src"
 		PRIVATE "./src/bindings"
+		PRIVATE "./src/ecs"
+		PRIVATE "./src/ecs/components"
+		PRIVATE "./src/event"
+		PRIVATE "./src/framework"
 		PRIVATE "./src/singletons"
-		PRIVATE "./src/components"
         PUBLIC ${glm_SOURCE_DIR} )
 
 # add debug-only dependencies

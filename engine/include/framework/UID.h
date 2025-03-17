@@ -11,7 +11,12 @@ namespace engine
 	{
 		template <typename value_t>
 		explicit constexpr UID( value_t value )
-			: uid{ type_utility::hash_cast( value ) }
+			: uid{ type_utility::hash_cast( static_cast<type_utility::size_hash_t>( value ) ) }
+		{
+		}
+
+		explicit constexpr UID( const char* cstr )
+			: uid{ type_utility::hash_cast( std::string_view( cstr ) ) }
 		{
 		}
 

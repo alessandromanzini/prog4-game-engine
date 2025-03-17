@@ -20,7 +20,7 @@ namespace engine
 		void cleanup( std::vector<std::unique_ptr<deletable_t>>& deletables )
 		{
 			std::erase_if( deletables,
-				[this]( auto& pElement ) { return elements_to_destroy_.count( pElement.get() ); } );
+				[this]( auto& element ) { return elements_to_destroy_.count( element.get() ); } );
 			elements_to_destroy_.clear( );
 		}
 

@@ -7,16 +7,18 @@ project(engine)
 add_library(${PROJECT_NAME}
         "src/bindings/InputMappingContext.cpp"
 
-        "include/ecs/Deleter.h"
-        "src/ecs/GameObject.cpp"
-        "src/ecs/GameObjectView.cpp"
-        "src/ecs/Scene.cpp"
-        "src/ecs/Transform.cpp"
+        "src/event/Subject.cpp"
 
-        "src/ecs/components/FPS.cpp"
-        "src/ecs/components/InputDisplayUIComponent.cpp"
-        "src/ecs/components/TextComponent.cpp"
-        "src/ecs/components/TextureComponent.cpp"
+        "include/scene_graph/Deleter.h"
+        "src/scene_graph/GameObject.cpp"
+        "src/scene_graph/GameObjectView.cpp"
+        "src/scene_graph/Scene.cpp"
+        "src/scene_graph/Transform.cpp"
+
+        "src/scene_graph/components/FPS.cpp"
+        "src/scene_graph/components/InputDisplayUIComponent.cpp"
+        "src/scene_graph/components/TextComponent.cpp"
+        "src/scene_graph/components/TextureComponent.cpp"
 
 	    "src/framework/Font.cpp"
         "src/framework/Minigin.cpp"
@@ -72,17 +74,17 @@ endif()
 target_include_directories(${PROJECT_NAME}
 		PUBLIC "./include"
 		PUBLIC "./include/bindings"
-		PUBLIC "./include/ecs"
-		PUBLIC "./include/ecs/components"
 		PUBLIC "./include/event"
 		PUBLIC "./include/framework"
+		PUBLIC "./include/scene_graph"
+		PUBLIC "./include/scene_graph/components"
 		PUBLIC "./include/singletons"
 		PRIVATE "./src"
 		PRIVATE "./src/bindings"
-		PRIVATE "./src/ecs"
-		PRIVATE "./src/ecs/components"
 		PRIVATE "./src/event"
 		PRIVATE "./src/framework"
+		PRIVATE "./src/scene_graph"
+		PRIVATE "./src/scene_graph/components"
 		PRIVATE "./src/singletons"
         PUBLIC ${glm_SOURCE_DIR} )
 

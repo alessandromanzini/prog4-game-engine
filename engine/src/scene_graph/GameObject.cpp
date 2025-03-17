@@ -64,15 +64,15 @@ namespace engine
 		}
 	}
 
-	void GameObject::set_parent( GameObject* const pParent, bool keepWorldPosition /* = true */ )
+	void GameObject::set_parent( GameObject* const parent, bool keepWorldPosition /* = true */ )
 	{
 		// Parent validation
-		if ( is_child( pParent ) || pParent == this || pParent == parent_ptr_ )
+		if ( is_child( parent ) || parent == this || parent == parent_ptr_ )
 		{
 			return;
 		}
 
-		if ( pParent == nullptr )
+		if ( parent == nullptr )
 		{
 			// If becoming root object, local transform becomes world space transform
 			set_local_transform( get_world_transform( ) );
@@ -83,15 +83,15 @@ namespace engine
 			// and set it dirty to recalculate the world transform.
 			if ( keepWorldPosition )
 			{
-				set_local_transform( get_world_transform( ).get_position( ) - pParent->get_world_transform( ).get_position( ) );
+				set_local_transform( get_world_transform( ).get_position( ) - parent->get_world_transform( ).get_position( ) );
 			}
 			set_transform_dirty( );
 		}
 
 		// Re-parenting logic
 		if ( parent_ptr_ != nullptr ) parent_ptr_->remove_child( this );
-		if ( pParent != nullptr ) pParent->add_child( this );
-		parent_ptr_ = pParent;
+		if ( parent != nullptr ) parent->add_child( this );
+		parent_ptr_ = parent;
 	}
 
 	const Transform& GameObject::get_world_transform( )
@@ -147,18 +147,18 @@ namespace engine
 
 	void GameObject::collect_children( std::vector<GameObject*>& children )
 	{
-		for ( auto pChild : children_ )
+		for ( auto* child : children_ )
 		{
-			children.push_back( pChild );
-			pChild->collect_children( children );
+			children.push_back( child );
+			child->collect_children( children );
 		}
 	}
 
-	bool GameObject::is_child( GameObject* const pGameObject ) const
+	bool GameObject::is_child( GameObject* const gameObject ) const
 	{
-		for ( auto pChild : children_ )
+		for ( auto* child : children_ )
 		{
-			if ( pChild == pGameObject )
+			if ( child == gameObject )
 			{
 				return true;
 			}
@@ -166,14 +166,14 @@ namespace engine
 		return false;
 	}
 
-	void GameObject::add_child( GameObject* pGameObject )
+	void GameObject::add_child( GameObject* gameObject )
 	{
-		children_.push_back( pGameObject );
+		children_.push_back( gameObject );
 	}
 
-	void GameObject::remove_child( GameObject* pGameObject )
+	void GameObject::remove_child( GameObject* gameObject )
 	{
-		children_.erase( std::remove( children_.begin( ), children_.end( ), pGameObject ), children_.end( ) );
+		children_.erase( std::remove( children_.begin( ), children_.end( ), gameObject ), children_.end( ) );
 	}
 
 	bool GameObject::has_children( ) const

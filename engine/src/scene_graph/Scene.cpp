@@ -14,9 +14,9 @@ namespace engine
 {
 	uint16_t Scene::s_id_counter_ = 0;
 
-	void Scene::add( std::unique_ptr<GameObject> pObject )
+	void Scene::add( std::unique_ptr<GameObject> object )
 	{
-		objects_.emplace_back( std::move( pObject ) );
+		objects_.emplace_back( std::move( object ) );
 	}
 
 	GameObject* Scene::create_object( )
@@ -34,41 +34,41 @@ namespace engine
 		return id_;
 	}
 
-	void Scene::remove( GameObject* pObject )
+	void Scene::remove( GameObject* object )
 	{
-		if ( pObject != nullptr )
+		if ( object != nullptr )
 		{
-			deleter_.mark_element_for_deletion( pObject );
+			deleter_.mark_element_for_deletion( object );
 
 			// Remove children as well
-			for ( auto pChild : pObject->get_children( ) )
+			for ( auto* child : object->get_children( ) )
 			{
-				remove( pChild );
+				remove( child );
 			}
 		}
 	}
 
 	void Scene::remove_all( )
 	{
-		for ( auto& pObject : objects_ )
+		for ( auto& object : objects_ )
 		{
-			deleter_.mark_element_for_deletion( pObject.get( ) );
+			deleter_.mark_element_for_deletion( object.get( ) );
 		}
 	}
 
 	void Scene::fixed_update( )
 	{
-		for ( auto& pObject : objects_ )
+		for ( auto& object : objects_ )
 		{
-			pObject->fixed_update( );
+			object->fixed_update( );
 		}
 	}
 
 	void Scene::update( )
 	{
-		for ( auto& pObject : objects_ )
+		for ( auto& object : objects_ )
 		{
-			pObject->update( );
+			object->update( );
 		}
 	}
 

@@ -6,7 +6,7 @@
 // +--------------------------------+
 #include "bindings/BindingTypes.h"
 #include "bindings/InputAction.h"
-#include "UID.h"
+#include "framework/UID.h"
 
 // +--------------------------------+
 // | STANDARD HEADERS				|
@@ -24,13 +24,13 @@ namespace engine
 		void register_input_action( UID uid, binding::key_t key, input_action_variant_t inputAction, const binding::trigger_bitset_t& triggers );
 		void register_input_action( UID uid, binding::btn_t button, input_action_variant_t inputAction, const binding::trigger_bitset_t& triggers );
 
-		void bind_input_action( UID uid, Command* pCommand );
-		void unbind_input_action( UID uid, Command* pCommand );
+		void bind_input_action( UID uid, Command* command );
+		void unbind_input_action( UID uid, Command* command );
 
 		void signal( binding::key_t key, bool value, binding::TriggerEvent trigger );
 		void signal( binding::btn_t button, bool value, binding::TriggerEvent trigger );
 
-		void dispatch( ) const;
+		void dispatch( );
 
 	private:
 		// These maps hold the inputs mapped to the input actions containing binding information.
@@ -41,7 +41,8 @@ namespace engine
 		std::unordered_map<UID, binding::trigger_bitset_t> action_triggers_{};
 
 		// This queue holds the signaled events to be dispatched.
-		std::vector<InputActionContext> signaled_inputs_{};
+		std::vector<InputActionContext> signaled_triggered_inputs_{};
+		std::vector<InputActionContext> signaled_pressed_inputs_{};
 
 		// These maps hold the commands to be called when the corresponding input action is signaled.
 		std::unordered_map<UID, std::list<Command*>> triggered_commands_{};

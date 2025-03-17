@@ -17,8 +17,8 @@ namespace engine
 		Scene& operator=( const Scene& ) 		= delete;
 		Scene& operator=( Scene&& ) noexcept 	= delete;
 
-		void add( std::unique_ptr<GameObject> pObject );
-		void remove( GameObject* pObject );
+		void add( std::unique_ptr<GameObject> object );
+		void remove( GameObject* object );
 		void remove_all( );
 
 		GameObject* create_object( );

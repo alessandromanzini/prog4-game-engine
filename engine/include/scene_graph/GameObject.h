@@ -38,7 +38,7 @@ namespace engine
 
 		void cleanup( );
 
-		void set_parent( GameObject* pParent, bool keepWorldPosition = true );
+		void set_parent( GameObject* parent, bool keepWorldPosition = true );
 
 		[[nodiscard]] const Transform& get_world_transform( );
 		[[nodiscard]] const Transform& get_local_transform( ) const;
@@ -77,9 +77,9 @@ namespace engine
 
 		std::vector<GameObject*> children_{};
 
-		[[nodiscard]] bool is_child( GameObject* pGameObject ) const;
-		void add_child( GameObject* pGameObject );
-		void remove_child( GameObject* pGameObject );
+		[[nodiscard]] bool is_child( GameObject* gameObject ) const;
+		void add_child( GameObject* gameObject );
+		void remove_child( GameObject* gameObject );
 		[[nodiscard]] bool has_children( ) const;
 
 		void set_transform_dirty( )
@@ -87,9 +87,9 @@ namespace engine
 			transform_dirty_ = true;
 
 			// TODO: optimize this
-			for ( auto pChild : children_ )
+			for ( auto child : children_ )
 			{
-				pChild->set_transform_dirty( );
+				child->set_transform_dirty( );
 			}
 		}
 		void update_world_transform( );

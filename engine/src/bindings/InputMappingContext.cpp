@@ -32,7 +32,7 @@ namespace engine
 	}
 
 
-	void InputMappingContext::bind_input_action( UID uid, Command* pCommand )
+	void InputMappingContext::bind_input_action( UID uid, Command* command )
 	{
 		assert( is_input_action_registered_for_any( uid ) && "Input action has not been registered!" );
 		
@@ -40,26 +40,26 @@ namespace engine
 		const auto& triggers = action_triggers_[uid];
 		if ( triggers.test( seq_mask_cast( TriggerEvent::TRIGGERED ) ) )
 		{
-			triggered_commands_[uid].push_back( pCommand );
+			triggered_commands_[uid].push_back( command );
 		}
 		if ( triggers.test( seq_mask_cast( TriggerEvent::PRESSED ) ) )
 		{
-			pressed_commands_[uid].push_back( pCommand );
+			pressed_commands_[uid].push_back( command );
 		}
 		if ( triggers.test( seq_mask_cast( TriggerEvent::RELEASED ) ) )
 		{
-			released_commands_[uid].push_back( pCommand );
+			released_commands_[uid].push_back( command );
 		}
 	}
 
 
-	void InputMappingContext::unbind_input_action( UID uid, Command* pCommand )
+	void InputMappingContext::unbind_input_action( UID uid, Command* command )
 	{
 		assert( is_input_action_registered_for_any( uid ) && "Input action was not found!" );
 
-		std::erase( triggered_commands_[uid], pCommand );
-		std::erase( pressed_commands_[uid], pCommand );
-		std::erase( released_commands_[uid], pCommand );
+		std::erase( triggered_commands_[uid], command );
+		std::erase( pressed_commands_[uid], command );
+		std::erase( released_commands_[uid], command );
 	}
 
 
@@ -81,21 +81,41 @@ namespace engine
 	}
 
 
-	void InputMappingContext::dispatch( ) const
+	void InputMappingContext::dispatch( )
 	{
-		for ( auto& input : signaled_inputs_ )
+		// TODO: manage all events
+		// TRIGGERED
+		for ( auto& input : signaled_triggered_inputs_ )
+		{
+			if ( not triggered_commands_.contains( input.uid ) )
+			{
+				continue;
+			}
+
+			if ( triggered_commands_.contains( input.uid ) )
+			{
+				for ( auto* command : triggered_commands_.at( input.uid ) )
+				{
+					command->execute( );
+				}
+			}
+		}
+		signaled_triggered_inputs_.clear( );
+
+		// PRESSED
+		for ( auto& input : signaled_pressed_inputs_ )
 		{
 			if ( not pressed_commands_.contains( input.uid ) )
 			{
 				continue;
 			}
 
-			// TODO: manage trigger events
-			for ( auto* pCommand : pressed_commands_.at( input.uid ) )
+			for ( auto* command : pressed_commands_.at( input.uid ) )
 			{
-				pCommand->execute( );
+				command->execute( );
 			}
 		}
+		signaled_pressed_inputs_.clear( );
 	}
 
 
@@ -114,7 +134,20 @@ namespace engine
 
 	void InputMappingContext::signal( UID uid, bool value, binding::TriggerEvent trigger )
 	{
-		auto it = std::find_if( signaled_inputs_.begin( ), signaled_inputs_.end( ), [uid]( const auto& context ) {
+		std::vector<InputActionContext>* signaled_inputs{};
+		switch ( trigger )
+		{
+		case TriggerEvent::TRIGGERED:
+			signaled_inputs = &signaled_triggered_inputs_;
+			break;
+		case TriggerEvent::PRESSED:
+			signaled_inputs = &signaled_pressed_inputs_;
+			break;
+		case TriggerEvent::RELEASED:
+			return;
+		}
+
+		auto it = std::find_if( signaled_inputs->begin( ), signaled_inputs->end( ), [uid]( const auto& context ) {
 			return context.uid == uid;
 		} );
 
@@ -122,9 +155,9 @@ namespace engine
 
 		// If the input was not signaled yet, add it to the list
 		// Otherwise, combine the value
-		if ( it == signaled_inputs_.end( ) )
+		if ( it == signaled_inputs->end( ) )
 		{
-			signaled_inputs_.push_back( { uid, value, trigger_mask } );
+			signaled_inputs->push_back( { uid, value, trigger_mask } );
 		}
 		else
 		{

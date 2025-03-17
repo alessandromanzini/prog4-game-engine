@@ -40,11 +40,6 @@ namespace type_utility
 	// +--------------------------------+
 	// | COMPILE TIME HASH CASTING		|
 	// +--------------------------------+
-	
-	/// <summary>
-	/// Byte-wise hash casting of a value.
-	/// </summary>
-	/// <param name="value">8 byte integer value to hash.</param>
 	constexpr [[nodiscard]] hash_value_t hash_cast( size_hash_t value )
 	{
 		constexpr hash_value_t FNV_OFFSET_BASIS_64 = 0xCBF29CE484222325;
@@ -62,11 +57,7 @@ namespace type_utility
 		return hash;
 	}
 
-	/// <summary>
-	/// Char-wise hash casting of a string.
-	/// </summary>
-	/// <param name="view">String view of the value to hash.</param>
-	constexpr [[nodiscard]] hash_value_t hash_cast( std::string_view view )
+	constexpr [[nodiscard]] hash_value_t hash_cast( const std::string_view& view )
 	{
 		// Simple 64-bit FNV-1a hash
 		constexpr hash_value_t FNV_OFFSET_BASIS_64 = 0xCBF29CE484222325;
@@ -79,12 +70,6 @@ namespace type_utility
 			hash *= FNV_PRIME_64;
 		}
 		return hash;
-	}
-
-	template <typename generic_t>
-	constexpr [[nodiscard]] hash_value_t hash_cast( generic_t value )
-	{
-		return hash_cast( static_cast<size_hash_t>( value ) );
 	}
 
 	// +--------------------------------+

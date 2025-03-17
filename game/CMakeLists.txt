@@ -23,8 +23,12 @@ endif()
 add_executable(${TARGET_NAME} ${TARGET_PARAM} 
         "src/main.cpp"
         "src/components/RotatingComponent.cpp"  
-        "src/components/MoveComponent.cpp"  
+        "src/components/HealthComponent.cpp" 
+        "src/components/AttackComponent.cpp" 
+        "src/components/ScoreComponent.cpp" 
+        "src/components/PlayerControllerComponent.cpp" 
         "src/components/DemoUIComponent.cpp"  
+        "src/components/ObserverTestUIComponent.cpp" 
         "src/bindings/InputUtils.cpp" )
 
 # link library

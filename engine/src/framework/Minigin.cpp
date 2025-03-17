@@ -72,8 +72,8 @@ namespace engine
 		version = *IMG_Linked_Version( );
 		LogSDLVersion( "We linked against SDL_image version ", version );
 
-		SDL_TTF_VERSION( &version )
-			LogSDLVersion( "We compiled against SDL_ttf version ", version );
+		SDL_TTF_VERSION( &version );
+		LogSDLVersion( "We compiled against SDL_ttf version ", version );
 
 		version = *TTF_Linked_Version( );
 		LogSDLVersion( "We linked against SDL_ttf version ", version );
@@ -83,7 +83,7 @@ namespace engine
 	{
 		PrintSDLVersion( );
 
-		if ( SDL_Init( SDL_INIT_VIDEO ) != 0 )
+		if ( SDL_Init( SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER ) != 0 )
 		{
 			throw std::runtime_error( std::string( "SDL_Init Error: " ) + SDL_GetError( ) );
 		}

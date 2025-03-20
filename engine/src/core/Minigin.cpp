@@ -63,22 +63,22 @@ namespace engine
     {
         SDL_version version{};
         SDL_VERSION( &version );
-        LogSDLVersion( "We compiled against SDL version ", version );
+        LogSDLVersion( "Compiled SDL version ", version );
 
         SDL_GetVersion( &version );
-        LogSDLVersion( "We linked against SDL version ", version );
+        LogSDLVersion( "Linked SDL version ", version );
 
         SDL_IMAGE_VERSION( &version );
-        LogSDLVersion( "We compiled against SDL_image version ", version );
+        LogSDLVersion( "Compiled SDL_image version ", version );
 
         version = *IMG_Linked_Version( );
-        LogSDLVersion( "We linked against SDL_image version ", version );
+        LogSDLVersion( "Linked SDL_image version ", version );
 
         SDL_TTF_VERSION( &version );
-        LogSDLVersion( "We compiled against SDL_ttf version ", version );
+        LogSDLVersion( "Compiled SDL_ttf version ", version );
 
         version = *TTF_Linked_Version( );
-        LogSDLVersion( "We linked against SDL_ttf version ", version );
+        LogSDLVersion( "Linked SDL_ttf version ", version );
     }
 
 
@@ -92,7 +92,7 @@ namespace engine
         }
 
         g_window_ptr = SDL_CreateWindow(
-            "Prog4 Assignment - Update GameObjects - 2GD10 Manzini Alessandro",
+            "Bubble Bobble - 2GD10 Manzini Alessandro",
             SDL_WINDOWPOS_CENTERED,
             SDL_WINDOWPOS_CENTERED,
             640,

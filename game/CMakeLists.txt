@@ -9,7 +9,7 @@ if(EMSCRIPTEN)
     set(TARGET_PARAM )
 elseif(APPLE)
     set(TARGET_NAME ${PROJECT_NAME})
-    set(TARGET_PARAM APPLE)
+    set(TARGET_PARAM )
 else()
     set(TARGET_NAME ${PROJECT_NAME})
     set(TARGET_PARAM WIN32)
@@ -22,14 +22,20 @@ endif()
 
 add_executable(${TARGET_NAME} ${TARGET_PARAM} 
         "src/main.cpp"
-        "src/components/RotatingComponent.cpp"  
-        "src/components/HealthComponent.cpp" 
-        "src/components/AttackComponent.cpp" 
-        "src/components/ScoreComponent.cpp" 
-        "src/components/PlayerControllerComponent.cpp" 
-        "src/components/DemoUIComponent.cpp"  
-        "src/components/ObserverTestUIComponent.cpp" 
-        "src/bindings/InputUtils.cpp" )
+
+        "src/bindings/InputUtils.cpp"
+
+        "src/components/RotatingComponent.cpp"
+        "src/components/HealthComponent.cpp"
+        "src/components/AttackComponent.cpp"
+        "src/components/ScoreComponent.cpp"
+        "src/components/PlayerControllerComponent.cpp"
+
+        "src/ui_components/DemoUIComponent.cpp"
+        "src/ui_components/ObserverTestUIComponent.cpp" )
+
+# set maximum warning level and treat warnings as errors
+include(set_warning_level)
 
 # link library
 target_link_libraries(${PROJECT_NAME}
@@ -37,14 +43,14 @@ target_link_libraries(${PROJECT_NAME}
 
 # include program directories
 target_include_directories(${PROJECT_NAME}
-		PRIVATE "./include"
-		# PRIVATE "./include/singletons"
-		PRIVATE "./include/compoments"
-		PRIVATE "./include/bindings"
-		PRIVATE "./src"
-        # PRIVATE "./src/singletons"
-		PRIVATE "./src/compoments"
-        PRIVATE "./src/bindings" )
+		PRIVATE "include"
+		PRIVATE "include/bindings"
+		PRIVATE "include/components"
+		PRIVATE "include/ui_components"
+		PRIVATE "src"
+        PRIVATE "src/bindings"
+		PRIVATE "src/components"
+		PRIVATE "src/ui_components" )
 
 # copy the data directory to the build directory
 set(RESOURCES_SRC_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/resources")

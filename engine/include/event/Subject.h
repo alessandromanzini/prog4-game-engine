@@ -11,29 +11,30 @@
 // +--------------------------------+
 #include <variant>
 
+
 namespace engine
 {
-	namespace event
-	{
-		using broadcast_value_variant_t = std::variant<int, float, double, std::string_view>;
-	}
+    namespace event
+    {
+        using broadcast_value_variant_t = std::variant<int, float, double, std::string_view>;
+    }
 
-	class Observer;
-	class Subject
-	{
-	public:
-		virtual ~Subject( ) noexcept = default;
+    class Observer;
+    class Subject
+    {
+    public:
+        virtual ~Subject( ) noexcept = default;
 
-		void add_observer( Observer& observer );
-		void remove_observer( Observer& observer );
+        void add_observer( Observer& observer );
+        void remove_observer( const Observer& observer );
 
-	protected:
-		void broadcast( UID event, event::broadcast_value_variant_t value = {} );
+    protected:
+        void broadcast( UID event, const event::broadcast_value_variant_t& value = {} );
 
-	private:
-		Observer* head_ptr_{ nullptr };
+    private:
+        Observer* head_ptr_{ nullptr };
 
-	};
+    };
 
 }
 

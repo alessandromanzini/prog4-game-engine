@@ -2,24 +2,25 @@
 #define ROTATINGCOMPONENT_H
 
 // +--------------------------------+
-// | Project Headers				|
+// | PROJECT HEADERS				|
 // +--------------------------------+
-#include "singletons/GameTime.h"
 #include "components/Component.h"
+
 
 namespace game
 {
-	class RotatingComponent final : public engine::Component
-	{
-	public:
-		RotatingComponent( engine::GameObjectView& owner, float rotationSpeed );
+    class RotatingComponent final : public engine::Component
+    {
+    public:
+        RotatingComponent( engine::GameObjectView& owner, float rotationSpeed );
 
-		void update( ) override;
+        void update( ) override;
 
-	private:
-		float rotation_speed_{};
+    private:
+        float rotation_speed_{};
 
-	};
+    };
 }
+
 
 #endif // !ROTATINGCOMPONENT_H

@@ -62,3 +62,16 @@ if(NOT sdl2_ttf_POPULATED)
 		set(SDL2_TTF_LIBRARY_DLL "${sdl2_ttf_SOURCE_DIR}/lib/x86/SDL2_ttf.dll")
 	endif()
 endif()
+
+# set all include directories
+target_include_directories(${PROJECT_NAME} PUBLIC
+		${VLD_INCLUDE_DIR}
+		${SDL2_INCLUDE_DIR}
+		${SDL2_IMAGE_INCLUDE_DIR}
+		${SDL2_TTF_INCLUDE_DIR} )
+
+# set libraries to link with
+target_link_libraries(${PROJECT_NAME} PUBLIC
+		${SDL2_LIBRARIES}
+		${SDL2_IMAGE_LIBRARIES}
+		${SDL2_TTF_LIBRARIES} )

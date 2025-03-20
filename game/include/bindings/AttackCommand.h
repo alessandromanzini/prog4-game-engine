@@ -1,16 +1,20 @@
 #ifndef ATTACKCOMMAND_H
 #define ATTACKCOMMAND_H
 
+// +--------------------------------+
+// | PROJECT HEADERS				|
+// +--------------------------------+
 #include "bindings/Command.h"
 #include "components/AttackComponent.h"
+
 
 namespace game
 {
 	class AttackCommand final : public engine::Command
 	{
 	public:
-		AttackCommand( AttackComponent& component )
-			: engine::Command()
+		explicit AttackCommand( AttackComponent& component )
+			: Command()
 			, component_{ component }
 		{
 		}

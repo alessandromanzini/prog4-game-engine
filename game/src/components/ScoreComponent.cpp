@@ -1,6 +1,8 @@
 #include "components/ScoreComponent.h"
 
+
 using namespace engine;
+
 namespace game
 {
 	ScoreComponent::ScoreComponent( engine::GameObjectView& owner )
@@ -8,7 +10,7 @@ namespace game
 	{
 	}
 
-	void ScoreComponent::add_score( int score )
+	void ScoreComponent::add_score( const int score )
 	{
 		if ( score_ >= WINNING_SCORE_ )
 		{

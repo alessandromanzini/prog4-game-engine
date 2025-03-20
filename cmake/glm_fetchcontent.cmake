@@ -7,7 +7,5 @@ FetchContent_Declare(
   DOWNLOAD_DIR ${CMAKE_BINARY_DIR}/downloads
 )
 
-FetchContent_GetProperties(glm)
-if(NOT glm_POPULATED)
-  FetchContent_Populate(glm)
-endif()
+FetchContent_MakeAvailable(glm)
+target_include_directories(${PROJECT_NAME} PUBLIC ${glm_SOURCE_DIR})

@@ -2,44 +2,44 @@
 #define RESOURCEMANAGER_H
 
 // +--------------------------------+
-// | Project Headers				|
+// | PROJECT HEADERS				|
 // +--------------------------------+
 #include "Singleton.h"
 
 // +--------------------------------+
-// | Standard Headers				|
+// | STANDARD HEADERS				|
 // +--------------------------------+
 #include <filesystem>
-#include <string>
-#include <memory>
 #include <map>
+#include <string>
+
 
 namespace engine
 {
-	class Texture2D;
-	class Font;
-	class ResourceManager final : public Singleton<ResourceManager>
-	{
-	public:
-		void init( const std::filesystem::path& data );
-		std::shared_ptr<Texture2D> load_texture( const std::string& file );
-		std::shared_ptr<Font> load_font( const std::string& file, uint8_t size );
+    class Texture2D;
+    class Font;
+    class ResourceManager final : public Singleton<ResourceManager>
+    {
+    public:
+        void init( const std::filesystem::path& data );
+        std::shared_ptr<Texture2D> load_texture( const std::string& file );
+        std::shared_ptr<Font> load_font( const std::string& file, uint8_t size );
 
-		friend class Singleton<ResourceManager>;
+        friend class Singleton<ResourceManager>;
 
-	private:
-		std::filesystem::path data_path_;
+    private:
+        std::filesystem::path data_path_;
 
-		std::map<std::string, std::shared_ptr<Texture2D>> loaded_textures_;
-		std::map<std::pair<std::string, uint8_t>, std::shared_ptr<Font>> loaded_fonts_;
+        std::map<std::string, std::shared_ptr<Texture2D>> loaded_textures_;
+        std::map<std::pair<std::string, uint8_t>, std::shared_ptr<Font>> loaded_fonts_;
 
-		ResourceManager( ) = default;
+        ResourceManager( ) = default;
 
-		void unload_unused_resources( );
+        void unload_unused_resources( );
 
-	};
+    };
 
-	extern ResourceManager& RESOURCE_MANAGER;
+    extern ResourceManager& RESOURCE_MANAGER;
 
 }
 

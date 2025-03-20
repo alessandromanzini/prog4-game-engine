@@ -3,27 +3,28 @@
 
 namespace engine
 {
-	template <typename T>
-	class Singleton
-	{
-	public:
-		virtual ~Singleton( ) noexcept = default;
-		
-		Singleton( const Singleton& )					= delete;
-		Singleton( Singleton&& ) noexcept				= delete;
-		Singleton& operator=( const Singleton& ) 		= delete;
-		Singleton& operator=( Singleton&& ) noexcept 	= delete;
+    template<typename T>
+    class Singleton
+    {
+    public:
+        virtual ~Singleton( ) noexcept = default;
 
-		static T& get_instance( )
-		{
-			static T instance{};
-			return instance;
-		}
+        Singleton( const Singleton& )                = delete;
+        Singleton( Singleton&& ) noexcept            = delete;
+        Singleton& operator=( const Singleton& )     = delete;
+        Singleton& operator=( Singleton&& ) noexcept = delete;
 
-	protected:
-		Singleton( ) = default;
 
-	};
+        static T& get_instance( )
+        {
+            static T instance{};
+            return instance;
+        }
+
+    protected:
+        Singleton( ) = default;
+
+    };
 }
 
 #endif // !SINGLETON_H

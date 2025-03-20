@@ -4,44 +4,45 @@
 // +--------------------------------+
 // | PROJECT HEADERS				|
 // +--------------------------------+
-#include "Singleton.h"
 #include "Scene.h"
+#include "Singleton.h"
 
 // +--------------------------------+
 // | STANDARD HEADERS				|
 // +--------------------------------+
-#include <vector>
-#include <string>
 #include <memory>
+#include <string>
+#include <vector>
+
 
 namespace engine
 {
-	class ScenePool final : public Singleton<ScenePool>
-	{
-	public:
-		Scene& create_scene( const std::string& name );
+    class ScenePool final : public Singleton<ScenePool>
+    {
+    public:
+        Scene& create_scene( const std::string& name );
 
-		void fixed_update( );
-		void update( );
-		void render( );
+        void fixed_update( );
+        void update( );
+        void render( );
 
-		Scene& get_active_scene( ) const;
-		Scene& get_scene( const std::string& name ) const;
-		Scene& get_scene( uint16_t id ) const;
+        [[nodiscard]] Scene& get_active_scene( ) const;
+        [[nodiscard]] Scene& get_scene( const std::string& name ) const;
+        [[nodiscard]] Scene& get_scene( uint16_t id ) const;
 
-		void cleanup( );
+        void cleanup( ) const;
 
-		friend class Singleton<ScenePool>;
+        friend class Singleton<ScenePool>;
 
-	private:
-		std::vector<std::unique_ptr<Scene>> scenes_;
-		Scene* active_scene_ptr_{ nullptr };
+    private:
+        std::vector<std::unique_ptr<Scene>> scenes_;
+        Scene* active_scene_ptr_{ nullptr };
 
-		ScenePool( ) = default;
+        ScenePool( ) = default;
 
-	};
+    };
 
-	extern ScenePool& SCENE_POOL;
+    extern ScenePool& SCENE_POOL;
 }
 
 #endif // !SCENEPOOL_H

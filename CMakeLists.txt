@@ -10,14 +10,6 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 message(STATUS "C++20 support has been enabled by default.")
 # target_compile_features(${TARGET_NAME} PUBLIC cxx_std_20)
 
-# set maximum warning level and treat warnings as errors
-if (MSVC)
-    add_compile_options(/W4 /WX)
-else()
-    add_compile_options(${PROJECT_NAME} PUBLIC -Wall -Wextra -Wpedantic -Werror)
-endif()
-message(STATUS "W4 warning level and treat warnings as errors.")
-
 if(EMSCRIPTEN)
     message(STATUS "Using Emscripten!")
 endif()

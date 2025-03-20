@@ -1,12 +1,16 @@
 #ifndef HEALTHCOMPONENT_H
 #define HEALTHCOMPONENT_H
 
+// +--------------------------------+
+// | PROJECT HEADERS				|
+// +--------------------------------+
 #include "components/Component.h"
 #include "event/Subject.h"
 
+
 namespace game
 {
-	class HealthComponent : public engine::Component, public engine::Subject
+	class HealthComponent final : public engine::Component, public engine::Subject
 	{
 	public:
 		HealthComponent( engine::GameObjectView& owner, int health );
@@ -22,5 +26,6 @@ namespace game
 	};
 
 }
+
 
 #endif // !HEALTHCOMPONENT_H

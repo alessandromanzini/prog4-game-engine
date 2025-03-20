@@ -33,7 +33,7 @@ namespace imgui_core
      }
 
 
-    void render( ImDrawData* const data )
+    void render( ImDrawData* const data, SDL_Renderer* const /* renderer */ )
     {
         ImGui_ImplOpenGL3_RenderDrawData( data );
     }

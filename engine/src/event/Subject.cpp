@@ -36,6 +36,8 @@ namespace engine
 
     void Subject::broadcast( const UID event, const event::broadcast_value_variant_t& value )
     {
+        if ( head_ptr_ == nullptr ){ return; }
+
         Observer* current = head_ptr_;
         while ( current != nullptr )
         {

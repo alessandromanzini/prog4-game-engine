@@ -28,6 +28,8 @@ namespace engine
         bool quit_{};
 
     };
+
 }
+
 
 #endif // !MINIGIN_H

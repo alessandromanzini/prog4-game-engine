@@ -24,7 +24,8 @@ namespace engine
                                                      const binding::trigger_bitset_t& triggers )
     {
         assert( not is_input_action_registered_for_key( uid, key ) && "Input action already registered on this key!" );
-        register_input_action( uid, inputAction, triggers, keyboard_actions_[key] );
+        register_input_action( uid, inputAction, triggers,
+                               keyboard_context_.get_or_create_bindings( static_cast<uint32_t>( key ) ) );
     }
 
 
@@ -32,10 +33,10 @@ namespace engine
                                                      const input_action_variant_t inputAction,
                                                      const binding::trigger_bitset_t& triggers )
     {
-        assert(
-            not is_input_action_registered_for_button( uid, button ) &&
+        assert( not is_input_action_registered_for_button( uid, button ) &&
             "Input action already registered on this button!" );
-        register_input_action( uid, inputAction, triggers, gamepad_actions_[button] );
+        register_input_action( uid, inputAction, triggers,
+                               gamepad_context_.get_or_create_bindings( static_cast<uint32_t>( button ) ) );
     }
 
 
@@ -72,9 +73,13 @@ namespace engine
 
     void InputMappingContext::signal( const binding::key_t key, const bool value, const binding::TriggerEvent trigger )
     {
-        for ( auto& action : keyboard_actions_[key] )
+        if ( const auto bindings{ keyboard_context_.get_bindings( static_cast<uint32_t>( key ) ) };
+            bindings.has_value( ) )
         {
-            signal( action.uid, value, trigger );
+            for ( const auto& [uid, input_action] : bindings->get( ) )
+            {
+                signal( uid, value, trigger );
+            }
         }
     }
 
@@ -82,9 +87,13 @@ namespace engine
     void InputMappingContext::signal( const binding::btn_t button, const bool value,
                                       const binding::TriggerEvent trigger )
     {
-        for ( auto& [uid, input_action] : gamepad_actions_[button] )
+        if ( const auto bindings{ gamepad_context_.get_bindings( static_cast<uint32_t>( button ) ) };
+            bindings.has_value( ) )
         {
-            signal( uid, value, trigger );
+            for ( const auto& [uid, input_action] : bindings->get( ) )
+            {
+                signal( uid, value, trigger );
+            }
         }
     }
 
@@ -183,48 +192,22 @@ namespace engine
     }
 
 
-    bool InputMappingContext::is_input_action_registered(
-        const UID uid, const std::vector<InputActionBinding>& bindings ) const
-    {
-        return std::any_of( bindings.begin( ), bindings.end( ), [uid]( const auto& binding )
-                                {
-                                    return binding.uid == uid;
-                                } );
-    }
-
-
     bool InputMappingContext::is_input_action_registered_for_any( const UID uid ) const
     {
-        return std::ranges::any_of( keyboard_actions_, [this, uid]( const auto& pair )
-                                        {
-                                            return is_input_action_registered( uid, pair.second );
-                                        } )
-               || std::ranges::any_of( gamepad_actions_, [this, uid]( const auto& pair )
-                                           {
-                                               return is_input_action_registered( uid, pair.second );
-                                           } );
+        return keyboard_context_.has_bindings( uid ) || gamepad_context_.has_bindings( uid );
     }
 
 
-    bool InputMappingContext::is_input_action_registered_for_key( UID uid, binding::key_t key ) const
+    bool InputMappingContext::is_input_action_registered_for_key( const UID uid, const binding::key_t key ) const
     {
-        const auto it = keyboard_actions_.find( key );
-        if ( it == keyboard_actions_.end( ) )
-        {
-            return false;
-        }
-        return is_input_action_registered( uid, it->second );
+        return keyboard_context_.has_bindings( uid, static_cast<uint32_t>( key ) );
     }
 
 
-    bool InputMappingContext::is_input_action_registered_for_button( UID uid, binding::btn_t button ) const
+    bool InputMappingContext::is_input_action_registered_for_button( const UID uid, const binding::btn_t button ) const
     {
-        const auto it = gamepad_actions_.find( button );
-        if ( it == gamepad_actions_.end( ) )
-        {
-            return false;
-        }
-        return is_input_action_registered( uid, it->second );
+        return keyboard_context_.has_bindings( uid, static_cast<uint32_t>( button ) );
     }
+
 
 }

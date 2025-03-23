@@ -5,6 +5,7 @@
 // | PROJECT HEADERS				|
 // +--------------------------------+
 #include "bindings/BindingTypes.h"
+#include "bindings/DeviceContext.h"
 #include "bindings/InputAction.h"
 #include "framework/UID.h"
 
@@ -12,6 +13,7 @@
 // | STANDARD HEADERS				|
 // +--------------------------------+
 #include <list>
+#include <memory>
 #include <unordered_map>
 #include <vector>
 
@@ -22,6 +24,7 @@ namespace engine
     class InputMappingContext final
     {
     public:
+        // Registers an input action with the given key, input action, and triggers as a keyboard/gamepad binding.
         void register_input_action( UID uid, binding::key_t key, input_action_variant_t inputAction,
                                     const binding::trigger_bitset_t& triggers );
         void register_input_action( UID uid, binding::btn_t button, input_action_variant_t inputAction,
@@ -30,15 +33,17 @@ namespace engine
         void bind_input_action( UID uid, Command* command );
         void unbind_input_action( UID uid, Command* command );
 
+        // Signals the input action with the given value and trigger as a keyboard/gamepad event.
         void signal( binding::key_t key, bool value, binding::TriggerEvent trigger );
         void signal( binding::btn_t button, bool value, binding::TriggerEvent trigger );
 
+        // Dispatches the merged signaled events to the corresponding commands.
         void dispatch( );
 
     private:
-        // These maps hold the inputs mapped to the input actions containing binding information.
-        std::unordered_map<binding::key_t, std::vector<InputActionBinding>> keyboard_actions_{};
-        std::unordered_map<binding::btn_t, std::vector<InputActionBinding>> gamepad_actions_{};
+        // Device contexts for action bindings
+        DeviceContext keyboard_context_{};
+        DeviceContext gamepad_context_{};
 
         // This map holds the triggers for each action.
         std::unordered_map<UID, binding::trigger_bitset_t> action_triggers_{};
@@ -55,9 +60,10 @@ namespace engine
         void register_input_action( UID uid, input_action_variant_t inputAction,
                                     const binding::trigger_bitset_t& triggers,
                                     std::vector<InputActionBinding>& actions );
+
+        // Merges the signaled inputs of same uid as a single value for dispatching.
         void signal( UID uid, bool value, binding::TriggerEvent trigger );
 
-        [[nodiscard]] bool is_input_action_registered( UID uid, const std::vector<InputActionBinding>& bindings ) const;
         [[nodiscard]] bool is_input_action_registered_for_any( UID uid ) const;
         [[nodiscard]] bool is_input_action_registered_for_key( UID uid, binding::key_t key ) const;
         [[nodiscard]] bool is_input_action_registered_for_button( UID uid, binding::btn_t button ) const;
@@ -65,5 +71,6 @@ namespace engine
     };
 
 }
+
 
 #endif // !INPUTMAPPINGCONTEXT_H

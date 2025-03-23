@@ -29,7 +29,8 @@ add_library(${PROJECT_NAME}
         "src/singletons/Renderer.cpp"
         "src/singletons/ResourceManager.cpp"
         "src/singletons/ScenePool.cpp"
-        "src/singletons/UIController.cpp" )
+        "src/singletons/UIController.cpp"
+		"src/bindings/DeviceContext.cpp" )
 
 # include platform specific sources
 if (APPLE)

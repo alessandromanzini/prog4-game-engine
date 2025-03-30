@@ -1,4 +1,5 @@
 #include "bindings/DeviceContext.h"
+#include <algorithm>
 
 
 namespace engine

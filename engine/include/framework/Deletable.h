@@ -30,4 +30,4 @@ namespace engine
     };
 }
 
-#endif // !DELETABLE_H
+#endif //!DELETABLE_H

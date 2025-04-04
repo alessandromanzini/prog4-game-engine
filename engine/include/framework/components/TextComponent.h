@@ -41,4 +41,4 @@ namespace engine
     };
 }
 
-#endif // !TEXTCOMPONENT_H
+#endif //!TEXTCOMPONENT_H

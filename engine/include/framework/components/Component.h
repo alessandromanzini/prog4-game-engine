@@ -51,15 +51,15 @@ namespace engine
     // +--------------------------------+
     // | CONCEPTS						|
     // +--------------------------------+
-    template<typename derived_t, typename... args_t>
+    template <typename derived_t, typename... args_t>
     concept DerivedComponentWithBaseContructor =
             std::derived_from<derived_t, Component> and
             std::constructible_from<derived_t, GameObjectView&, args_t...>;
 
-    template<typename derived_t>
+    template <typename derived_t>
     concept DerivedComponent =
             std::derived_from<derived_t, Component>;
 
 }
 
-#endif // !COMPONENT_H
+#endif //!COMPONENT_H

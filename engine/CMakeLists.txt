@@ -5,7 +5,12 @@ project(engine)
 
 # create library target
 add_library(${PROJECT_NAME}
+		"src/bindings/binding_controls.cpp"
+		"src/bindings/binding_device.cpp"
         "src/bindings/InputMappingContext.cpp"
+
+		"include/controllers/BaseController.h"
+		"include/controllers/PlayerController.h"
 
         "src/event/Subject.cpp"
 
@@ -30,7 +35,7 @@ add_library(${PROJECT_NAME}
         "src/singletons/ResourceManager.cpp"
         "src/singletons/ScenePool.cpp"
         "src/singletons/UIController.cpp"
-		"src/bindings/DeviceContext.cpp" )
+		include/bindings/binding_traits.h)
 
 # include platform specific sources
 if (APPLE)
@@ -43,6 +48,7 @@ endif()
 target_include_directories(${PROJECT_NAME}
 		PUBLIC 	"include"
 		PUBLIC 	"include/bindings"
+		PUBLIC 	"include/controllers"
 		PUBLIC 	"include/core"
 		PUBLIC 	"include/event"
 		PUBLIC 	"include/framework"

@@ -33,4 +33,4 @@ namespace game
 }
 
 
-#endif // !OBSERVERTESTUICOMPONENT_H
+#endif //!OBSERVERTESTUICOMPONENT_H

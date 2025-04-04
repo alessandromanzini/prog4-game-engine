@@ -24,4 +24,4 @@ namespace game
 }
 
 
-#endif // !DEMOUICOMPONENT_H
+#endif //!DEMOUICOMPONENT_H

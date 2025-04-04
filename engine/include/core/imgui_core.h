@@ -1,5 +1,5 @@
-#ifndef IMGUI_CORE_H
-#define IMGUI_CORE_H
+#ifndef IMGUICORE_H
+#define IMGUICORE_H
 
 // +--------------------------------+
 // | SDL HEADERS					|
@@ -25,4 +25,4 @@ namespace imgui_core
 }
 
 
-#endif //!IMGUI_CORE_H
+#endif //!IMGUICORE_H

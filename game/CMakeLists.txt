@@ -12,7 +12,10 @@ elseif(APPLE)
     set(TARGET_PARAM )
 else()
     set(TARGET_NAME ${PROJECT_NAME})
-    set(TARGET_PARAM WIN32)
+    set(TARGET_PARAM WIN32
+			include/bindings/MyPlayerController.h
+			include/bindings/TestController.cpp
+			include/bindings/TestController.h)
 endif()
 
 # set minigin as the default startup project
@@ -29,7 +32,6 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
         "src/components/HealthComponent.cpp"
         "src/components/AttackComponent.cpp"
         "src/components/ScoreComponent.cpp"
-        "src/components/PlayerControllerComponent.cpp"
 
         "src/ui_components/DemoUIComponent.cpp"
         "src/ui_components/ObserverTestUIComponent.cpp" )

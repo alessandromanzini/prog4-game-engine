@@ -27,4 +27,4 @@ namespace engine
     };
 }
 
-#endif // !SINGLETON_H
+#endif //!SINGLETON_H

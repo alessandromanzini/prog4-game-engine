@@ -28,4 +28,4 @@ namespace game
 }
 
 
-#endif // !HEALTHCOMPONENT_H
+#endif //!HEALTHCOMPONENT_H

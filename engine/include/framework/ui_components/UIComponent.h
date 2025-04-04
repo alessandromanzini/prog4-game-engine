@@ -10,6 +10,7 @@
 
 namespace engine
 {
+    // ReSharper disable once CppInconsistentNaming
     class UIComponent : public Deletable
     {
     public:
@@ -50,12 +51,12 @@ namespace engine
     // +--------------------------------+
     // | CONCEPTS						|
     // +--------------------------------+
-    template<typename derived_t, typename... args_t>
+    template <typename derived_t, typename... args_t>
     concept DerivedUIComponentWithBaseContructor =
             std::derived_from<derived_t, UIComponent> and
             std::constructible_from<derived_t, UIController&, args_t...>;
 
-    template<typename derived_t>
+    template <typename derived_t>
     concept DerivedUIComponent =
             std::derived_from<derived_t, UIComponent>;
 

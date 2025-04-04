@@ -1,5 +1,5 @@
-#ifndef TYPE_UTILITY_HPP
-#define TYPE_UTILITY_HPP
+#ifndef TYPEUTILITY_HPP
+#define TYPEUTILITY_HPP
 
 #include <string_view>
 
@@ -8,8 +8,8 @@ namespace type_utility
 	// +--------------------------------+
 	// | HASH TYPES						|
 	// +--------------------------------+
-	typedef uint64_t size_hash_t;
-	typedef uint64_t hash_value_t;
+	using size_hash_t = uint64_t;
+	using hash_value_t = uint64_t;
 
 	// +--------------------------------+
 	// | TYPE NAME EVALUATION			|
@@ -96,4 +96,4 @@ namespace type_utility
 
 }
 
-#endif // !TYPE_UTILITY_HPP
+#endif //!TYPEUTILITY_HPP

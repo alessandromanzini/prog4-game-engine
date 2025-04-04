@@ -3,12 +3,10 @@
 // +--------------------------------+
 // | PROJECT HEADERS				|
 // +--------------------------------+
-#include "bindings/Command.h"
 
 // +--------------------------------+
 // | STANDARD HEADERS				|
 // +--------------------------------+
-#include <algorithm>
 #include <cassert>
 
 
@@ -19,80 +17,54 @@ namespace engine
     // +--------------------------------+
     // | PUBLIC SCOPE					|
     // +--------------------------------+
-    void InputMappingContext::register_input_action( const UID uid, const binding::key_t key,
-                                                     const input_action_variant_t inputAction,
-                                                     const binding::trigger_bitset_t& triggers )
+    void InputMappingContext::register_input_action( const InputAction& action, const UniformBindingCode code )
     {
-        assert( not is_input_action_registered_for_key( uid, key ) && "Input action already registered on this key!" );
-        register_input_action( uid, inputAction, triggers,
-                               keyboard_context_.get_or_create_bindings( static_cast<uint32_t>( key ) ) );
+        assert( not action_binds_.contains( code ) && "Input action already registered on this code!" );
+        action_binds_[code].push_back( action );
     }
 
 
-    void InputMappingContext::register_input_action( const UID uid, const binding::btn_t button,
-                                                     const input_action_variant_t inputAction,
-                                                     const binding::trigger_bitset_t& triggers )
+    void InputMappingContext::register_input_action( const UID uid, const UniformBindingCode code )
     {
-        assert( not is_input_action_registered_for_button( uid, button ) &&
-            "Input action already registered on this button!" );
-        register_input_action( uid, inputAction, triggers,
-                               gamepad_context_.get_or_create_bindings( static_cast<uint32_t>( button ) ) );
+        register_input_action( InputAction{ uid }, code );
     }
 
 
-    void InputMappingContext::bind_input_action( const UID uid, Command* command )
+    void InputMappingContext::register_device( PlayerController& controller, const DeviceInfo deviceInfo )
     {
-        assert( is_input_action_registered_for_any( uid ) && "Input action has not been registered!" );
+        device_contexts_.emplace_back( controller, deviceInfo );
+    }
 
-        // Iterate over all triggers and add the action to the corresponding list
-        const auto& triggers = action_triggers_[uid];
-        if ( triggers.test( seq_mask_cast( TriggerEvent::TRIGGERED ) ) )
+
+    void InputMappingContext::unregister_device( const PlayerController& controller )
+    {
+        if ( const auto it = find_device_context( controller ); it.has_value( ) )
         {
-            triggered_commands_[uid].push_back( command );
-        }
-        if ( triggers.test( seq_mask_cast( TriggerEvent::PRESSED ) ) )
-        {
-            pressed_commands_[uid].push_back( command );
-        }
-        if ( triggers.test( seq_mask_cast( TriggerEvent::RELEASED ) ) )
-        {
-            released_commands_[uid].push_back( command );
+            device_contexts_.erase( it.value( ) );
         }
     }
 
 
-    void InputMappingContext::unbind_input_action( const UID uid, Command* command )
+    void InputMappingContext::signal( const UniformBindingCode code, const TriggerEvent trigger, const DeviceInfo deviceInfo )
     {
-        assert( is_input_action_registered_for_any( uid ) && "Input action was not found!" );
-
-        std::erase( triggered_commands_[uid], command );
-        std::erase( pressed_commands_[uid], command );
-        std::erase( released_commands_[uid], command );
-    }
-
-
-    void InputMappingContext::signal( const binding::key_t key, const bool value, const binding::TriggerEvent trigger )
-    {
-        if ( const auto bindings{ keyboard_context_.get_bindings( static_cast<uint32_t>( key ) ) };
-            bindings.has_value( ) )
+        if ( not action_binds_.contains( code ) )
         {
-            for ( const auto& [uid, input_action] : bindings->get( ) )
+            return;
+        }
+
+        const bool value = trigger_to_value( trigger );
+
+        // For every input action bound to the code, we signal the device context to execute the commands
+        for ( const auto& [uid, modifiers] : action_binds_[code] )
+        {
+            for ( auto& device : device_contexts_ )
             {
-                signal( uid, value, trigger );
-            }
-        }
-    }
+                if ( not device.is_device_suitable( deviceInfo ) )
+                {
+                    continue;
+                }
 
-
-    void InputMappingContext::signal( const binding::btn_t button, const bool value,
-                                      const binding::TriggerEvent trigger )
-    {
-        if ( const auto bindings{ gamepad_context_.get_bindings( static_cast<uint32_t>( button ) ) };
-            bindings.has_value( ) )
-        {
-            for ( const auto& [uid, input_action] : bindings->get( ) )
-            {
-                signal( uid, value, trigger );
+                device.execute_commands( uid, value, trigger );
             }
         }
     }
@@ -100,114 +72,46 @@ namespace engine
 
     void InputMappingContext::dispatch( )
     {
-        // TODO: manage all events
-        // TRIGGERED
-        for ( auto& input : signaled_triggered_inputs_ )
+        // Dispatch all accumulated inputs
+        while ( not signaled_inputs_queue_.empty( ) )
         {
-            if ( not triggered_commands_.contains( input.uid ) )
-            {
-                continue;
-            }
+            // const auto& [uid, value, triggers] = signaled_inputs_queue_.front( );
+            signaled_inputs_queue_.pop_front( );
 
-            if ( triggered_commands_.contains( input.uid ) )
-            {
-                for ( auto* command : triggered_commands_.at( input.uid ) )
-                {
-                    command->execute( );
-                }
-            }
+            // TODO: dispatch info on correct device
         }
-        signaled_triggered_inputs_.clear( );
-
-        // PRESSED
-        for ( auto& input : signaled_pressed_inputs_ )
-        {
-            if ( not pressed_commands_.contains( input.uid ) )
-            {
-                continue;
-            }
-
-            for ( auto* command : pressed_commands_.at( input.uid ) )
-            {
-                command->execute( );
-            }
-        }
-        signaled_pressed_inputs_.clear( );
     }
 
 
     // +--------------------------------+
     // | PRIVATE SCOPE					|
     // +--------------------------------+
-    void InputMappingContext::register_input_action( const UID uid, const input_action_variant_t inputAction,
-                                                     const binding::trigger_bitset_t& triggers,
-                                                     std::vector<InputActionBinding>& actions )
+    InputMappingContext::optional_device_it InputMappingContext::find_device_context(
+        const PlayerController& controller )
     {
-        assert( not triggers.none( ) && "No trigger has been set for action!" );
+        const auto it = std::ranges::find_if( device_contexts_,
+                                              [&controller]( const auto& context )
+                                                  {
+                                                      return context.get_controller( ) == controller;
+                                                  } );
 
-        // Register binding and triggers
-        actions.push_back( InputActionBinding{ uid, inputAction } );
-        action_triggers_[uid] |= triggers;
-    }
-
-
-    void InputMappingContext::signal( const UID uid, const bool value, const TriggerEvent trigger )
-    {
-        std::vector<InputActionContext>* signaled_inputs{};
-        // TODO: manage bitmask
-        switch ( trigger )
+        if ( it != device_contexts_.end( ) )
         {
-            case TriggerEvent::TRIGGERED:
-                signaled_inputs = &signaled_triggered_inputs_;
-                break;
-            case TriggerEvent::PRESSED:
-                signaled_inputs = &signaled_pressed_inputs_;
-                break;
-            case TriggerEvent::RELEASED:
-                return;
-            case TriggerEvent::ALL:
-                return;
+            return it;
         }
-
-        const auto it = std::ranges::find_if(
-            *signaled_inputs, [uid]( const auto& context )
-                {
-                    return context.uid == uid;
-                } );
-
-        const trigger_bitset_t trigger_mask = bitset_cast( trigger );
-
-        // If the input was not signaled yet, add it to the list
-        // Otherwise, combine the value
-        if ( it == signaled_inputs->end( ) )
-        {
-            signaled_inputs->push_back( { uid, value, trigger_mask } );
-        }
-        else
-        {
-            // TODO: actually combine the values
-            it->value = value;
-            it->triggers |= trigger_mask;
-        }
+        return std::nullopt;
     }
 
 
-    bool InputMappingContext::is_input_action_registered_for_any( const UID uid ) const
+    void InputMappingContext::bind_to_input_action_impl( const PlayerController& controller, const UID uid,
+                                                         input_command_variant_t&& command,
+                                                         const trigger_bitset_t& /* triggers */ )
     {
-        return keyboard_context_.has_bindings( uid ) || gamepad_context_.has_bindings( uid );
+        const auto deviceIt = find_device_context( controller );
+        assert( deviceIt.has_value() && "Device context not found!" );
+
+        // TODO: add other triggers
+        deviceIt.value( )->bind_command( uid, { std::move( command ), binding::TriggerEvent::TRIGGERED } );
     }
-
-
-    bool InputMappingContext::is_input_action_registered_for_key( const UID uid, const binding::key_t key ) const
-    {
-        return keyboard_context_.has_bindings( uid, static_cast<uint32_t>( key ) );
-    }
-
-
-    bool InputMappingContext::is_input_action_registered_for_button( const UID uid, const binding::btn_t button ) const
-    {
-        return keyboard_context_.has_bindings( uid, static_cast<uint32_t>( button ) );
-    }
-
 
 }

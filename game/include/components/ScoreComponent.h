@@ -28,4 +28,4 @@ namespace game
 }
 
 
-#endif // !SCORECOMPONENT_H
+#endif //!SCORECOMPONENT_H

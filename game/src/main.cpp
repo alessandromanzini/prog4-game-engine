@@ -10,23 +10,24 @@
 // +--------------------------------+
 // | PROJECT HEADERS				|
 // +--------------------------------+
-#include "singletons/ScenePool.h"
-#include "singletons/UIController.h"
-#include "singletons/ResourceManager.h"
-#include "components/TextureComponent.h"
-#include "components/TextComponent.h"
+#include "bindings/InputUtils.h"
+#include "components/AttackComponent.h"
 #include "components/FPS.h"
 #include "components/HealthComponent.h"
-#include "components/AttackComponent.h"
 #include "components/ScoreComponent.h"
-#include "components/PlayerControllerComponent.h"
-#include "ui_components/InputDisplayUIComponent.h"
-#include "ui_components/DemoUIComponent.h"
-#include "ui_components/ObserverTestUIComponent.h"
-#include "bindings/InputUtils.h"
+#include "components/TextComponent.h"
+#include "components/TextureComponent.h"
 #include "core/Minigin.h"
-#include "framework/Scene.h"
 #include "framework/GameObject.h"
+#include "framework/Scene.h"
+#include "singletons/ResourceManager.h"
+#include "singletons/ScenePool.h"
+#include "singletons/UIController.h"
+#include "ui_components/DemoUIComponent.h"
+#include "ui_components/InputDisplayUIComponent.h"
+#include "ui_components/ObserverTestUIComponent.h"
+
+#include "bindings/TestController.h"
 
 // +--------------------------------+
 // | Standard Headers				|
@@ -69,7 +70,6 @@ void load( )
     auto& pacmanHealth = pacmanGo->add_component<game::HealthComponent>( 3 );
     auto& pacmanAttack = pacmanGo->add_component<game::AttackComponent>( 1 );
     auto& pacmanScore  = pacmanGo->add_component<game::ScoreComponent>( );
-    pacmanGo->add_component<game::PlayerControllerComponent>( true );
 
     // Ms PacMan
     auto mspacmanGo = scene.create_object( );
@@ -78,7 +78,6 @@ void load( )
     auto& mspacmanHealth = mspacmanGo->add_component<game::HealthComponent>( 3 );
     auto& mspacmanAttack = mspacmanGo->add_component<game::AttackComponent>( 1 );
     auto& mspacmanScore  = mspacmanGo->add_component<game::ScoreComponent>( );
-    mspacmanGo->add_component<game::PlayerControllerComponent>( false );
 
     // Set targets for attack
     pacmanAttack.SetTarget( mspacmanGo );
@@ -96,6 +95,8 @@ void load( )
     // Broadcast health change to update UI
     pacmanHealth.damage( 0 );
     mspacmanHealth.damage( 0 );
+
+    new game::TestController();
 
     // engine::UI_CONTROLLER.add_ui_component<game::DemoUIComponent>( );
     // engine::UI_CONTROLLER.add_ui_component<engine::InputDisplayUIComponent>( );

@@ -28,4 +28,4 @@ namespace game
 
 }
 
-#endif // !ATTACKCOMPONENT_H
+#endif //!ATTACKCOMPONENT_H

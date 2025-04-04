@@ -26,7 +26,7 @@ namespace engine
         void set_local_transform( const Transform& transform );
         void set_local_transform( Transform&& transform );
 
-        template<typename component_t>
+        template <typename component_t>
         component_t& get_component( ) const;
 
         void remove_component( Component& component );
@@ -41,7 +41,7 @@ namespace engine
     };
 
 
-    template<typename component_t>
+    template <typename component_t>
     component_t& GameObjectView::get_component( ) const
     {
         return gameobject_ptr_->get_component<component_t>( );

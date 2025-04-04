@@ -46,15 +46,15 @@ namespace engine
         void set_local_transform( const Transform& transform );
         void set_local_transform( Transform&& transform );
 
-        template<typename component_t, typename... args_t>
+        template <typename component_t, typename... args_t>
         // requires DerivedComponentWithBaseContructor<component_t, args_t...>
         component_t& add_component( args_t&&... args );
 
-        template<typename component_t>
+        template <typename component_t>
         // requires DerivedComponent<component_t>
         [[nodiscard]] component_t& get_component( ) const;
 
-        template<typename component_t>
+        template <typename component_t>
         // requires DerivedComponent<component_t>
         [[nodiscard]] component_t& get_components( ) const;
 
@@ -89,7 +89,7 @@ namespace engine
     };
 
 
-    template<typename component_t, typename... args_t>
+    template <typename component_t, typename... args_t>
     // requires DerivedComponentWithBaseContructor<component_t, args_t...>
     component_t& GameObject::add_component( args_t&&... args )
     {
@@ -102,7 +102,7 @@ namespace engine
     }
 
 
-    template<typename component_t>
+    template <typename component_t>
     // requires DerivedComponent<component_t>
     [[nodiscard]] component_t& GameObject::get_component( ) const
     {
@@ -116,7 +116,7 @@ namespace engine
     }
 
 
-    template<typename component_t>
+    template <typename component_t>
     // requires DerivedComponent<component_t>
     [[nodiscard]] component_t& GameObject::get_components( ) const
     {

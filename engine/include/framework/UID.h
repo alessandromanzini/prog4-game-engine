@@ -14,6 +14,7 @@
 
 namespace engine
 {
+    // ReSharper disable once CppInconsistentNaming
     struct UID final
     {
         template<typename value_t>
@@ -53,4 +54,4 @@ struct std::hash<engine::UID>
     }
 };
 
-#endif // !UID_H
+#endif //!UID_H

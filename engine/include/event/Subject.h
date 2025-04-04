@@ -38,4 +38,4 @@ namespace engine
 
 }
 
-#endif // !SUBJECT_H
+#endif //!SUBJECT_H

@@ -23,4 +23,4 @@ namespace game
 }
 
 
-#endif // !ROTATINGCOMPONENT_H
+#endif //!ROTATINGCOMPONENT_H

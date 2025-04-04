@@ -4,73 +4,87 @@
 // +--------------------------------+
 // | PROJECT HEADERS				|
 // +--------------------------------+
-#include "bindings/BindingTypes.h"
-#include "bindings/DeviceContext.h"
-#include "bindings/InputAction.h"
-#include "framework/UID.h"
+#include <bindings/binding_device.h>
+#include <bindings/binding_structs.h>
+#include <bindings/binding_types.h>
+#include <bindings/binding_traits.h>
+#include <framework/UID.h>
 
 // +--------------------------------+
 // | STANDARD HEADERS				|
 // +--------------------------------+
+#include <binding_controls.h>
+#include <deque>
 #include <list>
-#include <memory>
 #include <unordered_map>
-#include <vector>
 
 
 namespace engine
 {
     class Command;
+    class PlayerController;
     class InputMappingContext final
     {
     public:
-        // Registers an input action with the given key, input action, and triggers as a keyboard/gamepad binding.
-        void register_input_action( UID uid, binding::key_t key, input_action_variant_t inputAction,
-                                    const binding::trigger_bitset_t& triggers );
-        void register_input_action( UID uid, binding::btn_t button, input_action_variant_t inputAction,
-                                    const binding::trigger_bitset_t& triggers );
+        // Registers an input action as a UID bound to the given key code and modifiers.
+        void register_input_action( const binding::InputAction& action, binding::UniformBindingCode code );
+        void register_input_action( UID uid, binding::UniformBindingCode code );
 
-        void bind_input_action( UID uid, Command* command );
-        void unbind_input_action( UID uid, Command* command );
+        void register_device( PlayerController& controller, binding::DeviceInfo deviceInfo );
+        void unregister_device( const PlayerController& controller );
 
-        // Signals the input action with the given value and trigger as a keyboard/gamepad event.
-        void signal( binding::key_t key, bool value, binding::TriggerEvent trigger );
-        void signal( binding::btn_t button, bool value, binding::TriggerEvent trigger );
+        // Bind a member function to the input action of the given code. Command will be called once the input action is signaled.
+        template <typename method_signature_t>
+            requires std::derived_from<typename binding::method_traits<method_signature_t>::class_t, PlayerController>
+        void bind_to_input_action( typename binding::method_traits<method_signature_t>::class_t& controller,
+                                   UID uid,
+                                   method_signature_t command,
+                                   const binding::trigger_bitset_t& triggers = {
+                                       seq_mask_cast( binding::TriggerEvent::TRIGGERED )
+                                   } );
+
+        void unbind_from_input_action( PlayerController& controller, UID uid );
+
+        // Signals the input action bound to the given code and trigger for the correct device.
+        void signal( binding::UniformBindingCode code, binding::TriggerEvent trigger, binding::DeviceInfo deviceInfo );
 
         // Dispatches the merged signaled events to the corresponding commands.
         void dispatch( );
 
     private:
-        // Device contexts for action bindings
-        DeviceContext keyboard_context_{};
-        DeviceContext gamepad_context_{};
-
-        // This map holds the triggers for each action.
-        std::unordered_map<UID, binding::trigger_bitset_t> action_triggers_{};
+        std::unordered_map<binding::UniformBindingCode, std::vector<binding::InputAction>,
+            binding::UniformBindingCodeHasher> action_binds_{};
+        std::list<binding::DeviceContext> device_contexts_{};
 
         // This queue holds the signaled events to be dispatched.
-        std::vector<InputActionContext> signaled_triggered_inputs_{};
-        std::vector<InputActionContext> signaled_pressed_inputs_{};
+        std::deque<binding::InputSnapshot> signaled_inputs_queue_{};
 
-        // These maps hold the commands to be called when the corresponding input action is signaled.
-        std::unordered_map<UID, std::list<Command*>> triggered_commands_{};
-        std::unordered_map<UID, std::list<Command*>> pressed_commands_{};
-        std::unordered_map<UID, std::list<Command*>> released_commands_{};
+        using optional_device_it = std::optional<decltype(device_contexts_)::iterator>;
+        [[nodiscard]] optional_device_it find_device_context( const PlayerController& controller );
 
-        void register_input_action( UID uid, input_action_variant_t inputAction,
-                                    const binding::trigger_bitset_t& triggers,
-                                    std::vector<InputActionBinding>& actions );
-
-        // Merges the signaled inputs of same uid as a single value for dispatching.
-        void signal( UID uid, bool value, binding::TriggerEvent trigger );
-
-        [[nodiscard]] bool is_input_action_registered_for_any( UID uid ) const;
-        [[nodiscard]] bool is_input_action_registered_for_key( UID uid, binding::key_t key ) const;
-        [[nodiscard]] bool is_input_action_registered_for_button( UID uid, binding::btn_t button ) const;
+        void bind_to_input_action_impl( const PlayerController& controller, UID uid,
+                                        binding::input_command_variant_t&& command,
+                                        const binding::trigger_bitset_t& triggers );
 
     };
+
+
+    template <typename method_signature_t>
+        requires std::derived_from<typename binding::method_traits<method_signature_t>::class_t, PlayerController>
+    void InputMappingContext::bind_to_input_action(
+        typename binding::method_traits<method_signature_t>::class_t& controller,
+        UID uid, method_signature_t command,
+        const binding::trigger_bitset_t& triggers )
+    {
+        using traits = binding::method_traits<method_signature_t>;
+        bind_to_input_action_impl( controller, uid,
+                                   std::function<void( typename traits::param_t )>{
+                                       std::bind( command, &controller, std::placeholders::_1 )
+                                   },
+                                   triggers );
+    }
 
 }
 
 
-#endif // !INPUTMAPPINGCONTEXT_H
+#endif //!INPUTMAPPINGCONTEXT_H

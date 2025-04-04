@@ -43,4 +43,4 @@ namespace engine
 
 }
 
-#endif // !RESOURCEMANAGER_H
+#endif //!RESOURCEMANAGER_H

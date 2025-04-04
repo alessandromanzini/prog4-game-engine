@@ -4,9 +4,9 @@
 // +--------------------------------+
 // | PROJECT HEADERS				|
 // +--------------------------------+
-#include "Singleton.h"
-#include "bindings/BindingTypes.h"
+#include "bindings/binding_types.h"
 #include "bindings/InputMappingContext.h"
+#include "singletons/Singleton.h"
 
 // +--------------------------------+
 // | GLM HEADERS					|
@@ -16,36 +16,36 @@
 // +--------------------------------+
 // | STANDARD HEADERS				|
 // +--------------------------------+
-#include <memory>
+#include <binding_device.h>
 #include <unordered_set>
 
 
 namespace engine
 {
+    // TODO: Pimpl InputSystem to hide SDL dependencies. Use service locator pattern
     class InputSystem final : public Singleton<InputSystem>
     {
     public:
         bool process_input( );
 
-        engine::InputMappingContext& get_input_mapping_context( );
+        InputMappingContext& get_input_mapping_context( );
 
     private:
         bool request_quit_{ false };
 
-        engine::InputMappingContext input_mapping_context_{};
+        InputMappingContext input_mapping_context_{};
 
         std::unordered_set<binding::key_t> keys_pressed_this_frame_{};
         std::unordered_set<binding::btn_t> buttons_pressed_this_frame_{};
 
-        void poll_sdl_events( );
+        void poll( );
 
-        void press_key( binding::key_t key );
-        void release_key( binding::key_t key );
+        void forward_code_to_contexts( binding::UniformBindingCode code, binding::TriggerEvent trigger,
+                                       binding::DeviceInfo deviceInfo );
 
-        void press_button( binding::btn_t button );
-        void release_button( binding::btn_t button );
-
-        void dispatch_pressed( );
+        void trigger( binding::UniformBindingCode code, binding::DeviceInfo deviceInfo );
+        void release( binding::UniformBindingCode code, binding::DeviceInfo deviceInfo );
+        void press( );
 
     };
 
@@ -53,4 +53,4 @@ namespace engine
 
 }
 
-#endif // INPUTSYSTEM_H
+#endif //!INPUTSYSTEM_H

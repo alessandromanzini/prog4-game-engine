@@ -11,14 +11,19 @@ namespace engine
     public:
         virtual ~BaseController( ) = default;
 
-        virtual void possess( GameObject* pawn ) noexcept { pawn_ptr_ = pawn; }
-        virtual void unpossess( ) noexcept { pawn_ptr_ = nullptr; }
+        BaseController( const BaseController& )                = delete;
+        BaseController( BaseController&& ) noexcept            = delete;
+        BaseController& operator=( const BaseController& )     = delete;
+        BaseController& operator=( BaseController&& ) noexcept = delete;
 
-        const GameObject* get_pawn( ) const noexcept { return pawn_ptr_; }
-        GameObject* get_pawn( ) noexcept { return pawn_ptr_; }
+        virtual void possess( GameObject* pawn ) { pawn_ptr_ = pawn; }
+        virtual void unpossess( ) { pawn_ptr_ = nullptr; }
+
+        [[nodiscard]] const GameObject* get_pawn( ) const { return pawn_ptr_; }
+        [[nodiscard]] GameObject* get_pawn( ) { return pawn_ptr_; }
 
     protected:
-        explicit BaseController( ) = default;
+        BaseController( ) = default;
 
     private:
         GameObject* pawn_ptr_{ nullptr };

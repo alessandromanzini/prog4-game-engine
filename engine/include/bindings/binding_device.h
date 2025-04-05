@@ -19,14 +19,18 @@ namespace engine::binding
 {
     class CommandSet final
     {
+        using command_list_t = std::list<input_command_variant_t>;
+
     public:
         void set( CommandInfo&& info );
         void execute( input_value_variant_t value, TriggerEvent trigger ) const;
 
     private:
-        std::list<input_command_variant_t> triggered_commands_{};
-        std::list<input_command_variant_t> pressed_commands_{};
-        std::list<input_command_variant_t> released_commands_{};
+        command_list_t triggered_commands_{};
+        command_list_t pressed_commands_{};
+        command_list_t released_commands_{};
+
+        [[nodiscard]] const command_list_t& select_command_list( TriggerEvent trigger ) const;
 
     };
 

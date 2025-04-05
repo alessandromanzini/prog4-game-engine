@@ -13,7 +13,13 @@ namespace engine
     class Observer
     {
     public:
-        virtual ~Observer() = default;
+        Observer( )          = default;
+        virtual ~Observer( ) = default;
+
+        Observer( const Observer& )                = delete;
+        Observer( Observer&& ) noexcept            = delete;
+        Observer& operator=( const Observer& )     = delete;
+        Observer& operator=( Observer&& ) noexcept = delete;
 
         virtual void notify( UID event, Subject* subject, event::broadcast_value_variant_t value ) = 0;
 

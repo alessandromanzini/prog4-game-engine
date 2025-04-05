@@ -9,7 +9,7 @@ namespace engine
     class PlayerController : public BaseController
     {
     public:
-        bool operator==( const PlayerController& other ) const noexcept
+        bool operator==( const PlayerController& other ) const
         {
             return id_ == other.id_;
         }
@@ -17,7 +17,7 @@ namespace engine
     protected:
         const int id_{ -1 };
 
-        explicit PlayerController( const int id ) noexcept
+        explicit PlayerController( const int id )
             : id_( id )
         {
             assert( id_ >= 0 && "PlayerController ID must be non-negative!" );

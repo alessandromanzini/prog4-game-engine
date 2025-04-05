@@ -26,10 +26,14 @@ namespace engine
     // TODO: Pimpl InputSystem to hide SDL dependencies. Use service locator pattern
     class InputSystem final : public Singleton<InputSystem>
     {
+        using device_id_t = decltype(binding::DeviceInfo::id);
+
     public:
         bool process_input( );
 
-        InputMappingContext& get_input_mapping_context( );
+        [[nodiscard]] device_id_t fetch_free_gamepad_id() const;
+
+        [[nodiscard]] InputMappingContext& get_input_mapping_context( );
 
     private:
         bool request_quit_{ false };
@@ -46,6 +50,8 @@ namespace engine
         void forward_state_to_contexts( binding::DeviceType deviceType );
 
         [[nodiscard]] binding::InputBuffer& select_buffer( binding::DeviceType deviceType );
+
+        [[nodiscard]] static std::vector<device_id_t> get_connected_gamepad_ids();
 
     };
 

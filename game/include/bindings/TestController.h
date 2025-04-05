@@ -16,9 +16,11 @@ namespace game
         {
             auto& imc = engine::INPUT_SYSTEM.get_input_mapping_context( );
 
-            imc.register_device( *this, { engine::binding::DeviceType::KEYBOARD } );
+            const auto id = engine::INPUT_SYSTEM.fetch_free_gamepad_id( );
+            imc.register_device( *this, { engine::binding::DeviceType::GAMEPAD, id } );
 
-            imc.bind_to_input_action( *this, engine::UID( IA::TEST ), &TestController::testFunc, engine::binding::TriggerEvent::PRESSED );
+            imc.bind_to_input_action( *this, engine::UID( IA::TEST ), &TestController::testFunc, engine::binding::TriggerEvent::TRIGGERED );
+            imc.bind_to_input_action( *this, engine::UID( IA::TEST ), &TestController::testFunc, engine::binding::TriggerEvent::RELEASED );
         }
 
         ~TestController( ) override

@@ -3,14 +3,15 @@
 // +--------------------------------+
 // | PROJECT HEADERS				|
 // +--------------------------------+
+#include <bindings/binding_controls.h>
 
 // +--------------------------------+
 // | STANDARD HEADERS				|
 // +--------------------------------+
 #include <cassert>
 
-
 using namespace engine::binding;
+
 
 namespace engine
 {
@@ -78,6 +79,12 @@ namespace engine
         {
             device.execute_commands( );
         }
+    }
+
+
+    const std::list<DeviceContext>& InputMappingContext::get_devices( ) const
+    {
+        return device_contexts_;
     }
 
 

@@ -30,10 +30,10 @@ namespace game
         }
 
         health_ -= amount;
-        broadcast( UID( "ActorHealthChanged" ), health_ );
+        health_subject_.broadcast( UID( "ActorHealthChanged" ), health_ );
         if ( not is_alive( ) )
         {
-            broadcast( UID( "ActorDead" ) );
+            health_subject_.broadcast( UID( "ActorDead" ) );
         }
     }
 

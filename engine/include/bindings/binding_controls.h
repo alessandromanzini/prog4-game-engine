@@ -24,7 +24,7 @@ namespace engine::binding
     // | COMPILE-TIME CASTS				|
     // +--------------------------------+
     // Converts the mask to a sequence number
-    [[nodiscard]] constexpr uint32_t mask_to_seq( uint32_t mask ) noexcept
+    [[nodiscard]] constexpr uint32_t mask_to_seq( uint32_t mask )
     {
         assert( mask != 0 && "Mask cannot be 0!" );
 
@@ -39,14 +39,14 @@ namespace engine::binding
 
 
     // Casts the sequence enum value to a single bit representation
-    [[nodiscard]] constexpr size_t bit_cast( TriggerEvent trigger ) noexcept
+    [[nodiscard]] constexpr size_t bit_cast( TriggerEvent trigger )
     {
         return static_cast<size_t>( trigger );
     }
 
 
     // Casts the sequence enum value to a single bit representation
-    [[nodiscard]] constexpr size_t bit_cast( ModifierType modifier ) noexcept
+    [[nodiscard]] constexpr size_t bit_cast( ModifierType modifier )
     {
         return static_cast<size_t>( modifier );
     }
@@ -55,7 +55,7 @@ namespace engine::binding
     // Casts the enum to the bitset representation
     template <typename... args_t>
         requires (std::same_as<args_t, TriggerEvent> && ...)
-    [[nodiscard]] constexpr trigger_bitset_t bitset_cast( args_t... triggers ) noexcept
+    [[nodiscard]] constexpr trigger_bitset_t bitset_cast( args_t... triggers )
     {
         return trigger_bitset_t{ ( ( 1u << bit_cast( triggers ) ) | ... ) };
     }
@@ -64,7 +64,7 @@ namespace engine::binding
     // Casts the enum to the bitset representation
     template <typename... args_t>
         requires (std::same_as<args_t, ModifierType> && ...)
-    [[nodiscard]] constexpr modifier_bitset_t bitset_cast( args_t... modifiers ) noexcept
+    [[nodiscard]] constexpr modifier_bitset_t bitset_cast( args_t... modifiers )
     {
         return modifier_bitset_t{ ( ( 1u << bit_cast( modifiers ) ) | ... ) };
     }

@@ -13,7 +13,7 @@ namespace engine
     class Component : public Deletable
     {
     public:
-        ~Component( ) noexcept override = default;
+        ~Component( ) override = default;
 
         Component( const Component& )                = delete;
         Component( Component&& ) noexcept            = delete;

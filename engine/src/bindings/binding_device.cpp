@@ -36,29 +36,25 @@ namespace engine::binding
     void CommandSet::execute( const input_value_variant_t value, const TriggerEvent trigger ) const
     {
         // TODO: Implement correct function call
+        for ( const auto& command : select_command_list( trigger ) )
+        {
+            std::get<std::function<void( bool )>>( command )( std::get<bool>( value ) );
+        }
+    }
+
+
+    const CommandSet::command_list_t& CommandSet::select_command_list( const TriggerEvent trigger ) const
+    {
         switch ( trigger )
         {
             case TriggerEvent::TRIGGERED:
-                for ( const auto& command : triggered_commands_ )
-                {
-                    std::get<std::function<void( bool )>>( command )( std::get<bool>( value ) );
-                }
-                break;
+                return triggered_commands_;
             case TriggerEvent::PRESSED:
-                for ( const auto& command : pressed_commands_ )
-                {
-                    std::get<std::function<void( bool )>>( command )( std::get<bool>( value ) );
-                }
-                break;
+                return pressed_commands_;
             case TriggerEvent::RELEASED:
-                for ( const auto& command : released_commands_ )
-                {
-                    std::get<std::function<void( bool )>>( command )( std::get<bool>( value ) );
-                }
-                break;
-            default:
-                assert( false && "Invalid trigger event!" );
+                return released_commands_;
         }
+        assert( false && "Invalid trigger event!" );
     }
 
 

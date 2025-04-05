@@ -18,10 +18,10 @@ namespace game
 		}
 
 		score_ += score;
-		broadcast( UID( "ActorScoreChanged" ), score_ );
+		score_subject_.broadcast( UID( "ActorScoreChanged" ), score_ );
 		if ( score_ >= WINNING_SCORE_ )
 		{
-			broadcast( UID( "ActorWon" ) );
+			score_subject_.broadcast( UID( "ActorWon" ) );
 		}
 	}
 

@@ -34,14 +34,14 @@ namespace engine::binding
     // This struct generalizes the key binding values
     struct UniformBindingCode final
     {
-        UniformBindingCode( ) noexcept = default;
+        UniformBindingCode( ) = default;
         constexpr UniformBindingCode( const key_t key ) : code{ static_cast<decltype(code)>( key ) } { }
         constexpr UniformBindingCode( const btn_t btn ) : code{ static_cast<decltype(code)>( btn ) } { }
 
         explicit operator uint32_t( ) const { return code; }
 
-        [[nodiscard]] bool operator<( const UniformBindingCode& other ) const { return code < other.code; }
-        [[nodiscard]] bool operator==( const UniformBindingCode& other ) const { return code == other.code; }
+        [[nodiscard]] bool operator<( const UniformBindingCode& other ) const noexcept { return code < other.code; }
+        [[nodiscard]] bool operator==( const UniformBindingCode& other ) const noexcept { return code == other.code; }
 
         uint32_t code{};
 

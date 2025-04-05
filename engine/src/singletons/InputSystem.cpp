@@ -3,6 +3,7 @@
 // +--------------------------------+
 // | PROJECT HEADERS				|
 // +--------------------------------+
+#include <bindings/binding_device.h>
 #include <bindings/InputMappingContext.h>
 #include <singletons/UIController.h>
 
@@ -19,12 +20,12 @@
 // +--------------------------------+
 // | STANDARD HEADERS				|
 // +--------------------------------+
-#include <binding_device.h>
+#include <algorithm>
 #include <cassert>
 #include <vector>
 
+using engine::binding::TriggerEvent;
 
-using TriggerEvent = engine::binding::TriggerEvent;
 
 namespace engine
 {
@@ -40,6 +41,34 @@ namespace engine
         input_mapping_context_.dispatch( );
 
         return !request_quit_;
+    }
+
+
+    InputSystem::device_id_t InputSystem::fetch_free_gamepad_id( ) const
+    {
+        auto ids{ get_connected_gamepad_ids( ) };
+
+        // Remove already-used gamepad IDs
+        for ( const auto& device : input_mapping_context_.get_devices( ) )
+        {
+            if ( device.get_device_info( ).type == binding::DeviceType::GAMEPAD )
+            {
+                std::erase( ids, device.get_device_info( ).id );
+            }
+            if ( ids.empty( ) )
+            {
+                break;
+            }
+        }
+
+        // Throw an error if no gamepad ID is available
+        if ( ids.empty( ) )
+        {
+            throw std::runtime_error( "No gamepad id available." );
+        }
+
+        // Return the first one (they're already sorted)
+        return ids.front( );
     }
 
 
@@ -146,6 +175,22 @@ namespace engine
                 return gamepad_buffer_;
         }
         assert( false && "Invalid device type!" );
+    }
+
+
+    std::vector<InputSystem::device_id_t> InputSystem::get_connected_gamepad_ids( )
+    {
+        std::vector<device_id_t> gamepadIds{};
+
+        for ( int i{}; i < SDL_NumJoysticks( ); ++i )
+        {
+            if ( SDL_IsGameController( i ) )
+            {
+                gamepadIds.push_back( static_cast<device_id_t>( i ) );
+            }
+        }
+
+        return gamepadIds;
     }
 
 }

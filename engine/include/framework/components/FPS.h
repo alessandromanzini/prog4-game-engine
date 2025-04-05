@@ -9,11 +9,12 @@
 
 namespace engine
 {
+    // ReSharper disable once CppInconsistentNaming
     class FPS final : public Component
     {
     public:
         explicit FPS( GameObjectView& owner );
-        ~FPS( ) noexcept override = default;
+        ~FPS( ) override = default;
 
         FPS( const FPS& )                = delete;
         FPS( FPS&& ) noexcept            = delete;

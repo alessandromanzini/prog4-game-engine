@@ -21,18 +21,18 @@ namespace engine
 
     void GameTime::fixed_tick( )
     {
-        lag_ -= fixed_time_step_;
+        lag_ -= FIXED_TIME_STEP_;
     }
 
 
-    void GameTime::reset( ) noexcept
+    void GameTime::reset( )
     {
         last_time_ = high_resolution_clock::now( );
         lag_       = 0.f;
     }
 
 
-    float GameTime::get_delta_time( ) const noexcept
+    float GameTime::get_delta_time( ) const
     {
         return *current_delta_ptr_;
     }
@@ -45,15 +45,15 @@ namespace engine
     }
 
 
-    bool GameTime::get_required_fixed_update( ) const noexcept
+    bool GameTime::get_required_fixed_update( ) const
     {
-        return lag_ >= fixed_time_step_;
+        return lag_ >= FIXED_TIME_STEP_;
     }
 
 
     nanoseconds GameTime::get_sleep_time( ) const
     {
-        return last_time_ + milliseconds( ms_per_frame_ ) - high_resolution_clock::now( );
+        return last_time_ + milliseconds( MS_PER_FRAME_ ) - high_resolution_clock::now( );
     }
 
 
@@ -65,7 +65,7 @@ namespace engine
                 current_delta_ptr_ = &delta_time_;
                 break;
             case TimingType::FIXED_DELTA_TIME:
-                current_delta_ptr_ = &fixed_time_step_;
+                current_delta_ptr_ = &FIXED_TIME_STEP_;
                 break;
         }
     }

@@ -14,7 +14,7 @@ namespace engine
     class UIComponent : public Deletable
     {
     public:
-        ~UIComponent( ) noexcept override = default;
+        ~UIComponent( ) override = default;
 
         UIComponent( const UIComponent& )                = delete;
         UIComponent( UIComponent&& ) noexcept            = delete;

@@ -20,15 +20,20 @@ namespace engine
     }
 
     class Observer;
-    class Subject
+    class Subject final
     {
     public:
-        virtual ~Subject( ) noexcept = default;
+        Subject( )           = default;
+        ~Subject( ) noexcept = default;
+
+        Subject( const Subject& )                = delete;
+        Subject( Subject&& ) noexcept            = delete;
+        Subject& operator=( const Subject& )     = delete;
+        Subject& operator=( Subject&& ) noexcept = delete;
 
         void add_observer( Observer& observer );
         void remove_observer( const Observer& observer );
 
-    protected:
         void broadcast( UID event, const event::broadcast_value_variant_t& value = {} );
 
     private:

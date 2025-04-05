@@ -10,7 +10,7 @@
 
 namespace game
 {
-    class ScoreComponent final : public engine::Component, public engine::Subject
+    class ScoreComponent final : public engine::Component
     {
     public:
         explicit ScoreComponent( engine::GameObjectView& owner );
@@ -22,6 +22,7 @@ namespace game
         static constexpr int WINNING_SCORE_{ 400 };
 
         int score_{};
+        engine::Subject score_subject_{};
 
     };
 

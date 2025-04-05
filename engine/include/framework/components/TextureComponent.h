@@ -14,7 +14,7 @@ namespace engine
     {
     public:
         explicit TextureComponent( GameObjectView& owner, const std::string& filename );
-        ~TextureComponent( ) noexcept override = default;
+        ~TextureComponent( ) override = default;
 
         TextureComponent( const TextureComponent& )                = delete;
         TextureComponent( TextureComponent&& ) noexcept            = delete;

@@ -19,6 +19,7 @@
 
 namespace engine
 {
+    // TODO: reintroduce concepts
     class Component;
     class GameObjectView;
     class GameObject final

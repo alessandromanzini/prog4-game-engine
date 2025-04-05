@@ -16,7 +16,8 @@ namespace game
 	{
 		auto& imc{ INPUT_SYSTEM.get_input_mapping_context( ) };
 
-		imc.register_input_action( UID( IA::TEST ), binding::key_t::SDLK_w );
+		imc.register_input_action( UID( IA::TEST ), SDLK_w );
+		imc.register_input_action( UID( IA::TEST ), SDL_CONTROLLER_BUTTON_A );
 	}
 
 }

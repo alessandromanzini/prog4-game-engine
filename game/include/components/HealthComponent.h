@@ -10,7 +10,7 @@
 
 namespace game
 {
-	class HealthComponent final : public engine::Component, public engine::Subject
+	class HealthComponent final : public engine::Component
 	{
 	public:
 		HealthComponent( engine::GameObjectView& owner, int health );
@@ -22,6 +22,7 @@ namespace game
 
 	private:
 		int health_{};
+		engine::Subject health_subject_{};
 
 	};
 

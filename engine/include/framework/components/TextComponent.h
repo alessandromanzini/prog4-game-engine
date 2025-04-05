@@ -20,7 +20,7 @@ namespace engine
     {
     public:
         explicit TextComponent( GameObjectView& owner, const std::string& text, std::shared_ptr<Font> font );
-        ~TextComponent( ) noexcept override = default;
+        ~TextComponent( ) override = default;
 
         TextComponent( const TextComponent& )                = delete;
         TextComponent( TextComponent&& ) noexcept            = delete;

@@ -12,7 +12,6 @@
 // +--------------------------------+
 // | STANDARD HEADERS				|
 // +--------------------------------+
-#include <binding_controls.h>
 #include <list>
 #include <unordered_map>
 
@@ -24,6 +23,14 @@ namespace engine
     class InputMappingContext final
     {
     public:
+        InputMappingContext( )           = default;
+        ~InputMappingContext( ) noexcept = default;
+
+        InputMappingContext( const InputMappingContext& )                = delete;
+        InputMappingContext( InputMappingContext&& ) noexcept            = delete;
+        InputMappingContext& operator=( const InputMappingContext& )     = delete;
+        InputMappingContext& operator=( InputMappingContext&& ) noexcept = delete;
+
         // Registers an input action as a UID bound to the given key code and modifiers.
         void register_input_action( const binding::InputAction& action, binding::UniformBindingCode code );
         void register_input_action( UID uid, binding::UniformBindingCode code );
@@ -46,6 +53,8 @@ namespace engine
 
         // Dispatches the merged signaled events to the corresponding commands.
         void dispatch( );
+
+        [[nodiscard]] const std::list<binding::DeviceContext>& get_devices( ) const;
 
     private:
         std::unordered_map<binding::UniformBindingCode, std::vector<binding::InputAction>,

@@ -33,19 +33,19 @@ namespace engine
 
         void tick( );
         void fixed_tick( );
-        void reset( ) noexcept;
+        void reset( );
 
         void set_timing_type( TimingType type );
 
-        [[nodiscard]] float get_delta_time( ) const noexcept;
+        [[nodiscard]] float get_delta_time( ) const;
         [[nodiscard]] float get_fps( ) const;
 
-        [[nodiscard]] bool get_required_fixed_update( ) const noexcept;
+        [[nodiscard]] bool get_required_fixed_update( ) const;
         [[nodiscard]] std::chrono::nanoseconds get_sleep_time( ) const;
 
     private:
-        static constexpr int ms_per_frame_{ 16 };
-        static constexpr float fixed_time_step_{ 0.005f };
+        static constexpr int MS_PER_FRAME_{ 16 };
+        static constexpr float FIXED_TIME_STEP_{ 0.005f };
 
         float delta_time_{ 0.f };
         const float* current_delta_ptr_{ &delta_time_ };

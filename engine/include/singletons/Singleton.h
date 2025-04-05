@@ -7,7 +7,7 @@ namespace engine
     class Singleton
     {
     public:
-        virtual ~Singleton( ) noexcept = default;
+        virtual ~Singleton( ) = default;
 
         Singleton( const Singleton& )                = delete;
         Singleton( Singleton&& ) noexcept            = delete;

@@ -1,10 +1,10 @@
-#include "singletons/InputSystem.h"
+#include <singletons/InputSystem.h>
 
 // +--------------------------------+
 // | PROJECT HEADERS				|
 // +--------------------------------+
-#include "bindings/InputMappingContext.h"
-#include "singletons/UIController.h"
+#include <bindings/InputMappingContext.h>
+#include <singletons/UIController.h>
 
 // +--------------------------------+
 // | SDL HEADERS					|
@@ -54,9 +54,10 @@ namespace engine
         SDL_Event e;
         while ( SDL_PollEvent( &e ) )
         {
-            const auto key       = static_cast<binding::key_t>( e.key.keysym.sym );
-            const auto btn       = static_cast<binding::btn_t>( e.cbutton.button );
-            const auto gamepadId = static_cast<uint8_t>( e.cdevice.which );
+            const binding::UniformBindingCode key{ static_cast<binding::key_t>( e.key.keysym.sym ) };
+            const binding::UniformBindingCode btn{ static_cast<binding::btn_t>( e.cbutton.button ) };
+
+            const auto gamepadId{ static_cast<uint8_t>( e.cdevice.which ) };
 
             switch ( e.type )
             {
@@ -65,19 +66,21 @@ namespace engine
                     return;
 
                 case SDL_KEYDOWN:
-                    trigger( binding::UniformBindingCode( key ), { binding::DeviceType::KEYBOARD } );
+                    forward_code_to_contexts( key, TriggerEvent::TRIGGERED, { binding::DeviceType::KEYBOARD } );
                     break;
 
                 case SDL_KEYUP:
-                    release( binding::UniformBindingCode( key ), { binding::DeviceType::KEYBOARD } );
+                    forward_code_to_contexts( key, TriggerEvent::RELEASED, { binding::DeviceType::KEYBOARD } );
                     break;
 
                 case SDL_CONTROLLERBUTTONDOWN:
-                    trigger( binding::UniformBindingCode( btn ), { binding::DeviceType::GAMEPAD, gamepadId } );
+                    forward_code_to_contexts( btn, TriggerEvent::TRIGGERED,
+                                              { binding::DeviceType::GAMEPAD, gamepadId } );
                     break;
 
                 case SDL_CONTROLLERBUTTONUP:
-                    trigger( binding::UniformBindingCode( btn ), { binding::DeviceType::KEYBOARD, gamepadId } );
+                    forward_code_to_contexts( btn, TriggerEvent::RELEASED,
+                                              { binding::DeviceType::GAMEPAD, gamepadId } );
                     break;
 
                 default:
@@ -89,67 +92,60 @@ namespace engine
         }
 
         // Dispatch all keys and buttons pressed every frame
-        press( );
+        forward_state_to_contexts( binding::DeviceType::KEYBOARD );
+        forward_state_to_contexts( binding::DeviceType::GAMEPAD );
     }
 
 
-    void InputSystem::forward_code_to_contexts( const binding::UniformBindingCode code, const binding::TriggerEvent trigger,
+    void InputSystem::forward_code_to_contexts( const binding::UniformBindingCode code,
+                                                const binding::TriggerEvent trigger,
                                                 const binding::DeviceInfo deviceInfo )
     {
-        input_mapping_context_.signal( code, trigger, deviceInfo );
-    }
+        binding::InputBuffer& buffer{ select_buffer( deviceInfo.type ) };
 
-
-    void InputSystem::trigger( binding::UniformBindingCode code, const binding::DeviceInfo deviceInfo )
-    {
-        switch ( deviceInfo.type )
+        // ReSharper disable once CppIncompleteSwitchStatement
+        // ReSharper disable once CppDefaultCaseNotHandledInSwitchStatement
+        switch ( trigger )
         {
-            case binding::DeviceType::KEYBOARD:
-                if ( not keys_pressed_this_frame_.contains( static_cast<binding::key_t>( code.code ) ) )
+            case TriggerEvent::TRIGGERED:
+                // We must trigger only if the key/button is not already pressed (was released)
+                if ( not buffer.is_pressed( code, deviceInfo.id ) )
                 {
-                    forward_code_to_contexts( code, TriggerEvent::TRIGGERED, deviceInfo );
-                    keys_pressed_this_frame_.insert( static_cast<binding::key_t>( code.code ) );
+                    buffer.trigger( code, deviceInfo.id );
+                    input_mapping_context_.signal( code, trigger, deviceInfo );
                 }
                 break;
-            case binding::DeviceType::GAMEPAD:
-                if ( not buttons_pressed_this_frame_.contains( static_cast<binding::btn_t>( code.code ) ) )
-                {
-                    forward_code_to_contexts( code, TriggerEvent::TRIGGERED, deviceInfo );
-                    buttons_pressed_this_frame_.insert( static_cast<binding::btn_t>( code.code ) );
-                }
+            case TriggerEvent::PRESSED:
+                input_mapping_context_.signal( code, trigger, deviceInfo );
+                break;
+            case TriggerEvent::RELEASED:
+                buffer.release( code, deviceInfo.id );
+                input_mapping_context_.signal( code, trigger, deviceInfo );
                 break;
         }
     }
 
 
-    void InputSystem::release( binding::UniformBindingCode code, const binding::DeviceInfo deviceInfo )
+    void InputSystem::forward_state_to_contexts( const binding::DeviceType deviceType )
     {
-        switch ( deviceInfo.type )
+        const binding::InputBuffer& buffer{ select_buffer( deviceType ) };
+        for ( const auto& [code, deviceId] : buffer.get_pressed_this_frame( ) )
         {
-            case binding::DeviceType::KEYBOARD:
-                keys_pressed_this_frame_.erase( static_cast<binding::key_t>( code.code ) );
-                break;
-            case binding::DeviceType::GAMEPAD:
-                buttons_pressed_this_frame_.erase( static_cast<binding::btn_t>( code.code ) );
-                break;
+            input_mapping_context_.signal( code, TriggerEvent::PRESSED, { deviceType, deviceId } );
         }
-
-        forward_code_to_contexts( code, TriggerEvent::RELEASED, deviceInfo );
     }
 
 
-    void InputSystem::press( )
+    binding::InputBuffer& InputSystem::select_buffer( const binding::DeviceType deviceType )
     {
-        // TODO: Implement this function to handle the press event
-        // for ( const auto key : keys_pressed_this_frame_ )
-        // {
-        //     input_mapping_context_.signal( key, true, TriggerEvent::PRESSED );
-        // }
-        //
-        // for ( const auto button : buttons_pressed_this_frame_ )
-        // {
-        //     input_mapping_context_.signal( button, true, TriggerEvent::PRESSED );
-        // }
+        switch ( deviceType )
+        {
+            case binding::DeviceType::KEYBOARD:
+                return keyboard_buffer_;
+            case binding::DeviceType::GAMEPAD:
+                return gamepad_buffer_;
+        }
+        assert( false && "Invalid device type!" );
     }
 
 }

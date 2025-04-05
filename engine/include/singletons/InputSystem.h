@@ -4,9 +4,11 @@
 // +--------------------------------+
 // | PROJECT HEADERS				|
 // +--------------------------------+
-#include "bindings/binding_types.h"
-#include "bindings/InputMappingContext.h"
-#include "singletons/Singleton.h"
+#include <bindings/binding_device.h>
+#include <bindings/binding_types.h>
+#include <bindings/InputBuffer.h>
+#include <bindings/InputMappingContext.h>
+#include <singletons/Singleton.h>
 
 // +--------------------------------+
 // | GLM HEADERS					|
@@ -16,7 +18,6 @@
 // +--------------------------------+
 // | STANDARD HEADERS				|
 // +--------------------------------+
-#include <binding_device.h>
 #include <unordered_set>
 
 
@@ -35,17 +36,16 @@ namespace engine
 
         InputMappingContext input_mapping_context_{};
 
-        std::unordered_set<binding::key_t> keys_pressed_this_frame_{};
-        std::unordered_set<binding::btn_t> buttons_pressed_this_frame_{};
+        binding::InputBuffer keyboard_buffer_{};
+        binding::InputBuffer gamepad_buffer_{};
 
         void poll( );
 
         void forward_code_to_contexts( binding::UniformBindingCode code, binding::TriggerEvent trigger,
                                        binding::DeviceInfo deviceInfo );
+        void forward_state_to_contexts( binding::DeviceType deviceType );
 
-        void trigger( binding::UniformBindingCode code, binding::DeviceInfo deviceInfo );
-        void release( binding::UniformBindingCode code, binding::DeviceInfo deviceInfo );
-        void press( );
+        [[nodiscard]] binding::InputBuffer& select_buffer( binding::DeviceType deviceType );
 
     };
 

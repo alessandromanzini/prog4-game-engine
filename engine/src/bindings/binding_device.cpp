@@ -7,7 +7,6 @@
 // +---------------------------+
 // | STANDARD HEADERS          |
 // +---------------------------+
-#include <algorithm>
 
 
 namespace engine::binding
@@ -46,16 +45,16 @@ namespace engine::binding
                 }
                 break;
             case TriggerEvent::PRESSED:
-                // for ( const auto& command : triggered_commands_ )
-                // {
-                //     command( value );
-                // }
+                for ( const auto& command : pressed_commands_ )
+                {
+                    std::get<std::function<void( bool )>>( command )( std::get<bool>( value ) );
+                }
                 break;
             case TriggerEvent::RELEASED:
-                // for ( const auto& command : released_commands_ )
-                // {
-                //     command( value );
-                // }
+                for ( const auto& command : released_commands_ )
+                {
+                    std::get<std::function<void( bool )>>( command )( std::get<bool>( value ) );
+                }
                 break;
             default:
                 assert( false && "Invalid trigger event!" );
@@ -66,8 +65,8 @@ namespace engine::binding
     // +---------------------------+
     // | DEVICE CONTEXT            |
     // +---------------------------+
-    DeviceContext::DeviceContext( PlayerController& controller, DeviceInfo deviceInfo )
-        : device_info_{ std::move( deviceInfo ) }
+    DeviceContext::DeviceContext( PlayerController& controller, const DeviceInfo deviceInfo )
+        : device_info_{ deviceInfo }
         , controller_{ controller } { }
 
 
@@ -104,13 +103,53 @@ namespace engine::binding
     }
 
 
-    void DeviceContext::execute_commands( const UID uid, const bool value, const TriggerEvent trigger ) const
+    void DeviceContext::signal_input( const InputSnapshot& input )
     {
-        if ( not command_sets_.contains( uid ) )
+        if ( not command_sets_.contains( input.uid ) )
         {
             return;
         }
-        command_sets_.at( uid ).execute( value, trigger );
+
+        const auto inputIt = std::ranges::find_if( signaled_inputs_queue_,
+                                                   [&]( const auto& current )
+                                                       {
+                                                           return current.uid == input.uid;
+                                                       } );
+
+        // If the input is not already in the queue, we add it
+        if ( inputIt == signaled_inputs_queue_.end( ) )
+        {
+            signaled_inputs_queue_.push_back( input );
+        }
+        else
+        {
+            // If the input is already in the queue, we update its value
+            merge_value_to_snapshot( *inputIt, input.value );
+            inputIt->triggers |= input.triggers;
+        }
+    }
+
+
+    void DeviceContext::execute_commands( )
+    {
+        while ( not signaled_inputs_queue_.empty( ) )
+        {
+            auto& cumulativeInput = signaled_inputs_queue_.front( );
+            signaled_inputs_queue_.pop_front( );
+
+            execute_commands_on_trigger( cumulativeInput, TriggerEvent::TRIGGERED );
+            execute_commands_on_trigger( cumulativeInput, TriggerEvent::PRESSED );
+            execute_commands_on_trigger( cumulativeInput, TriggerEvent::RELEASED );
+        }
+    }
+
+
+    void DeviceContext::execute_commands_on_trigger( const InputSnapshot& input, const TriggerEvent trigger ) const
+    {
+        if ( input.triggers.test( bit_cast( trigger ) ) )
+        {
+            command_sets_.at( input.uid ).execute( input.value, trigger );
+        }
     }
 
 }

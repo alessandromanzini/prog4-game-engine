@@ -5,16 +5,14 @@
 // | PROJECT HEADERS				|
 // +--------------------------------+
 #include <bindings/binding_device.h>
-#include <bindings/binding_structs.h>
-#include <bindings/binding_types.h>
 #include <bindings/binding_traits.h>
+#include <bindings/binding_types.h>
 #include <framework/UID.h>
 
 // +--------------------------------+
 // | STANDARD HEADERS				|
 // +--------------------------------+
 #include <binding_controls.h>
-#include <deque>
 #include <list>
 #include <unordered_map>
 
@@ -39,9 +37,7 @@ namespace engine
         void bind_to_input_action( typename binding::method_traits<method_signature_t>::class_t& controller,
                                    UID uid,
                                    method_signature_t command,
-                                   const binding::trigger_bitset_t& triggers = {
-                                       seq_mask_cast( binding::TriggerEvent::TRIGGERED )
-                                   } );
+                                   binding::TriggerEvent trigger = binding::TriggerEvent::TRIGGERED );
 
         void unbind_from_input_action( PlayerController& controller, UID uid );
 
@@ -54,17 +50,15 @@ namespace engine
     private:
         std::unordered_map<binding::UniformBindingCode, std::vector<binding::InputAction>,
             binding::UniformBindingCodeHasher> action_binds_{};
-        std::list<binding::DeviceContext> device_contexts_{};
 
-        // This queue holds the signaled events to be dispatched.
-        std::deque<binding::InputSnapshot> signaled_inputs_queue_{};
+        std::list<binding::DeviceContext> device_contexts_{};
 
         using optional_device_it = std::optional<decltype(device_contexts_)::iterator>;
         [[nodiscard]] optional_device_it find_device_context( const PlayerController& controller );
 
         void bind_to_input_action_impl( const PlayerController& controller, UID uid,
                                         binding::input_command_variant_t&& command,
-                                        const binding::trigger_bitset_t& triggers );
+                                        binding::TriggerEvent trigger );
 
     };
 
@@ -74,14 +68,14 @@ namespace engine
     void InputMappingContext::bind_to_input_action(
         typename binding::method_traits<method_signature_t>::class_t& controller,
         UID uid, method_signature_t command,
-        const binding::trigger_bitset_t& triggers )
+        binding::TriggerEvent trigger )
     {
         using traits = binding::method_traits<method_signature_t>;
         bind_to_input_action_impl( controller, uid,
                                    std::function<void( typename traits::param_t )>{
                                        std::bind( command, &controller, std::placeholders::_1 )
                                    },
-                                   triggers );
+                                   trigger );
     }
 
 }

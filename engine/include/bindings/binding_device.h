@@ -4,7 +4,6 @@
 // +--------------------------------+
 // | PROJECT HEADERS				|
 // +--------------------------------+
-#include <bindings/binding_structs.h>
 #include <bindings/binding_types.h>
 #include <controllers/PlayerController.h>
 #include <framework/UID.h>
@@ -12,6 +11,7 @@
 // +--------------------------------+
 // | STANDARD HEADERS				|
 // +--------------------------------+
+#include <deque>
 #include <list>
 
 
@@ -47,10 +47,15 @@ namespace engine::binding
         [[nodiscard]] const PlayerController& get_controller( ) const;
 
         [[nodiscard]] bool is_device_suitable( DeviceInfo deviceInfo ) const;
+
         void bind_command( UID uid, CommandInfo&& commandInfo );
         void unbind_command( UID uid );
 
-        void execute_commands( UID uid, bool value, TriggerEvent trigger ) const;
+        // Signals the input action linked to the command, if previously bound.
+        void signal_input( const InputSnapshot& input );
+
+        // Dispatches all signaled inputs to the corresponding commands.
+        void execute_commands( );
 
         [[nodiscard]] const DeviceInfo& get_device_info( ) const { return device_info_; }
 
@@ -59,7 +64,10 @@ namespace engine::binding
 
         PlayerController& controller_;
 
+        std::deque<InputSnapshot> signaled_inputs_queue_{};
         std::unordered_map<UID, CommandSet> command_sets_{};
+
+        void execute_commands_on_trigger( const InputSnapshot& input, TriggerEvent trigger ) const;
 
     };
 

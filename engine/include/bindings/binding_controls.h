@@ -4,8 +4,12 @@
 // +---------------------------+
 // | PROJECT HEADERS           |
 // +---------------------------+
-#include <bindings/binding_structs.h>
 #include <bindings/binding_types.h>
+
+// +---------------------------+
+// | STANDARD HEADERS          |
+// +---------------------------+
+#include <cassert>
 
 
 namespace engine::binding
@@ -34,33 +38,39 @@ namespace engine::binding
     }
 
 
-    // Casts the sequence enum value to a bitset representation
-    [[nodiscard]] constexpr uint32_t seq_mask_cast( TriggerEvent trigger ) noexcept
+    // Casts the sequence enum value to a single bit representation
+    [[nodiscard]] constexpr size_t bit_cast( TriggerEvent trigger ) noexcept
     {
-        return mask_to_seq( static_cast<uint32_t>( trigger ) );
+        return static_cast<size_t>( trigger );
     }
 
 
-    [[nodiscard]] constexpr uint32_t seq_mask_cast( ModifierType modifier ) noexcept
+    // Casts the sequence enum value to a single bit representation
+    [[nodiscard]] constexpr size_t bit_cast( ModifierType modifier ) noexcept
     {
-        return mask_to_seq( static_cast<uint32_t>( modifier ) );
+        return static_cast<size_t>( modifier );
     }
 
 
     // Casts the enum to the bitset representation
-    [[nodiscard]] constexpr trigger_bitset_t bitset_cast( TriggerEvent trigger ) noexcept
+    template <typename... args_t>
+        requires (std::same_as<args_t, TriggerEvent> && ...)
+    [[nodiscard]] constexpr trigger_bitset_t bitset_cast( args_t... triggers ) noexcept
     {
-        return static_cast<trigger_mask_t>( trigger );
+        return trigger_bitset_t{ ( ( 1u << bit_cast( triggers ) ) | ... ) };
     }
 
 
-    [[nodiscard]] constexpr modifier_bitset_t bitset_cast( ModifierType modifier ) noexcept
+    // Casts the enum to the bitset representation
+    template <typename... args_t>
+        requires (std::same_as<args_t, ModifierType> && ...)
+    [[nodiscard]] constexpr modifier_bitset_t bitset_cast( args_t... modifiers ) noexcept
     {
-        return static_cast<modifier_mask_t>( modifier );
+        return modifier_bitset_t{ ( ( 1u << bit_cast( modifiers ) ) | ... ) };
     }
 
 
-    [[nodiscard]] constexpr bool trigger_to_value( TriggerEvent trigger )
+    [[nodiscard]] constexpr bool trigger_to_value( const TriggerEvent trigger )
     {
         switch ( trigger )
         {

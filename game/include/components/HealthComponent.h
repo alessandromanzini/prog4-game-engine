@@ -4,8 +4,8 @@
 // +--------------------------------+
 // | PROJECT HEADERS				|
 // +--------------------------------+
-#include "components/Component.h"
-#include "event/Subject.h"
+#include <components/Component.h>
+#include <event/Subject.h>
 
 
 namespace game

@@ -1,12 +1,12 @@
-#include "GameObject.h"
+#include <GameObject.h>
 
 // +--------------------------------+
 // | PROJECT HEADERS				|
 // +--------------------------------+
-#include "components/Component.h"
-#include "framework/GameObjectView.h"
-#include "singletons/Renderer.h"
-#include "singletons/ResourceManager.h"
+#include <components/Component.h>
+#include <framework/GameObjectView.h>
+#include <singletons/Renderer.h>
+#include <singletons/ResourceManager.h>
 
 
 namespace engine

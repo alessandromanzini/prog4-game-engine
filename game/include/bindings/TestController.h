@@ -18,7 +18,7 @@ namespace game
 
             imc.register_device( *this, { engine::binding::DeviceType::KEYBOARD } );
 
-            imc.bind_to_input_action( *this, engine::UID( IA::TEST ), &TestController::testFunc );
+            imc.bind_to_input_action( *this, engine::UID( IA::TEST ), &TestController::testFunc, engine::binding::TriggerEvent::PRESSED );
         }
 
         ~TestController( ) override

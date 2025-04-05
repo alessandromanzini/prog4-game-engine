@@ -1,9 +1,9 @@
-#include "Scene.h"
+#include <Scene.h>
 
 // +--------------------------------+
 // | PROJECT HEADERS				|
 // +--------------------------------+
-#include "GameObject.h"
+#include <GameObject.h>
 
 // +--------------------------------+
 // | STANDARD HEADERS				|

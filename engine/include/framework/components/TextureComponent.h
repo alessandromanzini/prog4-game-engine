@@ -4,7 +4,7 @@
 // +--------------------------------+
 // | PROJECT HEADERS				|
 // +--------------------------------+
-#include "Component.h"
+#include <Component.h>
 
 
 namespace engine

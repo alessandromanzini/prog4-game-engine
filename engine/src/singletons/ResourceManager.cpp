@@ -1,11 +1,11 @@
-﻿#include "singletons/ResourceManager.h"
+﻿#include <singletons/ResourceManager.h>
 
 // +--------------------------------+
 // | PROJECT HEADERS				|
 // +--------------------------------+
-#include "Font.h"
-#include "Texture2D.h"
-#include "singletons/Renderer.h"
+#include <Font.h>
+#include <Texture2D.h>
+#include <singletons/Renderer.h>
 
 // +--------------------------------+
 // | SDL HEADERS					|

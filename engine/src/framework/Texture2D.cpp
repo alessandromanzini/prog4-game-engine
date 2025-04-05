@@ -1,9 +1,9 @@
-#include "framework/Texture2D.h"
+#include <framework/Texture2D.h>
 
 // +--------------------------------+
 // | PROJECT HEADERS				|
 // +--------------------------------+
-#include "singletons/Renderer.h"
+#include <singletons/Renderer.h>
 
 // +--------------------------------+
 // | SDL HEADERS					|

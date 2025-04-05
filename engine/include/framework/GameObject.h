@@ -4,10 +4,10 @@
 // +--------------------------------+
 // | PROJECT HEADERS				|
 // +--------------------------------+
-#include "core/type_utility.hpp"
-#include "framework/Deleter.h"
-#include "framework/GameObject.h"
-#include "framework/Transform.h"
+#include <core/type_utility.hpp>
+#include <framework/Deleter.h>
+#include <framework/GameObject.h>
+#include <framework/Transform.h>
 
 // +--------------------------------+
 // | STANDARD HEADERS				|

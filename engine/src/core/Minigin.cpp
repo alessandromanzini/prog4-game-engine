@@ -1,14 +1,14 @@
-#include "core/Minigin.h"
+#include <core/Minigin.h>
 
 // +--------------------------------+
 // | PROJECT HEADERS				|
 // +--------------------------------+
-#include "singletons/GameTime.h"
-#include "singletons/InputSystem.h"
-#include "singletons/Renderer.h"
-#include "singletons/ResourceManager.h"
-#include "singletons/ScenePool.h"
-#include "singletons/UIController.h"
+#include <singletons/GameTime.h>
+#include <singletons/InputSystem.h>
+#include <singletons/Renderer.h>
+#include <singletons/ResourceManager.h>
+#include <singletons/ScenePool.h>
+#include <singletons/UIController.h>
 
 // +--------------------------------+
 // | STANDARD HEADERS				|
@@ -48,7 +48,7 @@ namespace engine
     }
 
 #ifdef __EMSCRIPTEN__
-#include "emscripten.h"
+#include <emscripten.h>
 
 	void LoopCallback( void* arg )
 	{

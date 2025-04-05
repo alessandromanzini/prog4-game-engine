@@ -4,8 +4,8 @@
 // +--------------------------------+
 // | PROJECT HEADERS				|
 // +--------------------------------+
-#include "Scene.h"
-#include "Singleton.h"
+#include <Scene.h>
+#include <Singleton.h>
 
 // +--------------------------------+
 // | STANDARD HEADERS				|

@@ -4,10 +4,10 @@
 // +--------------------------------+
 // | PROJECT HEADERS				|
 // +--------------------------------+
-#include "Singleton.h"
+#include <Singleton.h>
 
-#include "core/type_utility.hpp"
-#include "framework/Deleter.h"
+#include <core/type_utility.hpp>
+#include <framework/Deleter.h>
 
 // +--------------------------------+
 // | STANDARD HEADERS				|

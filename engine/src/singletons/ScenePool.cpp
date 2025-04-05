@@ -1,9 +1,9 @@
-#include "singletons/ScenePool.h"
+#include <singletons/ScenePool.h>
 
 // +--------------------------------+
 // | PROJECT HEADERS				|
 // +--------------------------------+
-#include "framework/Scene.h"
+#include <framework/Scene.h>
 
 // +--------------------------------+
 // | STANDARD HEADERS				|

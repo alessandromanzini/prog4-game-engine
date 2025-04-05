@@ -4,8 +4,8 @@
 // +--------------------------------+
 // | Project Headers				|
 // +--------------------------------+
-#include "Deletable.h"
-#include "GameObjectView.h"
+#include <Deletable.h>
+#include <GameObjectView.h>
 
 
 namespace engine

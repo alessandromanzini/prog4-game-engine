@@ -4,8 +4,8 @@
 // +--------------------------------+
 // | PROJECT HEADERS				|
 // +--------------------------------+
-#include "components/Component.h"
-#include "components/HealthComponent.h"
+#include <components/Component.h>
+#include <components/HealthComponent.h>
 
 
 namespace game

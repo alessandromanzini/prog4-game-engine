@@ -4,7 +4,7 @@
 // +--------------------------------+
 // | PROJECT HEADERS				|
 // +--------------------------------+
-#include "core/type_utility.hpp"
+#include <core/type_utility.hpp>
 
 // +--------------------------------+
 // | STANDARD HEADERS				|

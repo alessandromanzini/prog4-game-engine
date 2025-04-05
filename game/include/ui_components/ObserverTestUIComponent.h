@@ -4,8 +4,8 @@
 // +--------------------------------+
 // | PROJECT HEADERS				|
 // +--------------------------------+
-#include "event/Observer.h"
-#include "ui_components/UIComponent.h"
+#include <event/Observer.h>
+#include <ui_components/UIComponent.h>
 
 
 namespace game

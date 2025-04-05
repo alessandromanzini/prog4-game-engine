@@ -7,6 +7,7 @@ project(engine)
 add_library(${PROJECT_NAME}
 		"src/bindings/binding_controls.cpp"
 		"src/bindings/binding_device.cpp"
+		"src/bindings/InputBuffer.cpp"
         "src/bindings/InputMappingContext.cpp"
 
 		"include/controllers/BaseController.h"
@@ -34,8 +35,7 @@ add_library(${PROJECT_NAME}
         "src/singletons/Renderer.cpp"
         "src/singletons/ResourceManager.cpp"
         "src/singletons/ScenePool.cpp"
-        "src/singletons/UIController.cpp"
-		include/bindings/binding_traits.h)
+        "src/singletons/UIController.cpp" )
 
 # include platform specific sources
 if (APPLE)

@@ -4,7 +4,7 @@
 // +--------------------------------+
 // | PROJECT HEADERS				|
 // +--------------------------------+
-#include "Singleton.h"
+#include <Singleton.h>
 
 // +--------------------------------+
 // | STANDARD HEADERS				|

@@ -1,11 +1,11 @@
-#include "components/TextComponent.h"
+#include <components/TextComponent.h>
 
 // +--------------------------------+
 // | PROJECT HEADERS				|
 // +--------------------------------+
-#include "Font.h"
-#include "Texture2D.h"
-#include "singletons/Renderer.h"
+#include <Font.h>
+#include <Texture2D.h>
+#include <singletons/Renderer.h>
 
 // +--------------------------------+
 // | STANDARD HEADERS				|

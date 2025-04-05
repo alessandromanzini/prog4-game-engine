@@ -1,10 +1,10 @@
-#include "components/TextureComponent.h"
+#include <components/TextureComponent.h>
 
 // +--------------------------------+
 // | PROJECT HEADERS				|
 // +--------------------------------+
-#include "singletons/Renderer.h"
-#include "singletons/ResourceManager.h"
+#include <singletons/Renderer.h>
+#include <singletons/ResourceManager.h>
 
 
 namespace engine

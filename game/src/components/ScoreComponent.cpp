@@ -1,4 +1,4 @@
-#include "components/ScoreComponent.h"
+#include <components/ScoreComponent.h>
 
 
 using namespace engine;

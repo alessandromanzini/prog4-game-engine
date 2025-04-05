@@ -1,17 +1,17 @@
 // ReSharper disable CppMemberFunctionMayBeStatic
-#include "UIController.h"
+#include <UIController.h>
 
 // +--------------------------------+
 // | PROJECT HEADERS				|
 // +--------------------------------+
-#include "singletons/Renderer.h"
-#include "ui_components/UIComponent.h"
+#include <singletons/Renderer.h>
+#include <ui_components/UIComponent.h>
 
 // +--------------------------------+
 // | IMGUI HEADERS					|
 // +--------------------------------+
-#include "imgui.h"
-#include "core/imgui_core.h"
+#include <imgui.h>
+#include <core/imgui_core.h>
 
 
 namespace engine

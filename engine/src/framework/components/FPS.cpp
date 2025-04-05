@@ -1,10 +1,10 @@
-#include "components/FPS.h"
+#include <components/FPS.h>
 
 // +--------------------------------+
 // | PROJECT HEADERS				|
 // +--------------------------------+
-#include "components/TextComponent.h"
-#include "singletons/GameTime.h"
+#include <components/TextComponent.h>
+#include <singletons/GameTime.h>
 
 
 namespace engine

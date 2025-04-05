@@ -4,8 +4,8 @@
 // +--------------------------------+
 // | PROJECT HEADERS				|
 // +--------------------------------+
-#include "Subject.h"
-#include "framework/UID.h"
+#include <Subject.h>
+#include <framework/UID.h>
 
 
 namespace engine

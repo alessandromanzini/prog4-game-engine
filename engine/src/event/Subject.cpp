@@ -1,9 +1,9 @@
-#include "Subject.h"
+#include <Subject.h>
 
 // +--------------------------------+
 // | PROJECT HEADERS				|
 // +--------------------------------+
-#include "Observer.h"
+#include <Observer.h>
 
 
 namespace engine

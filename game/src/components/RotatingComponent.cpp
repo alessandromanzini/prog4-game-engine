@@ -1,6 +1,6 @@
-#include "components/RotatingComponent.h"
+#include <components/RotatingComponent.h>
 
-#include "singletons/GameTime.h"
+#include <singletons/GameTime.h>
 
 
 using namespace engine;

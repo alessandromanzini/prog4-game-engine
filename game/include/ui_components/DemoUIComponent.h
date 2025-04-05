@@ -4,7 +4,7 @@
 // +--------------------------------+
 // | PROJECT HEADERS				|
 // +--------------------------------+
-#include "ui_components/UIComponent.h"
+#include <ui_components/UIComponent.h>
 
 
 namespace game

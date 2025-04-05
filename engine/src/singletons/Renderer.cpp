@@ -1,11 +1,11 @@
-#include "singletons/Renderer.h"
+#include <singletons/Renderer.h>
 
 // +--------------------------------+
 // | PROJECT HEADERS				|
 // +--------------------------------+
-#include "Texture2D.h"
-#include "singletons/ScenePool.h"
-#include "singletons/UIController.h"
+#include <Texture2D.h>
+#include <singletons/ScenePool.h>
+#include <singletons/UIController.h>
 
 // +--------------------------------+
 // | STANDARD HEADERS				|

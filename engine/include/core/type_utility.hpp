@@ -41,9 +41,10 @@ namespace type_utility
 	// +--------------------------------+
 	// | COMPILE TIME HASH CASTING		|
 	// +--------------------------------+
-	[[nodiscard]] constexpr hash_value_t hash_cast( size_hash_t value )
+	[[nodiscard]] constexpr hash_value_t hash_cast( const size_hash_t value )
 	{
 		constexpr hash_value_t FNV_OFFSET_BASIS_64 = 0xCBF29CE484222325;
+		// ReSharper disable once CppTooWideScope
 		constexpr hash_value_t FNV_PRIME_64 = 0x100000001B3;
 
 		hash_value_t hash = FNV_OFFSET_BASIS_64;
@@ -62,6 +63,7 @@ namespace type_utility
 	{
 		// Simple 64-bit FNV-1a hash
 		constexpr hash_value_t FNV_OFFSET_BASIS_64 = 0xCBF29CE484222325;
+		// ReSharper disable once CppTooWideScope
 		constexpr hash_value_t FNV_PRIME_64 = 0x100000001B3;
 
 		hash_value_t hash = FNV_OFFSET_BASIS_64;

@@ -12,7 +12,13 @@ namespace game
     class RotatingComponent final : public engine::Component
     {
     public:
-        RotatingComponent( engine::GameObjectView& owner, float rotationSpeed );
+        RotatingComponent( owner_t& owner, float rotationSpeed );
+        ~RotatingComponent( ) override = default;
+
+        RotatingComponent( const RotatingComponent& )                = delete;
+        RotatingComponent( RotatingComponent&& ) noexcept            = delete;
+        RotatingComponent& operator=( const RotatingComponent& )     = delete;
+        RotatingComponent& operator=( RotatingComponent&& ) noexcept = delete;
 
         void update( ) override;
 

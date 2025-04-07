@@ -4,6 +4,7 @@
 // | PROJECT HEADERS				|
 // +--------------------------------+
 #include <bindings/binding_controls.h>
+#include <controllers/PlayerController.h>
 
 // +--------------------------------+
 // | STANDARD HEADERS				|
@@ -53,10 +54,10 @@ namespace engine
             return;
         }
 
-        auto& actions = action_binds_.at( code );
+        auto& actions    = action_binds_.at( code );
         const bool value = trigger_to_value( trigger );
 
-        // For every input action bound to the code, we signal the device context to execute the commands
+        // For every input action bound to the ia, we signal the device context to stack the input (will be dispatched later)
         for ( auto& device : device_contexts_ )
         {
             if ( not device.is_device_suitable( deviceInfo ) )
@@ -66,7 +67,7 @@ namespace engine
 
             for ( const auto& [uid, modifiers] : actions )
             {
-                device.signal_input( { uid, value, bitset_cast( trigger ) } );
+                device.signal_input( { uid, apply_modifiers_to_value( value, modifiers ), trigger } );
             }
         }
     }
@@ -91,8 +92,7 @@ namespace engine
     // +--------------------------------+
     // | PRIVATE SCOPE					|
     // +--------------------------------+
-    InputMappingContext::optional_device_it InputMappingContext::find_device_context(
-        const PlayerController& controller )
+    InputMappingContext::optional_device_it InputMappingContext::find_device_context( const PlayerController& controller )
     {
         const auto it = std::ranges::find_if( device_contexts_,
                                               [&controller]( const auto& context )
@@ -108,12 +108,13 @@ namespace engine
     }
 
 
-    void InputMappingContext::bind_to_input_action_impl( const PlayerController& controller, const UID uid,
+    void InputMappingContext::bind_to_input_action_impl( const PlayerController& controller,
+                                                         const UID uid,
                                                          input_command_variant_t&& command,
                                                          const TriggerEvent trigger )
     {
         const auto deviceIt = find_device_context( controller );
-        assert( deviceIt.has_value() && "Device context not found!" );
+        assert( deviceIt.has_value() && "Can't bind IA: Device context has not been registered for this controller!" );
 
         deviceIt.value( )->bind_command( uid, { std::move( command ), trigger } );
     }

@@ -2,10 +2,11 @@
 #define COMPONENT_H
 
 // +--------------------------------+
-// | Project Headers				|
+// | PROJECT HEADERS				|
 // +--------------------------------+
-#include <Deletable.h>
-#include <GameObjectView.h>
+#include <framework/Deletable.h>
+#include <framework/GameObject.h>
+// #include <framework/GameObjectView.h>
 
 
 namespace engine
@@ -13,6 +14,8 @@ namespace engine
     class Component : public Deletable
     {
     public:
+        using owner_t = GameObject;
+
         ~Component( ) override = default;
 
         Component( const Component& )                = delete;
@@ -34,17 +37,17 @@ namespace engine
         }
 
     protected:
-        explicit Component( GameObjectView& owner )
+        explicit Component( owner_t& owner )
             : owner_ref_{ owner } { }
 
 
-        [[nodiscard]] GameObjectView& get_owner( ) const
+        [[nodiscard]] owner_t& get_owner( ) const
         {
             return owner_ref_;
         }
 
     private:
-        GameObjectView& owner_ref_;
+        owner_t& owner_ref_;
 
     };
 
@@ -54,7 +57,7 @@ namespace engine
     template <typename derived_t, typename... args_t>
     concept DerivedComponentWithBaseContructor =
             std::derived_from<derived_t, Component> and
-            std::constructible_from<derived_t, GameObjectView&, args_t...>;
+            std::constructible_from<derived_t, Component::owner_t&, args_t...>;
 
     template <typename derived_t>
     concept DerivedComponent =

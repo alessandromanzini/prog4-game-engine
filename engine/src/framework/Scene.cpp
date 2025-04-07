@@ -3,7 +3,8 @@
 // +--------------------------------+
 // | PROJECT HEADERS				|
 // +--------------------------------+
-#include <GameObject.h>
+#include <components/Component.h>
+#include <framework/GameObject.h>
 
 // +--------------------------------+
 // | STANDARD HEADERS				|

@@ -13,7 +13,7 @@ namespace engine
     class TextureComponent final : public Component
     {
     public:
-        explicit TextureComponent( GameObjectView& owner, const std::string& filename );
+        explicit TextureComponent( owner_t& owner, const std::string& filename );
         ~TextureComponent( ) override = default;
 
         TextureComponent( const TextureComponent& )                = delete;

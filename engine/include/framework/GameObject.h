@@ -25,7 +25,7 @@ namespace engine
     class GameObject final
     {
     public:
-        GameObject( );
+        GameObject( ) = default;
         ~GameObject( ) noexcept;
 
         GameObject( const GameObject& other )                = delete;
@@ -66,7 +66,7 @@ namespace engine
         void collect_children( std::vector<GameObject*>& children ) const;
 
     private:
-        std::unique_ptr<GameObjectView> view_ptr_{};
+        // std::unique_ptr<GameObjectView> view_ptr_{};
         GameObject* parent_ptr_{ nullptr };
 
         Transform local_transform_{};
@@ -96,7 +96,7 @@ namespace engine
     {
         // Initializing component with GameObjectView and arguments' perfect forwarding.
         // We insert the element in the multimap with its compile-time type hash as the key.
-        auto component = std::make_unique<component_t>( *view_ptr_, std::forward<args_t>( args )... );
+        auto component = std::make_unique<component_t>( *this, std::forward<args_t>( args )... );
         auto it        = components_.insert(
             std::make_pair( type_utility::type_hash<component_t>( ), std::move( component ) ) );
         return reinterpret_cast<component_t&>( *( it->second ) );

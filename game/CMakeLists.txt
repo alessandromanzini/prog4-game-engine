@@ -12,10 +12,7 @@ elseif(APPLE)
     set(TARGET_PARAM )
 else()
     set(TARGET_NAME ${PROJECT_NAME})
-    set(TARGET_PARAM WIN32
-			include/bindings/MyPlayerController.h
-			include/bindings/TestController.cpp
-			include/bindings/TestController.h)
+    set(TARGET_PARAM WIN32)
 endif()
 
 # set minigin as the default startup project
@@ -29,9 +26,9 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
         "src/bindings/InputUtils.cpp"
 
         "src/components/RotatingComponent.cpp"
-        "src/components/HealthComponent.cpp"
-        "src/components/AttackComponent.cpp"
-        "src/components/ScoreComponent.cpp"
+        "src/components/MoveComponent.cpp"
+
+		"include/controllers/TestController.h"
 
         "src/ui_components/DemoUIComponent.cpp"
         "src/ui_components/ObserverTestUIComponent.cpp" )
@@ -48,10 +45,12 @@ target_include_directories(${PROJECT_NAME}
 		PRIVATE "include"
 		PRIVATE "include/bindings"
 		PRIVATE "include/components"
+		PRIVATE "include/controllers"
 		PRIVATE "include/ui_components"
 		PRIVATE "src"
         PRIVATE "src/bindings"
 		PRIVATE "src/components"
+		PRIVATE "src/controllers"
 		PRIVATE "src/ui_components" )
 
 # copy the data directory to the build directory

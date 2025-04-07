@@ -4,6 +4,7 @@
 // +---------------------------+
 // | PROJECT HEADERS           |
 // +---------------------------+
+#include <vec2.hpp>
 #include <framework/UID.h>
 
 // +--------------------------------+
@@ -16,6 +17,7 @@
 // | STANDARD HEADERS				|
 // +--------------------------------+
 #include <bitset>
+#include <cassert>
 #include <functional>
 
 
@@ -72,7 +74,7 @@ namespace engine::binding
         RELEASED  = 0x2,
     };
 
-    enum class ModifierType : detail::modifier_mask_t
+    enum class Modifier : detail::modifier_mask_t
     {
         NEGATE  = 0x0,
         SWIZZLE = 0x1,
@@ -95,33 +97,134 @@ namespace engine::binding
     // +--------------------------------+
     // | VARIANTS						|
     // +--------------------------------+
-    using input_value_variant_t   = std::variant<bool, float /*, glm::vec2 */>;
-    using input_command_variant_t = std::variant<std::function<void( bool )>, std::function<void( float )>
-        /*, std::function<void( glm::vec2 )>*/>;
+    using input_value_variant_t   = std::variant<bool, float, glm::vec2>;
+    using input_command_variant_t = std::variant<std::function<void( bool )>, std::function<void( float )>, std::function<void
+        ( glm::vec2 )>>;
+
+
+    // +--------------------------------+
+    // | COMPILE-TIME CASTS				|
+    // +--------------------------------+
+    /**
+     * Converts the mask to a sequence number.
+     * @param mask Mask to convert
+     * @return Sequencial number representing the bit position
+     */
+    [[nodiscard]] constexpr uint32_t mask_to_seq( uint32_t mask )
+    {
+        assert( mask != 0 && "Mask cannot be 0!" );
+
+        uint32_t pos = 0;
+        while ( ( mask & 1 ) == 0 )
+        {
+            mask >>= 1;
+            pos++;
+        }
+        return pos;
+    }
+
+
+    /**
+     * Casts the sequence enum value to a single bit representation.
+     * @param trigger TriggerEvent enum value
+     * @return A bit value that represent a mask at the trigger position
+     */
+    [[nodiscard]] constexpr size_t bit_cast( TriggerEvent trigger )
+    {
+        return static_cast<size_t>( trigger );
+    }
+
+
+    /**
+     * Casts the sequence enum value to a single bit representation.
+     * @param modifier Modifier enum value
+     * @return A bit value that represent a mask at the modifier position
+     */
+    [[nodiscard]] constexpr size_t bit_cast( Modifier modifier )
+    {
+        return static_cast<size_t>( modifier );
+    }
+
+
+    /**
+     * Casts the enum to the bitset representation.
+     * @tparam args_t TriggerEvent type
+     * @param triggers Variadic pack of triggers
+     * @return Bitset combination of the arguments
+     */
+    template <typename... args_t>
+        requires (std::same_as<args_t, TriggerEvent> && ...)
+    [[nodiscard]] constexpr trigger_bitset_t bitset_cast( args_t... triggers )
+    {
+        return trigger_bitset_t{ ( ( 1u << bit_cast( triggers ) ) | ... ) };
+    }
+
+
+    /**
+     * Casts the enum to the bitset representation.
+     * @tparam args_t Modifier type
+     * @param modifiers Variadic pack of modifiers
+     * @return Bitset combination of the arguments
+     */
+    template <typename... args_t>
+        requires (std::same_as<args_t, Modifier> && ...)
+    [[nodiscard]] constexpr modifier_bitset_t bitset_cast( args_t... modifiers )
+    {
+        return modifier_bitset_t{ ( ( 1u << bit_cast( modifiers ) ) | ... ) };
+    }
 
 
     // +---------------------------+
     // | STRUCTS                   |
     // +---------------------------+
+    /**
+     * This struct represents an input action identified by an UID and an optional set of modifiers that alter the
+     * registered input values.
+     */
     struct InputAction final
     {
         UID uid{ 0 };
         modifier_bitset_t modifiers{};
+
+
+        template <typename... modifiers_t>
+        explicit InputAction( const UID uid, modifiers_t... modifierArgs )
+            : uid{ uid }
+        {
+            if constexpr ( sizeof...( modifiers_t ) > 0 )
+            {
+                modifiers = bitset_cast<modifiers_t...>( modifierArgs... );
+            }
+        }
+
+
+        explicit InputAction( const UID uid, const modifier_bitset_t& modifiers )
+            : uid{ uid }
+            , modifiers{ modifiers } { }
+
     };
 
-    // This struct holds the accumulated value for the input action to its corresponding uid.
+
+    /**
+     * This struct holds the accumulated value for the input action to its corresponding uid and trigger.
+     */
     struct InputSnapshot final
     {
         UID uid{ 0 };
         input_value_variant_t value{};
-        trigger_bitset_t triggers{};
+        TriggerEvent trigger{};
+
+        bool operator==( const InputSnapshot& other ) const { return uid == other.uid && trigger == other.trigger; }
+
     };
+
 
     struct CommandInfo final
     {
         input_command_variant_t command;
         TriggerEvent trigger;
     };
+
 
 }
 

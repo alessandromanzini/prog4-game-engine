@@ -20,6 +20,11 @@ namespace engine
 {
     class Command;
     class PlayerController;
+
+    /**
+     * This class takes care of abstracting input codes from input actions, allowing the registered devices to receive an input
+     * as a named event. Additionally, it applies the requested modifiers on the input automatically before signaling it.
+     */
     class InputMappingContext final
     {
     public:

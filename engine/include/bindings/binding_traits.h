@@ -4,6 +4,9 @@
 
 namespace engine::binding
 {
+    // +---------------------------+
+    // | METHOD TRAITS             |
+    // +---------------------------+
     template <typename method_sig_t>
     struct method_traits;
 
@@ -23,6 +26,19 @@ namespace engine::binding
         using param_t = _param_t;
     };
 
+
+    // +---------------------------+
+    // | FUNCTION TRAITS           |
+    // +---------------------------+
+    template <typename function_sig_t>
+    struct function_traits;
+
+    template <typename _return_t, typename _param_t>
+    struct function_traits<std::function<_return_t(_param_t)>>
+    {
+        using return_t = _return_t;
+        using param_t = _param_t;
+    };
 }
 
 

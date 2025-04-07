@@ -59,7 +59,7 @@ namespace engine
     // Why bother with this? Because sometimes students have a different SDL version installed on their pc.
     // That is not a problem unless for some reason the dll's from this project are not copied next to the exe.
     // These entries in the debug output help to identify that issue.
-    void PrintSDLVersion( )
+    void print_sdl_version( )
     {
         SDL_version version{};
         SDL_VERSION( &version );
@@ -84,7 +84,7 @@ namespace engine
 
     Minigin::Minigin( const std::filesystem::path& dataPath )
     {
-        PrintSDLVersion( );
+        print_sdl_version( );
 
         if ( SDL_Init( SDL_INIT_VIDEO | SDL_INIT_GAMECONTROLLER ) != 0 )
         {

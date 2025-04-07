@@ -13,7 +13,7 @@ namespace engine
     class FPS final : public Component
     {
     public:
-        explicit FPS( GameObjectView& owner );
+        explicit FPS( owner_t& owner );
         ~FPS( ) override = default;
 
         FPS( const FPS& )                = delete;
@@ -24,7 +24,7 @@ namespace engine
         void update( ) override;
 
     private:
-        constexpr static float time_delay_{ 1.f };
+        constexpr static float TIME_DELAY_{ 1.f };
 
         float time_accumulator_{ 0.f };
 

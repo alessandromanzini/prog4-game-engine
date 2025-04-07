@@ -1,12 +1,10 @@
+#include <bindings/binding_device.h>
+
 // +---------------------------+
 // | PROJECT HEADERS           |
 // +---------------------------+
 #include <bindings/binding_controls.h>
-#include <bindings/binding_device.h>
-
-// +---------------------------+
-// | STANDARD HEADERS          |
-// +---------------------------+
+#include <controllers/PlayerController.h>
 
 
 namespace engine::binding
@@ -35,10 +33,17 @@ namespace engine::binding
 
     void CommandSet::execute( const input_value_variant_t value, const TriggerEvent trigger ) const
     {
-        // TODO: Implement correct function call
         for ( const auto& command : select_command_list( trigger ) )
         {
-            std::get<std::function<void( bool )>>( command )( std::get<bool>( value ) );
+            std::visit(
+                [&]( auto&& fn )
+                    {
+                        using function_sig_t = std::decay_t<decltype( fn )>;
+                        using param_t        = typename function_traits<function_sig_t>::param_t;
+                        fn( convert_input_value<param_t>( value ) );
+                    },
+                command
+            );
         }
     }
 
@@ -63,18 +68,18 @@ namespace engine::binding
     // +---------------------------+
     DeviceContext::DeviceContext( PlayerController& controller, const DeviceInfo deviceInfo )
         : device_info_{ deviceInfo }
-        , controller_{ controller } { }
+        , controller_ref_{ controller } { }
 
 
     PlayerController& DeviceContext::get_controller( )
     {
-        return controller_;
+        return controller_ref_;
     }
 
 
     const PlayerController& DeviceContext::get_controller( ) const
     {
-        return controller_;
+        return controller_ref_;
     }
 
 
@@ -106,22 +111,15 @@ namespace engine::binding
             return;
         }
 
-        const auto inputIt = std::ranges::find_if( signaled_inputs_queue_,
-                                                   [&]( const auto& current )
-                                                       {
-                                                           return current.uid == input.uid;
-                                                       } );
-
         // If the input is not already in the queue, we add it
-        if ( inputIt == signaled_inputs_queue_.end( ) )
+        if ( const auto queued = find_queued_input( input ); not queued.has_value( ) )
         {
             signaled_inputs_queue_.push_back( input );
         }
         else
         {
             // If the input is already in the queue, we update its value
-            merge_value_to_snapshot( *inputIt, input.value );
-            inputIt->triggers |= input.triggers;
+            merge_value_to_snapshot( *queued.value( ), input.value );
         }
     }
 
@@ -130,22 +128,22 @@ namespace engine::binding
     {
         while ( not signaled_inputs_queue_.empty( ) )
         {
-            auto& cumulativeInput = signaled_inputs_queue_.front( );
+            const auto& [uid, value, trigger] = signaled_inputs_queue_.front( );
             signaled_inputs_queue_.pop_front( );
 
-            execute_commands_on_trigger( cumulativeInput, TriggerEvent::TRIGGERED );
-            execute_commands_on_trigger( cumulativeInput, TriggerEvent::PRESSED );
-            execute_commands_on_trigger( cumulativeInput, TriggerEvent::RELEASED );
+            command_sets_.at( uid ).execute( value, trigger );
         }
     }
 
 
-    void DeviceContext::execute_commands_on_trigger( const InputSnapshot& input, const TriggerEvent trigger ) const
+    std::optional<decltype(DeviceContext::signaled_inputs_queue_)::iterator> DeviceContext::find_queued_input( const InputSnapshot& target )
     {
-        if ( input.triggers.test( bit_cast( trigger ) ) )
+        if ( auto it = std::ranges::find( signaled_inputs_queue_, target );
+            it != signaled_inputs_queue_.end( ) )
         {
-            command_sets_.at( input.uid ).execute( input.value, trigger );
+            return it;
         }
+        return std::nullopt;
     }
 
 }

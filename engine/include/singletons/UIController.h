@@ -34,15 +34,15 @@ namespace engine
 
         void cleanup( );
 
-        template<typename component_t, typename... args_t>
+        template <typename component_t, typename... args_t>
         // requires DerivedUIComponentWithBaseContructor<component_t, args_t...>
         component_t& add_ui_component( args_t&&... args );
 
-        template<typename component_t>
+        template <typename component_t>
         // requires DerivedUIComponent<component_t>
         [[nodiscard]] component_t& get_ui_component( ) const;
 
-        template<typename component_t>
+        template <typename component_t>
         // requires DerivedUIComponent<component_t>
         [[nodiscard]] component_t& get_ui_components( ) const;
 
@@ -62,20 +62,19 @@ namespace engine
     };
 
 
-    template<typename component_t, typename... args_t>
+    template <typename component_t, typename... args_t>
     // requires DerivedUIComponentWithBaseContructor<component_t, args_t...>
     component_t& UIController::add_ui_component( args_t&&... args )
     {
         // Initializing component with GameObjectView and arguments' perfect forwarding.
         // We insert the element in the multimap with its compile-time type hash as the key.
-        auto ui_component = std::make_unique<component_t>( *this, std::forward<args_t>( args )... );
-        auto it           = ui_components_.insert( std::make_pair( type_utility::type_hash<component_t>( ),
-                                                         std::move( ui_component ) ) );
+        auto uiComponent = std::make_unique<component_t>( *this, std::forward<args_t>( args )... );
+        auto it = ui_components_.insert( std::make_pair( type_utility::type_hash<component_t>( ), std::move( uiComponent ) ) );
         return reinterpret_cast<component_t&>( *( it->second ) );
     }
 
 
-    template<typename component_t>
+    template <typename component_t>
     // requires DerivedUIComponent<component_t>
     [[nodiscard]] component_t& UIController::get_ui_component( ) const
     {
@@ -87,7 +86,7 @@ namespace engine
     }
 
 
-    template<typename component_t>
+    template <typename component_t>
     // requires DerivedUIComponent<component_t>
     [[nodiscard]] component_t& UIController::get_ui_components( ) const
     {

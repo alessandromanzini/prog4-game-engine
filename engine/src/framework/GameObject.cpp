@@ -11,8 +11,8 @@
 
 namespace engine
 {
-    GameObject::GameObject( )
-        : view_ptr_( new GameObjectView{ *this } ) { }
+    // GameObject::GameObject( )
+    //     : view_ptr_( new GameObjectView{ *this } ) { }
 
 
     GameObject::~GameObject( ) noexcept
@@ -83,8 +83,9 @@ namespace engine
             // and set it dirty to recalculate the world transform.
             if ( keepWorldPosition )
             {
-                set_local_transform(
-                    get_world_transform( ).get_position( ) - parent->get_world_transform( ).get_position( ) );
+                // TODO: test if rotation is canceled
+                const auto translation = get_world_transform( ).get_position( ) - parent->get_world_transform( ).get_position( );
+                set_local_transform(Transform::from_translation( translation ) );
             }
             set_transform_dirty( );
         }
@@ -167,14 +168,11 @@ namespace engine
 
     bool GameObject::is_child( const GameObject* const gameObject ) const
     {
-        for ( const auto* child : children_ )
-        {
-            if ( child == gameObject )
-            {
-                return true;
-            }
-        }
-        return false;
+        return std::ranges::any_of( children_,
+                                    [gameObject]( const auto* child )
+                                        {
+                                            return child == gameObject || child->is_child( gameObject );
+                                        } );
     }
 
 
@@ -218,7 +216,7 @@ namespace engine
             }
             else
             {
-                world_transform_ = parent_ptr_->get_world_transform( ) + local_transform_;
+                world_transform_ = parent_ptr_->get_world_transform( ) * local_transform_;
             }
             transform_dirty_ = false;
         }

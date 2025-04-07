@@ -11,7 +11,7 @@ add_library(${PROJECT_NAME}
         "src/bindings/InputMappingContext.cpp"
 
 		"include/controllers/BaseController.h"
-		"include/controllers/PlayerController.h"
+		"src/controllers/PlayerController.cpp"
 
         "src/event/Subject.cpp"
 

@@ -19,6 +19,7 @@
 #include <bitset>
 #include <cassert>
 #include <functional>
+#include <variant>
 
 
 namespace engine::binding
@@ -156,7 +157,7 @@ namespace engine::binding
         requires (std::same_as<args_t, TriggerEvent> && ...)
     [[nodiscard]] constexpr trigger_bitset_t bitset_cast( args_t... triggers )
     {
-        return trigger_bitset_t{ ( ( 1u << bit_cast( triggers ) ) | ... ) };
+        return trigger_bitset_t{ ( ( 1ull << bit_cast( triggers ) ) | ... ) };
     }
 
 
@@ -170,7 +171,7 @@ namespace engine::binding
         requires (std::same_as<args_t, Modifier> && ...)
     [[nodiscard]] constexpr modifier_bitset_t bitset_cast( args_t... modifiers )
     {
-        return modifier_bitset_t{ ( ( 1u << bit_cast( modifiers ) ) | ... ) };
+        return modifier_bitset_t{ ( ( 1ull << bit_cast( modifiers ) ) | ... ) };
     }
 
 

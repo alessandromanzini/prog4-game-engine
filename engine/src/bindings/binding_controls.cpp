@@ -42,6 +42,11 @@ namespace engine::binding
                                 // Please change this it's horrible
                                 snapshot.value = convert_input_value<glm::vec2>( start ) + toAdd;
                             }
+                            // If dealing with a base boolean, we convert to bool instead
+                            else if constexpr ( std::is_same_v<start_t, bool> )
+                            {
+                                snapshot.value = static_cast<float>( start ) + convert_input_value<float>( toAdd );
+                            }
                             else
                             {
                                 start += convert_input_value<start_t>( toAdd );

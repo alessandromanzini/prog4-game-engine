@@ -5,11 +5,12 @@
 // | PROJECT HEADERS           |
 // +---------------------------+
 #include <bindings/binding_types.h>
+#include <bindings/binding_traits.h>
 
 // +---------------------------+
 // | STANDARD HEADERS          |
 // +---------------------------+
-#include <cassert>
+#include <stdexcept>
 
 
 namespace engine::binding
@@ -32,9 +33,8 @@ namespace engine::binding
                 return true;
             case TriggerEvent::RELEASED:
                 return false;
-            default:
-                assert( false && "Can't cast this trigger!" );
         }
+		throw std::invalid_argument( "Invalid trigger event!" );
     }
 
 
@@ -66,7 +66,7 @@ namespace engine::binding
 
                     else
                     {
-                        static_assert( false, "No valid conversion available for input_value_variant_t" );
+                        static_assert( binding::bad_conversion<arg_t, cast_target_t>, "No valid conversion available for arg_t to cast_target_t." );
                     }
                     // ReSharper disable once CppNotAllPathsReturnValue
                 },

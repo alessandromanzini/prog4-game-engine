@@ -172,7 +172,7 @@ namespace engine
             case DeviceType::GAMEPAD:
                 return gamepad_buffer_;
         }
-        assert( false && "Invalid device type!" );
+		throw std::invalid_argument( "Invalid device type." );
     }
 
 

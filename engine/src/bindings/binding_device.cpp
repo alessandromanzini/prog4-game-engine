@@ -59,7 +59,7 @@ namespace engine::binding
             case TriggerEvent::RELEASED:
                 return released_commands_;
         }
-        assert( false && "Invalid trigger event!" );
+		throw std::invalid_argument( "Invalid trigger event!" );
     }
 
 

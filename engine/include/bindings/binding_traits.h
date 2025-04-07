@@ -39,6 +39,14 @@ namespace engine::binding
         using return_t = _return_t;
         using param_t = _param_t;
     };
+
+
+	// +---------------------------+
+	// | BAD CONVERSION            |
+	// +---------------------------+
+	template <typename from_t, typename to_t>
+	constexpr bool bad_conversion = false;
+
 }
 
 

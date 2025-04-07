@@ -12,6 +12,7 @@
 // +--------------------------------+
 #include <deque>
 #include <list>
+#include <optional>
 
 
 namespace engine

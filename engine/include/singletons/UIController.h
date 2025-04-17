@@ -1,3 +1,4 @@
+// ReSharper disable CppInconsistentNaming
 #ifndef UICONTROLLER_H
 #define UICONTROLLER_H
 
@@ -8,6 +9,8 @@
 
 #include <core/type_utility.hpp>
 #include <framework/Deleter.h>
+
+#include <framework/meta.h>
 
 // +--------------------------------+
 // | STANDARD HEADERS				|
@@ -43,15 +46,15 @@ namespace engine
         void cleanup( );
 
         template <typename component_t, typename... args_t>
-        // requires DerivedUIComponentWithBaseContructor<component_t, args_t...>
+            requires meta::DerivedUIComponentWithBaseContructor<component_t, args_t...>
         component_t& add_ui_component( args_t&&... args );
 
         template <typename component_t>
-        // requires DerivedUIComponent<component_t>
+            requires meta::DerivedUIComponent<component_t>
         [[nodiscard]] component_t& get_ui_component( ) const;
 
         template <typename component_t>
-        // requires DerivedUIComponent<component_t>
+            requires meta::DerivedUIComponent<component_t>
         [[nodiscard]] component_t& get_ui_components( ) const;
 
         void remove_ui_component( UIComponent& component );
@@ -69,7 +72,7 @@ namespace engine
 
 
     template <typename component_t, typename... args_t>
-    // requires DerivedUIComponentWithBaseContructor<component_t, args_t...>
+        requires meta::DerivedUIComponentWithBaseContructor<component_t, args_t...>
     component_t& UIController::add_ui_component( args_t&&... args )
     {
         // Initializing component with GameObjectView and arguments' perfect forwarding.
@@ -81,7 +84,7 @@ namespace engine
 
 
     template <typename component_t>
-    // requires DerivedUIComponent<component_t>
+        requires meta::DerivedUIComponent<component_t>
     [[nodiscard]] component_t& UIController::get_ui_component( ) const
     {
         // We find the component and reinterpret_cast it to the correct type.
@@ -93,7 +96,7 @@ namespace engine
 
 
     template <typename component_t>
-    // requires DerivedUIComponent<component_t>
+        requires meta::DerivedUIComponent<component_t>
     [[nodiscard]] component_t& UIController::get_ui_components( ) const
     {
         throw std::runtime_error( "Not implemented!" );

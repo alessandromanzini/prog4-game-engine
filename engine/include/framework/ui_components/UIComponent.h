@@ -1,16 +1,16 @@
+// ReSharper disable CppInconsistentNaming
 #ifndef UICOMPONENT_H
 #define UICOMPONENT_H
 
 // +--------------------------------+
 // | PROJECT HEADERS				|
 // +--------------------------------+
-#include <Deletable.h>
-#include <singletons/UIController.h>
+#include <framework/Deletable.h>
 
 
 namespace engine
 {
-    // ReSharper disable once CppInconsistentNaming
+    class UIController;
     class UIComponent : public Deletable
     {
     public:
@@ -22,44 +22,20 @@ namespace engine
         UIComponent& operator=( UIComponent&& ) noexcept = delete;
 
         virtual void update( ) { }
+        virtual void render( ) { } // UI needs the render to be non-const
 
-        // UI needs the render to be non-const
-        virtual void render( ) { }
-
-
-        void mark_for_deletion( ) final
-        {
-            Deletable::mark_for_deletion( );
-            get_owner( ).remove_ui_component( *this );
-        }
+        void mark_for_deletion( ) final;
 
     protected:
-        explicit UIComponent( UIController& owner )
-            : owner_ref_{ owner } { }
+        explicit UIComponent( UIController& owner );
 
-
-        [[nodiscard]] UIController& get_owner( ) const
-        {
-            return owner_ref_;
-        }
+        [[nodiscard]] UIController& get_owner( ) const;
 
     private:
         UIController& owner_ref_;
 
     };
 
-    // +--------------------------------+
-    // | CONCEPTS						|
-    // +--------------------------------+
-    template <typename derived_t, typename... args_t>
-    concept DerivedUIComponentWithBaseContructor =
-            std::derived_from<derived_t, UIComponent> and
-            std::constructible_from<derived_t, UIController&, args_t...>;
-
-    template <typename derived_t>
-    concept DerivedUIComponent =
-            std::derived_from<derived_t, UIComponent>;
-
 }
 
-#endif // BASEUICOMPONENT_H
+#endif //!UICOMPONENT_H

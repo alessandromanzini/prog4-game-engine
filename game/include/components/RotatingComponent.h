@@ -4,7 +4,7 @@
 // +--------------------------------+
 // | PROJECT HEADERS				|
 // +--------------------------------+
-#include <components/Component.h>
+#include <framework/components/Component.h>
 
 
 namespace game

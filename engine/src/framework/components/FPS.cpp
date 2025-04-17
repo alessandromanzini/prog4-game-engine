@@ -1,9 +1,10 @@
-#include <components/FPS.h>
+#include <framework/components/FPS.h>
 
 // +--------------------------------+
 // | PROJECT HEADERS				|
 // +--------------------------------+
-#include <components/TextComponent.h>
+#include <framework/GameObject.h>
+#include <framework/components/TextComponent.h>
 #include <singletons/GameTime.h>
 
 

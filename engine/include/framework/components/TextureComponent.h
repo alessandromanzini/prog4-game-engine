@@ -4,7 +4,9 @@
 // +--------------------------------+
 // | PROJECT HEADERS				|
 // +--------------------------------+
-#include <Component.h>
+#include <framework/components/Component.h>
+
+#include <string>
 
 
 namespace engine

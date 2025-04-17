@@ -1,5 +1,6 @@
 #include <components/RotatingComponent.h>
 
+#include <framework/Transform.h>
 #include <singletons/GameTime.h>
 
 

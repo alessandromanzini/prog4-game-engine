@@ -4,7 +4,7 @@
 // +--------------------------------+
 // | PROJECT HEADERS				|
 // +--------------------------------+
-#include <Subject.h>
+#include <event/Subject.h>
 #include <framework/UID.h>
 
 

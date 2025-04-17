@@ -4,7 +4,7 @@
 // +--------------------------------+
 // | PROJECT HEADERS				|
 // +--------------------------------+
-#include <Singleton.h>
+#include <singletons/Singleton.h>
 
 #include <core/type_utility.hpp>
 #include <framework/Deleter.h>
@@ -23,7 +23,15 @@ namespace engine
     class UIComponent;
     class UIController final : public Singleton<UIController>
     {
+        friend class Singleton;
     public:
+        ~UIController( ) override = default;
+
+        UIController( const UIController& )                = delete;
+        UIController( UIController&& ) noexcept            = delete;
+        UIController& operator=( const UIController& )     = delete;
+        UIController& operator=( UIController&& ) noexcept = delete;
+
         void init( );
         void destroy( );
 
@@ -47,8 +55,6 @@ namespace engine
         [[nodiscard]] component_t& get_ui_components( ) const;
 
         void remove_ui_component( UIComponent& component );
-
-        friend class Singleton<UIController>;
 
     private:
         std::unordered_multimap<uint64_t, std::unique_ptr<UIComponent>> ui_components_{};

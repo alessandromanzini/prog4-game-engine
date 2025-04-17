@@ -1,15 +1,15 @@
-#include <Scene.h>
+#include <framework/Scene.h>
 
 // +--------------------------------+
 // | PROJECT HEADERS				|
 // +--------------------------------+
-#include <components/Component.h>
 #include <framework/GameObject.h>
 
 // +--------------------------------+
 // | STANDARD HEADERS				|
 // +--------------------------------+
 #include <algorithm>
+#include <utility>
 
 
 namespace engine
@@ -65,18 +65,18 @@ namespace engine
     }
 
 
-    void Scene::fixed_update( )
+    void Scene::fixed_update( ) const
     {
-        for ( auto& object : objects_ )
+        for ( const auto& object : objects_ )
         {
             object->fixed_update( );
         }
     }
 
 
-    void Scene::update( )
+    void Scene::update( ) const
     {
-        for ( auto& object : objects_ )
+        for ( const auto& object : objects_ )
         {
             object->update( );
         }
@@ -101,14 +101,15 @@ namespace engine
         }
 
         // Cleanup objects
-        for ( auto& object : objects_ )
+        for ( const auto& object : objects_ )
         {
             object->cleanup( );
         }
     }
 
 
-    Scene::Scene( const std::string& name )
-        : name_( name )
+    Scene::Scene( std::string name )
+        : name_( std::move( name ) )
         , id_( s_id_counter_++ ) { }
+
 }

@@ -3,8 +3,8 @@
 // +--------------------------------+
 // | PROJECT HEADERS				|
 // +--------------------------------+
-#include <Font.h>
-#include <Texture2D.h>
+#include <framework/Font.h>
+#include <framework/Texture2D.h>
 #include <singletons/Renderer.h>
 
 // +--------------------------------+

@@ -1,11 +1,11 @@
 // ReSharper disable CppMemberFunctionMayBeStatic
-#include <UIController.h>
+#include <singletons/UIController.h>
 
 // +--------------------------------+
 // | PROJECT HEADERS				|
 // +--------------------------------+
+#include <framework/ui_components/UIComponent.h>
 #include <singletons/Renderer.h>
-#include <ui_components/UIComponent.h>
 
 // +--------------------------------+
 // | IMGUI HEADERS					|

@@ -4,7 +4,7 @@
 // +--------------------------------+
 // | PROJECT HEADERS				|
 // +--------------------------------+
-#include <Singleton.h>
+#include <singletons/Singleton.h>
 
 // +--------------------------------+
 // | STANDARD HEADERS				|
@@ -22,8 +22,8 @@ namespace engine
 
     class GameTime final : public Singleton<GameTime>
     {
+        friend class Singleton;
     public:
-        GameTime( )                    = default;
         ~GameTime( ) noexcept override = default;
 
         GameTime( const GameTime& )                = delete;
@@ -52,6 +52,8 @@ namespace engine
 
         std::chrono::high_resolution_clock::time_point last_time_{};
         float lag_{ 0.f };
+
+        GameTime( )                    = default;
 
     };
 

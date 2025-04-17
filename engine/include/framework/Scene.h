@@ -13,7 +13,7 @@ namespace engine
     class Scene final
     {
     public:
-        explicit Scene( const std::string& name );
+        explicit Scene( std::string name );
         ~Scene( ) noexcept = default;
 
         Scene( const Scene& )                = delete;
@@ -30,8 +30,8 @@ namespace engine
         [[nodiscard]] const std::string& get_name( ) const;
         [[nodiscard]] uint16_t get_id( ) const;
 
-        void fixed_update( );
-        void update( );
+        void fixed_update( ) const;
+        void update( ) const;
         void render( ) const;
 
         void cleanup( );

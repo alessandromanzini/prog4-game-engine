@@ -1,7 +1,7 @@
 #ifndef BASECONTROLLER_H
 #define BASECONTROLLER_H
 
-#include <GameObject.h>
+#include <framework/GameObject.h>
 
 
 namespace engine

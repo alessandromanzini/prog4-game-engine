@@ -4,7 +4,7 @@
 // +--------------------------------+
 // | PROJECT HEADERS				|
 // +--------------------------------+
-#include <Component.h>
+#include <framework/components/Component.h>
 
 // +--------------------------------+
 // | STANDARD HEADERS				|

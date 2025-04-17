@@ -1,5 +1,3 @@
-#include <SDL.h>
-
 #if _DEBUG
 // ReSharper disable once CppUnusedIncludeDirective
 #if __has_include(<vld.h>)
@@ -11,19 +9,15 @@
 // | PROJECT HEADERS				|
 // +--------------------------------+
 #include <bindings/InputUtils.h>
-#include <components/FPS.h>
 #include <components/MoveComponent.h>
-#include <components/TextComponent.h>
-#include <components/TextureComponent.h>
 #include <core/Minigin.h>
 #include <framework/GameObject.h>
 #include <framework/Scene.h>
+#include <framework/components/FPS.h>
+#include <framework/components/TextComponent.h>
+#include <framework/components/TextureComponent.h>
 #include <singletons/ResourceManager.h>
 #include <singletons/ScenePool.h>
-#include <singletons/UIController.h>
-#include <ui_components/DemoUIComponent.h>
-#include <ui_components/InputDisplayUIComponent.h>
-#include <ui_components/ObserverTestUIComponent.h>
 
 #include <controllers/TestController.h>
 

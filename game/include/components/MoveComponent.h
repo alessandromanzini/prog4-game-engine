@@ -1,7 +1,9 @@
 #ifndef MOVECOMPONENT_H
 #define MOVECOMPONENT_H
 
-#include <components/Component.h>
+#include <framework/components/Component.h>
+
+#include <vec2.hpp>
 
 
 namespace game

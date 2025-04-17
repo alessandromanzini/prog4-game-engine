@@ -8,6 +8,9 @@
 #include <framework/Deleter.h>
 #include <framework/GameObject.h>
 #include <framework/Transform.h>
+#include <framework/components/Component.h>
+
+#include <framework/meta.h>
 
 // +--------------------------------+
 // | STANDARD HEADERS				|
@@ -19,7 +22,6 @@
 
 namespace engine
 {
-    // TODO: reintroduce concepts
     class Component;
     class GameObjectView;
     class GameObject final
@@ -48,15 +50,15 @@ namespace engine
         void set_local_transform( Transform&& transform );
 
         template <typename component_t, typename... args_t>
-        // requires DerivedComponentWithBaseContructor<component_t, args_t...>
+            requires meta::DerivedComponentWithBaseContructor<component_t, args_t...>
         component_t& add_component( args_t&&... args );
 
         template <typename component_t>
-        // requires DerivedComponent<component_t>
+            requires meta::DerivedComponent<component_t>
         [[nodiscard]] component_t& get_component( ) const;
 
         template <typename component_t>
-        // requires DerivedComponent<component_t>
+            requires meta::DerivedComponent<component_t>
         [[nodiscard]] component_t& get_components( ) const;
 
         void remove_component( Component& component );
@@ -91,7 +93,7 @@ namespace engine
 
 
     template <typename component_t, typename... args_t>
-    // requires DerivedComponentWithBaseContructor<component_t, args_t...>
+        requires meta::DerivedComponentWithBaseContructor<component_t, args_t...>
     component_t& GameObject::add_component( args_t&&... args )
     {
         // Initializing component with GameObjectView and arguments' perfect forwarding.
@@ -104,7 +106,7 @@ namespace engine
 
 
     template <typename component_t>
-    // requires DerivedComponent<component_t>
+        requires meta::DerivedComponent<component_t>
     [[nodiscard]] component_t& GameObject::get_component( ) const
     {
         // We find the component and reinterpret_cast it to the correct type.
@@ -118,7 +120,7 @@ namespace engine
 
 
     template <typename component_t>
-    // requires DerivedComponent<component_t>
+        requires meta::DerivedComponent<component_t>
     [[nodiscard]] component_t& GameObject::get_components( ) const
     {
         throw std::runtime_error( "Not implemented!" );

@@ -4,14 +4,13 @@
 // +--------------------------------+
 // | PROJECT HEADERS				|
 // +--------------------------------+
-#include <Scene.h>
-#include <Singleton.h>
+#include <framework/Scene.h>
+#include <singletons/Singleton.h>
 
 // +--------------------------------+
 // | STANDARD HEADERS				|
 // +--------------------------------+
 #include <memory>
-#include <string>
 #include <vector>
 
 
@@ -19,7 +18,15 @@ namespace engine
 {
     class ScenePool final : public Singleton<ScenePool>
     {
+        friend class Singleton;
     public:
+        ~ScenePool( ) override = default;
+
+        ScenePool( const ScenePool& )                = delete;
+        ScenePool( ScenePool&& ) noexcept            = delete;
+        ScenePool& operator=( const ScenePool& )     = delete;
+        ScenePool& operator=( ScenePool&& ) noexcept = delete;
+
         Scene& create_scene( const std::string& name );
 
         void fixed_update( );
@@ -31,8 +38,6 @@ namespace engine
         [[nodiscard]] Scene& get_scene( uint16_t id ) const;
 
         void cleanup( ) const;
-
-        friend class Singleton<ScenePool>;
 
     private:
         std::vector<std::unique_ptr<Scene>> scenes_;

@@ -1,10 +1,11 @@
-#include <components/TextComponent.h>
+#include <framework/components/TextComponent.h>
 
 // +--------------------------------+
 // | PROJECT HEADERS				|
 // +--------------------------------+
-#include <Font.h>
-#include <Texture2D.h>
+#include <framework/Font.h>
+#include <framework/GameObject.h>
+#include <framework/Texture2D.h>
 #include <singletons/Renderer.h>
 
 // +--------------------------------+
@@ -19,7 +20,6 @@ namespace engine
     TextComponent::TextComponent( owner_t& owner, const std::string& text, std::shared_ptr<Font> font )
         : Component( owner )
         , font_ptr_{ std::move( font ) }
-        , text_texture_ptr_{ nullptr }
     {
         set_text( text );
 

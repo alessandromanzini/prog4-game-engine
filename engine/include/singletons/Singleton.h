@@ -3,7 +3,7 @@
 
 namespace engine
 {
-    template<typename T>
+    template<typename singleton_t>
     class Singleton
     {
     public:
@@ -15,9 +15,9 @@ namespace engine
         Singleton& operator=( Singleton&& ) noexcept = delete;
 
 
-        static T& get_instance( )
+        static singleton_t& get_instance( )
         {
-            static T instance{};
+            static singleton_t instance{};
             return instance;
         }
 

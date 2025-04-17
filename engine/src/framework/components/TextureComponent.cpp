@@ -1,8 +1,9 @@
-#include <components/TextureComponent.h>
+#include <framework/components/TextureComponent.h>
 
 // +--------------------------------+
 // | PROJECT HEADERS				|
 // +--------------------------------+
+#include <framework/GameObject.h>
 #include <singletons/Renderer.h>
 #include <singletons/ResourceManager.h>
 

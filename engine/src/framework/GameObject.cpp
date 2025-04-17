@@ -1,10 +1,10 @@
-#include <GameObject.h>
+#include <framework/GameObject.h>
 
 // +--------------------------------+
 // | PROJECT HEADERS				|
 // +--------------------------------+
-#include <components/Component.h>
 #include <framework/GameObjectView.h>
+#include <framework/components/Component.h>
 #include <singletons/Renderer.h>
 #include <singletons/ResourceManager.h>
 

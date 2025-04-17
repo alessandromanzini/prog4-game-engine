@@ -1,9 +1,8 @@
-#include <GameObjectView.h>
+#include <framework/GameObjectView.h>
 
 // +--------------------------------+
 // | STANDARD HEADERS				|
 // +--------------------------------+
-#include <stdexcept>
 
 
 namespace engine

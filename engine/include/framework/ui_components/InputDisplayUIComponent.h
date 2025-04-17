@@ -4,7 +4,7 @@
 // +--------------------------------+
 // | PROJECT HEADERS				|
 // +--------------------------------+
-#include <UIComponent.h>
+#include <framework/ui_components/UIComponent.h>
 
 
 namespace engine

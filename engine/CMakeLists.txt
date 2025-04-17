@@ -35,7 +35,13 @@ add_library(${PROJECT_NAME}
         "src/singletons/Renderer.cpp"
         "src/singletons/ResourceManager.cpp"
         "src/singletons/ScenePool.cpp"
-        "src/singletons/UIController.cpp" )
+        "src/singletons/UIController.cpp"
+		"src/singletons/ServiceLocator.cpp"
+		"src/services/SdlSoundSystem.cpp"
+		src/framework/components/Component.cpp
+		include/framework/meta.h
+		src/framework/ui_components/UIComponent.cpp
+)
 
 # include platform specific sources
 if (APPLE)
@@ -47,14 +53,6 @@ endif()
 # include directories
 target_include_directories(${PROJECT_NAME}
 		PUBLIC 	"include"
-		PUBLIC 	"include/bindings"
-		PUBLIC 	"include/controllers"
-		PUBLIC 	"include/core"
-		PUBLIC 	"include/event"
-		PUBLIC 	"include/framework"
-		PUBLIC	"include/framework/components"
-		PUBLIC	"include/framework/ui_components"
-		PUBLIC 	"include/singletons"
 		PRIVATE "src"
 		PRIVATE "src/bindings"
 		PRIVATE "src/core"
@@ -62,6 +60,7 @@ target_include_directories(${PROJECT_NAME}
 		PRIVATE "src/framework"
 		PRIVATE "src/framework/components"
 		PRIVATE "src/framework/ui_components"
+		PRIVATE "src/services"
 		PRIVATE "src/singletons" )
 
 # set maximum warning level and treat warnings as errors

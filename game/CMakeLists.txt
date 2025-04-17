@@ -43,10 +43,6 @@ target_link_libraries(${PROJECT_NAME}
 # include program directories
 target_include_directories(${PROJECT_NAME}
 		PRIVATE "include"
-		PRIVATE "include/bindings"
-		PRIVATE "include/components"
-		PRIVATE "include/controllers"
-		PRIVATE "include/ui_components"
 		PRIVATE "src"
         PRIVATE "src/bindings"
 		PRIVATE "src/components"

@@ -4,7 +4,7 @@
 // +--------------------------------+
 // | PROJECT HEADERS				|
 // +--------------------------------+
-#include <binding_device.h>
+#include <bindings/binding_device.h>
 
 // +--------------------------------+
 // | STANDARD HEADERS				|

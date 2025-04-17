@@ -1,13 +1,13 @@
-#include <InputUtils.h>
+#include <bindings/InputUtils.h>
 
 // +--------------------------------+
 // | PROJECT HEADERS				|
 // +--------------------------------+
 #include <singletons/InputSystem.h>
 
-
 using namespace engine;
 using namespace engine::binding;
+
 
 namespace game
 {

@@ -27,14 +27,8 @@ namespace engine
     class UIController final : public Singleton<UIController>
     {
         friend class Singleton;
+
     public:
-        ~UIController( ) override = default;
-
-        UIController( const UIController& )                = delete;
-        UIController( UIController&& ) noexcept            = delete;
-        UIController& operator=( const UIController& )     = delete;
-        UIController& operator=( UIController&& ) noexcept = delete;
-
         void init( );
         void destroy( );
 

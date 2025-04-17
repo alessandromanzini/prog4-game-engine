@@ -20,12 +20,6 @@ namespace engine
     {
     public:
         explicit TextComponent( owner_t& owner, const std::string& text, std::shared_ptr<Font> font );
-        ~TextComponent( ) override = default;
-
-        TextComponent( const TextComponent& )                = delete;
-        TextComponent( TextComponent&& ) noexcept            = delete;
-        TextComponent& operator=( const TextComponent& )     = delete;
-        TextComponent& operator=( TextComponent&& ) noexcept = delete;
 
         void update( ) override;
         void render( ) const override;

@@ -19,14 +19,8 @@ namespace engine
     class ScenePool final : public Singleton<ScenePool>
     {
         friend class Singleton;
+
     public:
-        ~ScenePool( ) override = default;
-
-        ScenePool( const ScenePool& )                = delete;
-        ScenePool( ScenePool&& ) noexcept            = delete;
-        ScenePool& operator=( const ScenePool& )     = delete;
-        ScenePool& operator=( ScenePool&& ) noexcept = delete;
-
         Scene& create_scene( const std::string& name );
 
         void fixed_update( );

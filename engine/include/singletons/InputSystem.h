@@ -28,14 +28,8 @@ namespace engine
     {
         using device_id_t = decltype(binding::DeviceInfo::id);
         friend class Singleton;
+
     public:
-        ~InputSystem( ) override = default;
-
-        InputSystem( const InputSystem& )                = delete;
-        InputSystem( InputSystem&& ) noexcept            = delete;
-        InputSystem& operator=( const InputSystem& )     = delete;
-        InputSystem& operator=( InputSystem&& ) noexcept = delete;
-
         bool process_input( );
 
         [[nodiscard]] device_id_t fetch_free_gamepad_id() const;

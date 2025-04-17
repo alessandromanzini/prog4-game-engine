@@ -14,12 +14,6 @@ namespace engine
     {
     public:
         explicit FPS( owner_t& owner );
-        ~FPS( ) override = default;
-
-        FPS( const FPS& )                = delete;
-        FPS( FPS&& ) noexcept            = delete;
-        FPS& operator=( const FPS& )     = delete;
-        FPS& operator=( FPS&& ) noexcept = delete;
 
         void update( ) override;
 

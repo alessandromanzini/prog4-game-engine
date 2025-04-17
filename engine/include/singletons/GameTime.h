@@ -23,14 +23,8 @@ namespace engine
     class GameTime final : public Singleton<GameTime>
     {
         friend class Singleton;
+
     public:
-        ~GameTime( ) noexcept override = default;
-
-        GameTime( const GameTime& )                = delete;
-        GameTime( GameTime&& ) noexcept            = delete;
-        GameTime& operator=( const GameTime& )     = delete;
-        GameTime& operator=( GameTime&& ) noexcept = delete;
-
         void tick( );
         void fixed_tick( );
         void reset( );
@@ -53,7 +47,7 @@ namespace engine
         std::chrono::high_resolution_clock::time_point last_time_{};
         float lag_{ 0.f };
 
-        GameTime( )                    = default;
+        GameTime( ) = default;
 
     };
 

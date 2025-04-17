@@ -22,14 +22,8 @@ namespace engine
     class Renderer final : public Singleton<Renderer>
     {
         friend class Singleton;
+
     public:
-        ~Renderer( ) override = default;
-
-        Renderer( const Renderer& )                = delete;
-        Renderer( Renderer&& ) noexcept            = delete;
-        Renderer& operator=( const Renderer& )     = delete;
-        Renderer& operator=( Renderer&& ) noexcept = delete;
-
         void init( SDL_Window* window );
         void render( ) const;
         void destroy( );

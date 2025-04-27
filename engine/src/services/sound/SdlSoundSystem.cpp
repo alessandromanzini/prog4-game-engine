@@ -392,13 +392,13 @@ namespace engine
     }
 
 
-    void SdlSoundSystem::SdlSoundSystemImpl::assert_on_missing_sound( [[nodiscard]] const Audio& audio ) const
+    void SdlSoundSystem::SdlSoundSystemImpl::assert_on_missing_sound( [[maybe_unused]] const Audio& audio ) const
     {
         assert( sound_resources_.cget( ).contains( audio.get_sound_id( ) ) && "Sound not registered!" );
     }
 
 
-    void SdlSoundSystem::SdlSoundSystemImpl::assert_on_missing_tag( [[nodiscard]] const UID tagId ) const
+    void SdlSoundSystem::SdlSoundSystemImpl::assert_on_missing_tag( [[maybe_unused]] const UID tagId ) const
     {
         assert( tag_volumes_.contains( tagId ) && "Tag not registered!" );
     }

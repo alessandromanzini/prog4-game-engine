@@ -7,6 +7,7 @@
 #include <framework/components/Component.h>
 
 #include <string>
+#include <memory>
 
 
 namespace engine

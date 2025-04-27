@@ -7,6 +7,7 @@
 #include <map>
 #include <unordered_set>
 #include <vector>
+#include <memory> // need this header for MSVC
 
 
 namespace engine

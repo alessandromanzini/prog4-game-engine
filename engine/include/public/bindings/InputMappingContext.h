@@ -91,7 +91,7 @@ namespace engine
         using filler_param_t = std::conditional_t<std::is_void_v<typename traits::param_t>, bool, typename traits::param_t>;
         using delegate_t     = std::function<void( filler_param_t )>;
 
-        auto wrapper = [&, command]( auto param )
+        auto wrapper = [&, command]( [[maybe_unused]] auto param )
             {
                 if constexpr ( std::is_void_v<typename traits::param_t> )
                 {

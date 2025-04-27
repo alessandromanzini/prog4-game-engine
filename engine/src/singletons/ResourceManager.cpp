@@ -40,7 +40,7 @@ namespace engine
 
     std::shared_ptr<Texture2D> ResourceManager::load_texture( const std::filesystem::path& path )
     {
-        const UID uid{ path.c_str( ) };
+        const UID uid{ path.string( ) };
 
         const auto fullPath = data_path_ / path;
         const auto filename = fs::path( fullPath ).filename( ).string( );
@@ -55,7 +55,7 @@ namespace engine
 
     std::shared_ptr<Font> ResourceManager::load_font( const std::filesystem::path& path, uint8_t size )
     {
-        const UID uid{ path.c_str( ) };
+        const UID uid{ path.string( ) };
 
         const auto fullPath = data_path_ / path;
         const auto filename = fs::path( fullPath ).filename( ).string( );

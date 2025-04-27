@@ -60,7 +60,8 @@ namespace engine
         const bool value = trigger_to_value( trigger );
 
         // For every input action bound to the ia, we signal the device context to stack the input (will be dispatched later)
-        for ( auto [lock, contexts] = device_contexts_.get( ); auto& device : contexts )
+        auto [lock, contexts] = device_contexts_.get( );
+        for ( auto& device : contexts )
         {
             if ( not device.is_device_suitable( deviceInfo ) )
             {

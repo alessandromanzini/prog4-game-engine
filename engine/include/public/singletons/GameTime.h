@@ -10,6 +10,7 @@
 // | STANDARD HEADERS				|
 // +--------------------------------+
 #include <chrono>
+#include <functional>
 #include <list>
 
 

@@ -8,7 +8,9 @@
 #include <SDL_mixer.h>
 
 #include <cassert>
+#include <queue>
 #include <thread>
+#include <string_view>
 
 
 namespace engine
@@ -149,7 +151,7 @@ namespace engine
                                                                            const sound::SoundType type,
                                                                            const UID tagId )
     {
-        const UID soundId{ path.c_str( ) };
+        const UID soundId{ path.string( ) };
 
         // Check if the sound is already registered. If not we can register it
         if ( not sound_resources_.cget( ).contains( soundId ) )
@@ -372,7 +374,7 @@ namespace engine
                     if ( const auto channel{ find_open_channel( ) }; channel != -1 )
                     {
                         std::thread{
-                            &SdlSoundSystemImpl::process_sound_effect, this, channel, audio.get_sound_id( ),
+                            &SdlSoundSystemImpl::process_sound_effect, this, static_cast<uint8_t>( channel ), audio.get_sound_id( ),
                             std::get<Mix_Chunk*>( audio.get_resource( ) ), mixVolume, loops
                         }.detach( );
                     }
@@ -407,9 +409,9 @@ namespace engine
         // Find the first available channel
         for ( size_t channel{}; channel < channels_; ++channel )
         {
-            if ( not Mix_Playing( channel ) )
+            if ( not Mix_Playing( static_cast<int>( channel ) ) )
             {
-                return channel;
+                return static_cast<int>( channel );
             }
         }
 

@@ -6,6 +6,7 @@
 #include <SDL_mixer.h>
 
 #include <filesystem>
+#include <variant>
 
 
 namespace engine

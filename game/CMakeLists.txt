@@ -12,12 +12,7 @@ elseif(APPLE)
     set(TARGET_PARAM )
 else()
     set(TARGET_NAME ${PROJECT_NAME})
-    set(TARGET_PARAM WIN32
-            src/controllers/TestController.cpp
-            src/registration/audio.cpp
-            include/registration/audio.h
-            src/ui_components/AudioTestUiComponent.cpp
-            include/ui_components/AudioTestUiComponent.h)
+    set(TARGET_PARAM )
 endif()
 
 # set minigin as the default startup project

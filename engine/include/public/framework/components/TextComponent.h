@@ -10,6 +10,7 @@
 // | STANDARD HEADERS				|
 // +--------------------------------+
 #include <string>
+#include <memory>
 
 
 namespace engine

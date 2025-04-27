@@ -13,7 +13,7 @@ namespace game
 {
     void initialize_audio( )
     {
-        auto ss = std::make_unique<SdlSoundSystem>( 2, sound::SdlInitInfo{},
+        auto ss = std::make_unique<SdlSoundSystem>( static_cast<uint8_t>( 2 ), sound::SdlInitInfo{},
                                                     sound::QueuePolicy::REPLACE_NEWEST );
         auto logger = std::make_unique<SoundSystemLogger>( std::move( ss ), std::clog, std::cerr );
 

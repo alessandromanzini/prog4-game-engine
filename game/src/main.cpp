@@ -5,6 +5,8 @@
 #endif
 #endif
 
+#define SDL_MAIN_HANDLED
+
 // +--------------------------------+
 // | PROJECT HEADERS				|
 // +--------------------------------+

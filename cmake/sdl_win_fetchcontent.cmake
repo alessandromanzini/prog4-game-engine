@@ -74,7 +74,6 @@ FetchContent_GetProperties(SDL2_mixer)
 if(NOT SDL2_mixer_POPULATED)
 	FetchContent_Populate(SDL2_mixer)
 	set(SDL2_MIXER_INCLUDE_DIR ${sdl2_mixer_SOURCE_DIR}/include)
-	message(STATUS "SDL2_mixer_INCLUDE_DIR: ${SDL2_MIXER_INCLUDE_DIR}")
 
 	if (${CMAKE_SIZEOF_VOID_P} MATCHES 8)
 		set(SDL2_MIXER_LIBRARIES "${sdl2_mixer_SOURCE_DIR}/lib/x64/SDL2_mixer.lib")

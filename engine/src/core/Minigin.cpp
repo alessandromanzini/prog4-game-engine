@@ -130,7 +130,10 @@ namespace engine
         GAME_TIME.reset( );
 #ifndef __EMSCRIPTEN__
         while ( !quit_ )
+        {
             run_one_frame( );
+        }
+        SCENE_POOL.unload_all_scenes( );
 #else
 		emscripten_set_main_loop_arg( &LoopCallback, this, 0, true );
 #endif

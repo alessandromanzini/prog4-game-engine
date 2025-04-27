@@ -45,7 +45,8 @@ add_library(${PROJECT_NAME}
         "src/singletons/ResourceManager.cpp"
         "src/singletons/ScenePool.cpp"
         "src/singletons/UIController.cpp"
-		"src/singletons/ServiceLocator.cpp" )
+		"src/singletons/ServiceLocator.cpp"
+		include/private/services/sound/VoidSoundSystem.h)
 
 # include platform specific sources
 if (APPLE)

@@ -57,8 +57,14 @@ namespace engine
 
     Scene& ScenePool::create_scene( const std::string& name )
     {
-        auto& scene = scenes_.emplace_back( std::make_unique<Scene>( name ) );
+        const auto& scene = scenes_.emplace_back( std::make_unique<Scene>( name ) );
         return *scene;
+    }
+
+
+    void ScenePool::unload_all_scenes( )
+    {
+        scenes_.clear( );
     }
 
 

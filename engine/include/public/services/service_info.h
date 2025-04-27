@@ -6,7 +6,6 @@ namespace engine
 {
     enum class ServiceType
     {
-        VOID,
         SDL
     };
 

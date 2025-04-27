@@ -1,7 +1,5 @@
 #include <singletons/ServiceLocator.h>
 
-#include <services/sound/VoidSoundSystem.h>
-
 #include <cassert>
 
 

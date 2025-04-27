@@ -134,6 +134,7 @@ namespace engine
             run_one_frame( );
         }
         SCENE_POOL.unload_all_scenes( );
+        SERVICE_LOCATOR.tempPlayerController = nullptr;
 #else
 		emscripten_set_main_loop_arg( &LoopCallback, this, 0, true );
 #endif

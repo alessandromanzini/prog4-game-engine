@@ -10,25 +10,34 @@ add_library(${PROJECT_NAME}
 		"src/bindings/InputBuffer.cpp"
         "src/bindings/InputMappingContext.cpp"
 
-		"include/controllers/BaseController.h"
+		"include/public/controllers/BaseController.h"
 		"src/controllers/PlayerController.cpp"
 
         "src/event/Subject.cpp"
 
-        "include/framework/Deleter.h"
-	    "src/framework/Font.cpp"
+        "include/public/framework/Deleter.h"
         "src/framework/GameObject.cpp"
         "src/framework/GameObjectView.cpp"
         "src/framework/Scene.cpp"
-        "src/framework/Texture2D.cpp"
         "src/framework/Transform.cpp"
 
-        "src/framework/components/FPS.cpp"
+		"src/framework/components/AudioComponent.cpp"
+		"src/framework/components/Component.cpp"
         "src/framework/components/TextComponent.cpp"
         "src/framework/components/TextureComponent.cpp"
         "src/framework/ui_components/InputDisplayUIComponent.cpp"
+		"src/framework/ui_components/UIComponent.cpp"
+
+	    "src/framework/resources/Font.cpp"
+        "src/framework/resources/Texture2D.cpp"
+		"src/framework/resources/sound/Audio.cpp"
+		"src/framework/resources/sound/SdlAudio.cpp"
 
         "src/core/Minigin.cpp"
+
+		"include/public/services/service_info.h"
+		"src/services/sound/SdlSoundSystem.cpp"
+		"src/services/sound/SoundSystemLogger.cpp"
 
         "src/singletons/GameTime.cpp"
         "src/singletons/InputSystem.cpp"
@@ -36,12 +45,7 @@ add_library(${PROJECT_NAME}
         "src/singletons/ResourceManager.cpp"
         "src/singletons/ScenePool.cpp"
         "src/singletons/UIController.cpp"
-		"src/singletons/ServiceLocator.cpp"
-		"src/services/SdlSoundSystem.cpp"
-		src/framework/components/Component.cpp
-		include/framework/meta.h
-		src/framework/ui_components/UIComponent.cpp
-)
+		"src/singletons/ServiceLocator.cpp" )
 
 # include platform specific sources
 if (APPLE)
@@ -52,16 +56,9 @@ endif()
 
 # include directories
 target_include_directories(${PROJECT_NAME}
-		PUBLIC 	"include"
-		PRIVATE "src"
-		PRIVATE "src/bindings"
-		PRIVATE "src/core"
-		PRIVATE "src/event"
-		PRIVATE "src/framework"
-		PRIVATE "src/framework/components"
-		PRIVATE "src/framework/ui_components"
-		PRIVATE "src/services"
-		PRIVATE "src/singletons" )
+		PUBLIC 	"include/public"
+		PRIVATE "include/private"
+		PRIVATE "src" )
 
 # set maximum warning level and treat warnings as errors
 include(set_warning_level)

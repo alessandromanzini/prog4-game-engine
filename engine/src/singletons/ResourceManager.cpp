@@ -3,8 +3,9 @@
 // +--------------------------------+
 // | PROJECT HEADERS				|
 // +--------------------------------+
-#include <framework/Font.h>
-#include <framework/Texture2D.h>
+#include <event/Observer.h>
+#include <framework/resources/Font.h>
+#include <framework/resources/Texture2D.h>
 #include <singletons/Renderer.h>
 
 // +--------------------------------+
@@ -37,23 +38,29 @@ namespace engine
     }
 
 
-    std::shared_ptr<Texture2D> ResourceManager::load_texture( const std::string& file )
+    std::shared_ptr<Texture2D> ResourceManager::load_texture( const std::filesystem::path& path )
     {
-        const auto fullPath = data_path_ / file;
+        const UID uid{ path.c_str( ) };
+
+        const auto fullPath = data_path_ / path;
         const auto filename = fs::path( fullPath ).filename( ).string( );
-        if ( not loaded_textures_.contains( filename ) )
+
+        if ( not loaded_textures_.contains( uid ) )
         {
             loaded_textures_.insert( std::pair( filename, std::make_shared<Texture2D>( fullPath.string( ) ) ) );
         }
-        return loaded_textures_.at( filename );
+        return loaded_textures_.at( uid );
     }
 
 
-    std::shared_ptr<Font> ResourceManager::load_font( const std::string& file, uint8_t size )
+    std::shared_ptr<Font> ResourceManager::load_font( const std::filesystem::path& path, uint8_t size )
     {
-        const auto fullPath = data_path_ / file;
+        const UID uid{ path.c_str( ) };
+
+        const auto fullPath = data_path_ / path;
         const auto filename = fs::path( fullPath ).filename( ).string( );
-        const auto key      = std::pair<std::string, uint8_t>( filename, size );
+
+        const auto key      = std::make_pair( uid, size );
         if ( not loaded_fonts_.contains( key ) )
         {
             loaded_fonts_.insert( std::pair( key, std::make_shared<Font>( fullPath.string( ), size ) ) );
@@ -62,31 +69,40 @@ namespace engine
     }
 
 
+    const std::filesystem::path& ResourceManager::get_data_path( ) const { return data_path_; }
+
+
+    void ResourceManager::add_lifetime_observer( Observer& observer )
+    {
+        lifetime_subject_.add_observer( observer );
+    }
+
+
+    void ResourceManager::remove_lifetime_observer( const Observer& observer )
+    {
+        lifetime_subject_.remove_observer( observer );
+    }
+
+
+    void ResourceManager::signal_lifetime_event( const event::LifetimeEvent event )
+    {
+        auto [lock, events] = queued_events_.get( );
+        events.insert( event );
+    }
+
+
     void ResourceManager::unload_unused_resources( )
     {
-        for ( auto it = loaded_textures_.begin( ); it != loaded_textures_.end( ); )
+        // unload_unused_resources_impl( loaded_textures_ );
+        // unload_unused_resources_impl( loaded_fonts_ );
+
+        for ( const auto event : queued_events_.cget(  ) )
         {
-            if ( it->second.use_count( ) == 1 )
-            {
-                it = loaded_textures_.erase( it );
-            }
-            else
-            {
-                ++it;
-            }
+            lifetime_subject_.broadcast( UID( event ) );
         }
 
-        for ( auto it = loaded_fonts_.begin( ); it != loaded_fonts_.end( ); )
-        {
-            if ( it->second.use_count( ) == 1 )
-            {
-                it = loaded_fonts_.erase( it );
-            }
-            else
-            {
-                ++it;
-            }
-        }
+        auto [lock, events] = queued_events_.get( );
+        events.clear( );
     }
 
 }

@@ -3,7 +3,7 @@
 // +--------------------------------+
 // | PROJECT HEADERS				|
 // +--------------------------------+
-#include <framework/Texture2D.h>
+#include <framework/resources/Texture2D.h>
 #include <singletons/ScenePool.h>
 #include <singletons/UIController.h>
 

@@ -19,13 +19,14 @@ namespace engine
 
     void Scene::add( std::unique_ptr<GameObject> object )
     {
+        assert( object != nullptr && "Object pointer cannot be null!" );
         objects_.emplace_back( std::move( object ) );
     }
 
 
-    GameObject* Scene::create_object( )
+    GameObject& Scene::create_object( )
     {
-        return objects_.emplace_back( std::make_unique<GameObject>( ) ).get( );
+        return *objects_.emplace_back( std::make_unique<GameObject>( this ) );
     }
 
 
@@ -41,17 +42,14 @@ namespace engine
     }
 
 
-    void Scene::remove( GameObject* object )
+    void Scene::remove( GameObject& object )
     {
-        if ( object != nullptr )
-        {
-            deleter_.mark_element_for_deletion( object );
+        deleter_.mark_element_for_deletion( &object );
 
-            // Remove children as well
-            for ( auto* child : object->get_children( ) )
-            {
-                remove( child );
-            }
+        // Remove children as well
+        for ( auto* child : object.get_children( ) )
+        {
+            remove( *child );
         }
     }
 

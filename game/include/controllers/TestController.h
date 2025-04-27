@@ -2,38 +2,33 @@
 #define TESTCONTROLLER_H
 
 #include <controllers/PlayerController.h>
-
-#include <iostream>
-
+#include <framework/components/AudioComponent.h>
+#include <components/MoveComponent.h>
 
 namespace game
 {
     class TestController final : public engine::PlayerController
     {
     public:
-        TestController( )
-        {
-            try_register_device( engine::binding::DeviceType::KEYBOARD );
-        }
+        TestController( );
 
+        void possess( engine::GameObject* pawn ) override;
 
-        void testFunc( const glm::vec2 val ) const
-        {
-            if ( not( val.x == 0 && val.y == 0 ) )
-            {
-                get_pawn( )->get_component<MoveComponent>( ).move( val );
-            }
-        }
+    private:
+        engine::AudioComponent* audio_ptr_{ nullptr };
+        MoveComponent* move_ptr_{ nullptr };
 
-    protected:
-        void device_registered( engine::InputMappingContext& context, const engine::binding::DeviceInfo deviceInfo ) override
-        {
-            std::cout << "Test device registered at id " << static_cast<int>( deviceInfo.id ) << std::endl;
+        void device_registered( engine::InputMappingContext& context, const engine::binding::DeviceInfo deviceInfo ) override;
 
-            context.bind_to_input_action( *this, engine::UID( IA::TEST ), &TestController::testFunc,
-                                          engine::binding::TriggerEvent::PRESSED );
-            //context.bind_to_input_action( *this, engine::UID( IA::TEST ), &TestController::testFunc, engine::binding::TriggerEvent::RELEASED );
-        }
+        void move( glm::vec2 dir ) const;
+
+        void play_sound( ) const;
+        void volume_up( ) const;
+        void volume_down( ) const;
+
+        void kill( );
+
+        void quit( ) const;
 
     };
 

@@ -4,6 +4,7 @@
 // | PROJECT HEADERS				|
 // +--------------------------------+
 #include <framework/GameObjectView.h>
+#include <framework/Scene.h>
 #include <framework/components/Component.h>
 #include <singletons/Renderer.h>
 #include <singletons/ResourceManager.h>
@@ -15,8 +16,16 @@ namespace engine
     //     : view_ptr_( new GameObjectView{ *this } ) { }
 
 
+    GameObject::GameObject( Scene* scene )
+        : scene_ptr_{ scene }
+    {
+        assert( scene != nullptr && "Scene pointer cannot be null!" );
+    }
+
+
     GameObject::~GameObject( ) noexcept
     {
+        // Notify hierarchy that this object is being deleted
         if ( parent_ptr_ != nullptr )
         {
             parent_ptr_->remove_child( this );
@@ -25,6 +34,9 @@ namespace engine
         {
             children_[i]->set_parent( nullptr, false );
         }
+
+        // Broadcast that owner is being deleted
+        on_deletion_.broadcast( );
     }
 
 
@@ -85,7 +97,7 @@ namespace engine
             {
                 // TODO: test if rotation is canceled
                 const auto translation = get_world_transform( ).get_position( ) - parent->get_world_transform( ).get_position( );
-                set_local_transform(Transform::from_translation( translation ) );
+                set_local_transform( Transform::from_translation( translation ) );
             }
             set_transform_dirty( );
         }
@@ -163,6 +175,24 @@ namespace engine
             children.push_back( child );
             child->collect_children( children );
         }
+    }
+
+
+    void GameObject::bind_to_object_deletion( decltype(on_deletion_)::delegate_t&& delegate )
+    {
+        on_deletion_.bind( std::move( delegate ) );
+    }
+
+
+    void GameObject::unbind_from_object_deletion( decltype(on_deletion_)::delegate_t&& delegate )
+    {
+        on_deletion_.unbind( std::move( delegate ) );
+    }
+
+
+    void GameObject::mark_for_deletion( )
+    {
+        scene_ptr_->remove( *this );
     }
 
 

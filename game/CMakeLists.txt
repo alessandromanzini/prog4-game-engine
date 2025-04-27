@@ -12,7 +12,12 @@ elseif(APPLE)
     set(TARGET_PARAM )
 else()
     set(TARGET_NAME ${PROJECT_NAME})
-    set(TARGET_PARAM WIN32)
+    set(TARGET_PARAM WIN32
+            src/controllers/TestController.cpp
+            src/registration/audio.cpp
+            include/registration/audio.h
+            src/ui_components/AudioTestUiComponent.cpp
+            include/ui_components/AudioTestUiComponent.h)
 endif()
 
 # set minigin as the default startup project
@@ -23,13 +28,16 @@ endif()
 add_executable(${TARGET_NAME} ${TARGET_PARAM} 
         "src/main.cpp"
 
-        "src/bindings/InputUtils.cpp"
-
         "src/components/RotatingComponent.cpp"
         "src/components/MoveComponent.cpp"
+        "src/components/FPS.cpp"
 
-		"include/controllers/TestController.h"
+		"src/controllers/TestController.cpp"
 
+        "src/registration/input.cpp"
+        "src/registration/audio.cpp"
+
+        "src/ui_components/AudioTestUIComponent.cpp"
         "src/ui_components/DemoUIComponent.cpp"
         "src/ui_components/ObserverTestUIComponent.cpp" )
 
@@ -44,9 +52,9 @@ target_link_libraries(${PROJECT_NAME}
 target_include_directories(${PROJECT_NAME}
 		PRIVATE "include"
 		PRIVATE "src"
-        PRIVATE "src/bindings"
 		PRIVATE "src/components"
 		PRIVATE "src/controllers"
+        PRIVATE "src/registration"
 		PRIVATE "src/ui_components" )
 
 # copy the data directory to the build directory

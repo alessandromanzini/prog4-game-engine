@@ -3,10 +3,11 @@
 // +--------------------------------+
 // | PROJECT HEADERS				|
 // +--------------------------------+
-#include <framework/Font.h>
 #include <framework/GameObject.h>
-#include <framework/Texture2D.h>
 #include <singletons/Renderer.h>
+
+#include <framework/resources/Font.h>
+#include <framework/resources/Texture2D.h>
 
 // +--------------------------------+
 // | STANDARD HEADERS				|

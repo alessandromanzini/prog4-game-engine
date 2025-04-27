@@ -7,7 +7,6 @@ namespace engine
 {
     void UIComponent::mark_for_deletion( )
     {
-        Deletable::mark_for_deletion( );
         get_owner( ).remove_ui_component( *this );
     }
 

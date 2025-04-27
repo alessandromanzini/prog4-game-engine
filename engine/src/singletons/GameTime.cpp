@@ -16,6 +16,9 @@ namespace engine
 
         last_time_ = currentTime;
         lag_ += delta_time_;
+
+        handle_callbacks( timeouts_, true );
+        handle_callbacks( intervals_, false );
     }
 
 
@@ -57,14 +60,38 @@ namespace engine
     }
 
 
-    void GameTime::set_timing_type( const TimingType type )
+    void GameTime::set_interval( const float seconds, std::function<bool( )>&& callback )
+    {
+        intervals_.emplace_back( std::make_pair( time::TimeSpan{ seconds, seconds }, std::move( callback ) ) );
+    }
+
+
+    void GameTime::set_interval( const float seconds, const std::function<void( )>& callback )
+    {
+        set_interval( seconds, std::function{
+                          [callback]( ) -> bool
+                              {
+                                  callback( );
+                                  return false;
+                              }
+                      } );
+    }
+
+
+    void GameTime::set_timeout( const float seconds, std::function<void( )>&& callback )
+    {
+        timeouts_.emplace_back( std::make_pair( time::TimeSpan{ seconds, seconds }, std::move( callback ) ) );
+    }
+
+
+    void GameTime::set_timing_type( const time::TimingType type )
     {
         switch ( type )
         {
-            case TimingType::DELTA_TIME:
+            case time::TimingType::DELTA_TIME:
                 current_delta_ptr_ = &delta_time_;
                 break;
-            case TimingType::FIXED_DELTA_TIME:
+            case time::TimingType::FIXED_DELTA_TIME:
                 current_delta_ptr_ = &FIXED_TIME_STEP_;
                 break;
         }

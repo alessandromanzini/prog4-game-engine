@@ -5,17 +5,26 @@
 
 namespace engine
 {
+    ServiceLocator& SERVICE_LOCATOR = ServiceLocator::get_instance( );
+
+
+    SoundSystem& ServiceLocator::register_sound_system( std::unique_ptr<SoundSystem>&& ss )
+    {
+        sound_system_instance_ptr_ = std::move( ss );
+        return get_sound_system( );
+    }
+
+
     SoundSystem& ServiceLocator::get_sound_system( ) const
     {
-        assert(sound_system_instance_ptr_ && "SoundSystem instance not registered");
+        assert( is_sound_system_registered( ) && "SoundSystem instance not registered" );
         return *sound_system_instance_ptr_;
     }
 
 
-    void ServiceLocator::register_sound_system( std::unique_ptr<SoundSystem>&& ss )
+    bool ServiceLocator::is_sound_system_registered( ) const
     {
-        sound_system_instance_ptr_ = std::move( ss );
+        return sound_system_instance_ptr_ != nullptr;
     }
-
 
 }

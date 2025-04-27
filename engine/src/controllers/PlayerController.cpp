@@ -17,18 +17,18 @@ namespace engine
 {
     PlayerController::~PlayerController( ) noexcept
     {
-        if ( has_registered_device_ )
+        if ( has_registered_device_.clone( ) )
         {
             auto& context = INPUT_SYSTEM.get_input_mapping_context( );
             context.unregister_device( *this );
-            has_registered_device_ = false;
+            has_registered_device_.set( false );
         }
     }
 
 
     bool PlayerController::has_registered_device( ) const
     {
-        return has_registered_device_;
+        return has_registered_device_.clone( );
     }
 
 
@@ -59,7 +59,7 @@ namespace engine
         constexpr DeviceInfo deviceInfo{ DeviceType::KEYBOARD };
 
         context.register_device( *this, deviceInfo );
-        has_registered_device_ = true;
+        has_registered_device_.set( true );
 
         device_registered( context, deviceInfo );
     }
@@ -74,7 +74,8 @@ namespace engine
                 const DeviceInfo deviceInfo{ DeviceType::GAMEPAD, INPUT_SYSTEM.fetch_free_gamepad_id( ) };
 
                 context.register_device( *this, deviceInfo );
-                has_registered_device_ = true;
+
+                has_registered_device_.set( true );
 
                 device_registered( context, deviceInfo );
 
@@ -82,7 +83,7 @@ namespace engine
             }
             catch ( std::runtime_error& )
             {
-                has_registered_device_ = false;
+                has_registered_device_.set( false );
             }
 
             std::this_thread::sleep_for( REGISTER_ATTEMPT_TIME_STEP_ );

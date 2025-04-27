@@ -39,7 +39,7 @@ namespace engine::binding
                 [&]( auto&& fn )
                     {
                         using function_sig_t = std::decay_t<decltype( fn )>;
-                        using param_t        = typename function_traits<function_sig_t>::param_t;
+                        using param_t        = std::tuple_element_t<0, typename function_traits<function_sig_t>::params_t>;
                         fn( convert_input_value<param_t>( value ) );
                     },
                 command
@@ -59,7 +59,7 @@ namespace engine::binding
             case TriggerEvent::RELEASED:
                 return released_commands_;
         }
-		throw std::invalid_argument( "Invalid trigger event!" );
+        throw std::invalid_argument( "Invalid trigger event!" );
     }
 
 
@@ -136,7 +136,8 @@ namespace engine::binding
     }
 
 
-    std::optional<decltype(DeviceContext::signaled_inputs_queue_)::iterator> DeviceContext::find_queued_input( const InputSnapshot& target )
+    std::optional<decltype(DeviceContext::signaled_inputs_queue_)::iterator> DeviceContext::find_queued_input(
+        const InputSnapshot& target )
     {
         if ( auto it = std::ranges::find( signaled_inputs_queue_, target );
             it != signaled_inputs_queue_.end( ) )

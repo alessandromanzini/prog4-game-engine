@@ -28,6 +28,7 @@
 #include <SDL_image.h>
 #include <SDL_ttf.h>
 #include <thread>
+#include <singletons/ServiceLocator.h>
 
 
 namespace engine
@@ -150,13 +151,22 @@ namespace engine
         while ( GAME_TIME.get_required_fixed_update( ) )
         {
             // Call the fixed update and tick the lag time
-            GAME_TIME.set_timing_type( TimingType::FIXED_DELTA_TIME );
+            GAME_TIME.set_timing_type( time::TimingType::FIXED_DELTA_TIME );
             SCENE_POOL.fixed_update( );
             GAME_TIME.fixed_tick( );
         }
-        GAME_TIME.set_timing_type( TimingType::DELTA_TIME );
+        GAME_TIME.set_timing_type( time::TimingType::DELTA_TIME );
+
         SCENE_POOL.update( );
         UI_CONTROLLER.update( );
+
+        // +---------------------------+
+        // | UPDATE SERVICES           |
+        // +---------------------------+
+        if ( SERVICE_LOCATOR.is_sound_system_registered( ) )
+        {
+            SERVICE_LOCATOR.get_sound_system( ).process_requests( );
+        }
         RENDERER.render( );
 
         // +--------------------------------+
@@ -164,6 +174,7 @@ namespace engine
         // +--------------------------------+
         SCENE_POOL.cleanup( );
         UI_CONTROLLER.cleanup( );
+        RESOURCE_MANAGER.unload_unused_resources( );
 
         // +--------------------------------+
         // | SLEEPING						|

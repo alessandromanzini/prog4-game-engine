@@ -49,7 +49,7 @@ void load( )
 
     // PacMan
     auto& pacmanGo = scene.create_object( );
-    pacmanGo.add_component<engine::SpriteComponent>( "characters/bub/bub_idle_1x8.png", 1, 8, 0.1f );
+    pacmanGo.add_component<engine::SpriteComponent>( "characters/bub/bub_idle_1x8.png", static_cast<uint8_t>( 1u ), static_cast<uint8_t>( 8u ), 0.1f );
     pacmanGo.set_world_transform( engine::Transform::from_translation( { 200.f, 375.f } ) );
     pacmanGo.add_component<game::MoveComponent>( 100.f );
     pacmanGo.add_component<engine::AudioComponent>( "victory.wav", engine::sound::SoundType::SOUND_EFFECT,

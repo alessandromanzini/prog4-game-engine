@@ -19,8 +19,8 @@ namespace engine
         assert( frame_delay_ > 0.f && "Frame delay must be greater than 0" );
         assert( total_frames_ > 0 && "Total frames must be greater than 0" );
 
-        frame_width_ = texture_ptr_->get_size(  ).x / cols_;
-        frame_height_ = texture_ptr_->get_size(  ).y / rows_;
+        frame_width_ = static_cast<float>( texture_ptr_->get_size(  ).x ) / cols_;
+        frame_height_ = static_cast<float>( texture_ptr_->get_size(  ).y ) / rows_;
     }
 
 

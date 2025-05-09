@@ -91,7 +91,7 @@ namespace engine
                 const auto channel = Mix_PlayChannel( find_channel(  ), effect, loops );
                 if ( channel != -1 )
                 {
-                    sound.channel = channel;
+                    sound.channel = static_cast<uint8_t>( channel );
                     last_used_channel_ = channel;
                 }
                 return channel;

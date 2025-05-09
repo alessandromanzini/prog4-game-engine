@@ -47,7 +47,7 @@ namespace engine
 
         if ( not loaded_textures_.contains( uid ) )
         {
-            loaded_textures_.insert( std::pair( filename, std::make_shared<Texture2D>( fullPath.string( ) ) ) );
+            loaded_textures_.insert( std::pair( uid, std::make_shared<Texture2D>( fullPath.string( ) ) ) );
         }
         return loaded_textures_.at( uid );
     }

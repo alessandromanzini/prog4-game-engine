@@ -12,6 +12,8 @@
 #include <singletons/Singleton.h>
 #include <singletons/UIController.h>
 
+#include <glm.hpp>
+
 
 namespace engine
 {
@@ -28,8 +30,11 @@ namespace engine
         void render( ) const;
         void destroy( );
 
-        void render_texture( const Texture2D& texture, float x, float y ) const;
-        void render_texture( const Texture2D& texture, float x, float y, float width, float height ) const;
+        void render_texture( const Texture2D& texture, glm::vec2 position ) const;
+        void render_texture( const Texture2D& texture, const glm::vec4& dstRect ) const;
+
+        void render_partial_texture( const Texture2D& texture, glm::vec2 position, const glm::vec4& srcRect ) const;
+        void render_partial_texture( const Texture2D& texture, const glm::vec4& dstRect, const glm::vec4& srcRect ) const;
 
         [[nodiscard]] SDL_Renderer* get_SDL_renderer( ) const;
 

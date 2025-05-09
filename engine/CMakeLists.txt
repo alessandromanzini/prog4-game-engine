@@ -47,7 +47,9 @@ add_library(${PROJECT_NAME}
         "src/singletons/ResourceManager.cpp"
         "src/singletons/ScenePool.cpp"
         "src/singletons/UIController.cpp"
-		"src/singletons/ServiceLocator.cpp" )
+		"src/singletons/ServiceLocator.cpp"
+		src/framework/components/SpriteComponent.cpp
+		include/public/framework/components/SpriteComponent.h)
 
 # include platform specific sources
 if (APPLE)

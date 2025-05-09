@@ -1,5 +1,6 @@
 #include <map>
 #include <services/sound/SoundSystemLogger.h>
+#include <singletons/ResourceManager.h>
 
 
 namespace engine
@@ -16,7 +17,9 @@ namespace engine
                                           std::ostream& errorStream )
         : sound_system_ptr_{ std::move( soundSystem ) }
         , log_stream_{ logStream }
-        , error_stream_{ errorStream } { }
+        , error_stream_{ errorStream }
+    {
+    }
 
 
     ServiceType SoundSystemLogger::get_service_type( )
@@ -29,21 +32,21 @@ namespace engine
                                                           const sound::SoundType type,
                                                           const UID tagId )
     {
-        log_stream_ << LOGGER_SIG_ << "Loading " << g_sound_type_to_string[type] << " from " << path << "\n";
+        log_stream_ << LOGGER_SIG_ << "Loading " << g_sound_type_to_string[type] << " from " << path << '\n';
         std::shared_ptr sound{ sound_system_ptr_->load_sound( path, type, tagId ) };
 
-        log_stream_ << LOGGER_SIG_ << "Assigned " << get_sound_info( *sound ) << std::endl;
+        log_stream_ << LOGGER_SIG_ << "Assigned " << get_sound_info( *sound ) << '\n';
 
         return sound;
     }
 
 
-    void SoundSystemLogger::play( const Audio& audio, const float volume, const int loops )
+    int SoundSystemLogger::play( const Audio& audio, const float volume, const int loops )
     {
         log_stream_ << LOGGER_SIG_ << "Requested to playback of " << g_sound_type_to_string[audio.get_type( )] << ": "
-                << get_sound_info( audio ) << std::endl;
+                << get_sound_info( audio ) << '\n';
 
-        sound_system_ptr_->play( audio, volume, loops );
+        return sound_system_ptr_->play( audio, volume, loops );
     }
 
 
@@ -54,12 +57,12 @@ namespace engine
         if ( success )
         {
             log_stream_ << LOGGER_SIG_ << "Stopped to playback of " << g_sound_type_to_string[audio.get_type( )] << ": "
-                    << get_sound_info( audio ) << std::endl;
+                    << get_sound_info( audio ) << '\n';
         }
         else
         {
             error_stream_ << LOGGER_SIG_ << "Playback stop requested failed " << g_sound_type_to_string[audio.get_type( )] << ": "
-                    << get_sound_info( audio ) << std::endl;
+                    << get_sound_info( audio ) << '\n';
         }
 
         return success;
@@ -68,7 +71,7 @@ namespace engine
 
     void SoundSystemLogger::stop_all( )
     {
-        log_stream_ << LOGGER_SIG_ << "Stopped all playbacks" << std::endl;
+        log_stream_ << LOGGER_SIG_ << "Stopped all playbacks" << '\n';
 
         sound_system_ptr_->stop_all( );
     }
@@ -81,13 +84,13 @@ namespace engine
         if ( success )
         {
             log_stream_ << LOGGER_SIG_ << "Paused playback of " << g_sound_type_to_string[audio.get_type( )] << ": "
-                    << get_sound_info( audio ) << std::endl;
+                    << get_sound_info( audio ) << '\n';
         }
         else
         {
             error_stream_ << LOGGER_SIG_ << "Playback pause requested failed " << g_sound_type_to_string[audio.get_type( )] <<
                     ": "
-                    << get_sound_info( audio ) << std::endl;
+                    << get_sound_info( audio ) << '\n';
         }
 
         return success;
@@ -101,13 +104,12 @@ namespace engine
         if ( success )
         {
             log_stream_ << LOGGER_SIG_ << "Resumed playback of " << g_sound_type_to_string[audio.get_type( )] << ": "
-                    << get_sound_info( audio ) << std::endl;
+                    << get_sound_info( audio ) << '\n';
         }
         else
         {
             error_stream_ << LOGGER_SIG_ << "Playback resume requested failed " << g_sound_type_to_string[audio.get_type( )] <<
-                    ": "
-                    << get_sound_info( audio ) << std::endl;
+                    ": " << get_sound_info( audio ) << '\n';
         }
 
         return success;
@@ -135,7 +137,7 @@ namespace engine
     void SoundSystemLogger::set_master_volume( const float volume )
     {
         sound_system_ptr_->set_master_volume( volume );
-        log_stream_ << LOGGER_SIG_ << "Set master volume to " << sound_system_ptr_->get_master_volume( ) << std::endl;
+        log_stream_ << LOGGER_SIG_ << "Set master volume to " << sound_system_ptr_->get_master_volume( ) << '\n';
     }
 
 
@@ -149,19 +151,13 @@ namespace engine
     {
         sound_system_ptr_->set_volume_by_tag( tagId, volume );
         log_stream_ << LOGGER_SIG_ << "Set volume for tag " << tagId.uid << " to " << sound_system_ptr_->
-                get_volume_by_tag( tagId ) << std::endl;
+                get_volume_by_tag( tagId ) << '\n';
     }
 
 
     float SoundSystemLogger::get_volume_by_tag( const UID tagId ) const
     {
         return sound_system_ptr_->get_volume_by_tag( tagId );
-    }
-
-
-    void SoundSystemLogger::process_requests( )
-    {
-        sound_system_ptr_->process_requests( );
     }
 
 

@@ -69,8 +69,9 @@ namespace engine
          * @param audio
          * @param volume [0.0-1.0] overrides the default volume
          * @param loops Repeats the sound this amount of times, -1 for infinite loop
+         * @return Channel id of the sound being played, -1 if the sound is not playing
          */
-        virtual void play( const Audio& audio, float volume, int loops = 0 ) = 0;
+        virtual int play( const Audio& audio, float volume, int loops = 0 ) = 0;
 
         /**
          * Halts the playback of a sound.
@@ -143,11 +144,6 @@ namespace engine
          * @return [0.0-1.0] as volume modifier
          */
         [[nodiscard]] virtual float get_volume_by_tag( UID tagId ) const = 0;
-
-        /**
-         * Plays the requested sounds asynchronously.
-         */
-        virtual void process_requests( ) = 0;
 
     };
 

@@ -84,10 +84,10 @@ namespace engine
     }
 
 
-    void ResourceManager::signal_lifetime_event( const event::LifetimeEvent event )
+    void ResourceManager::signal_lifetime_event( event::LifetimeEvent event, UID value )
     {
         auto [lock, events] = queued_events_.get( );
-        events.insert( event );
+        events.insert( std::make_pair( event, value ) );
     }
 
 
@@ -96,9 +96,9 @@ namespace engine
         // unload_unused_resources_impl( loaded_textures_ );
         // unload_unused_resources_impl( loaded_fonts_ );
 
-        for ( const auto event : queued_events_.cget(  ) )
+        for ( const auto& [event, value] : queued_events_.cget(  ) )
         {
-            lifetime_subject_.broadcast( UID( event ) );
+            lifetime_subject_.broadcast( UID( event ), value );
         }
 
         auto [lock, events] = queued_events_.get( );

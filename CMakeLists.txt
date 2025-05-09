@@ -6,13 +6,18 @@ project(GameEngine)
 
 # set the C++ standard to C++20 and ensure it is required
 set(CMAKE_CXX_STANDARD 20)
-set(CMAKE_CXX_STANDARD_REQUIRED ON) 
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 message(STATUS "C++20 support has been enabled by default.")
 # target_compile_features(${TARGET_NAME} PUBLIC cxx_std_20)
 
-if(EMSCRIPTEN)
+if (EMSCRIPTEN)
     message(STATUS "Using Emscripten!")
-endif()
+endif ()
+
+if (CMAKE_CXX_COMPILER_ID STREQUAL "Clang" OR CMAKE_CXX_COMPILER_ID STREQUAL "AppleClang")
+    message(STATUS "Using Clang config.")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fexperimental-library")
+endif ()
 
 # append cmake module path
 # making sure cmake finds our custom modules (.cmake)
@@ -26,4 +31,3 @@ add_subdirectory(engine)
 
 # add the game subdirectory
 add_subdirectory(game)
-

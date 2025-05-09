@@ -35,8 +35,8 @@ namespace engine
     private:
         const sound::SoundType type_{};
 
-        const UID sound_id_{};
-        const UID tag_id_{};
+        const UID sound_id_{ NULL_UID };
+        const UID tag_id_{ NULL_UID };
 
     };
 

@@ -1,8 +1,10 @@
 #ifndef SOUNDSYSTEMLOGGER_H
 #define SOUNDSYSTEMLOGGER_H
 
-#include <sstream>
+#include <event/Observer.h>
 #include <services/sound/SoundSystem.h>
+
+#include <sstream>
 
 
 namespace engine
@@ -18,7 +20,7 @@ namespace engine
         [[nodiscard]] std::shared_ptr<Audio>
         load_sound( const std::filesystem::path& path, sound::SoundType type, UID tagId ) override;
 
-        void play( const Audio& audio, float volume, int loops ) override;
+        int play( const Audio& audio, float volume, int loops ) override;
 
         bool stop( const Audio& audio ) override;
         void stop_all( ) override;
@@ -36,8 +38,6 @@ namespace engine
 
         void set_volume_by_tag( UID tagId, float volume ) override;
         [[nodiscard]] float get_volume_by_tag( UID tagId ) const override;
-
-        void process_requests( ) override;
 
     private:
         static constexpr std::string_view LOGGER_SIG_{ "[SoundSystemLogger] :> " };

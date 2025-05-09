@@ -37,6 +37,7 @@ namespace engine
     class ResourceManager final : public Singleton<ResourceManager>
     {
         friend class Singleton;
+        using queued_event_t = std::pair<event::LifetimeEvent, UID>;
 
     public:
         void init( const std::filesystem::path& dataPath );
@@ -49,7 +50,7 @@ namespace engine
         void add_lifetime_observer( Observer& observer );
         void remove_lifetime_observer( const Observer& observer );
 
-        void signal_lifetime_event( event::LifetimeEvent event );
+        void signal_lifetime_event( event::LifetimeEvent event, UID value = NULL_UID );
 
         void unload_unused_resources( );
 
@@ -59,7 +60,7 @@ namespace engine
     private:
         std::filesystem::path data_path_{};
 
-        threading::SafeResource<std::set<event::LifetimeEvent>> queued_events_{ {} };
+        threading::SafeResource<std::set<queued_event_t>> queued_events_{ {} };
         Subject lifetime_subject_{};
 
         std::map<UID, std::shared_ptr<Texture2D>> loaded_textures_{};

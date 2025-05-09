@@ -8,14 +8,17 @@
 
 namespace engine::threading
 {
-    template <typename resource_t>
+    template <template<typename> class lock_t, typename resource_t>
+        requires std::is_same_v<lock_t<std::mutex>, std::lock_guard<std::mutex>> ||
+                 std::is_same_v<lock_t<std::mutex>, std::unique_lock<std::mutex>>
     struct ResourceLock
     {
         explicit ResourceLock( std::mutex& mutex, resource_t& resource )
             : lock{ mutex }
             , resource{ resource } { }
 
-        std::lock_guard<std::mutex> lock;
+
+        lock_t<std::mutex> lock;
         resource_t& resource;
     };
 
@@ -33,7 +36,8 @@ namespace engine::threading
         SafeResource& operator=( const SafeResource& )     = delete;
         SafeResource& operator=( SafeResource&& ) noexcept = delete;
 
-        [[nodiscard]] ResourceLock<resource_t> get( );
+        [[nodiscard]] ResourceLock<std::lock_guard, resource_t> get( );
+        [[nodiscard]] ResourceLock<std::unique_lock, resource_t> get_unique( );
         [[nodiscard]] const resource_t& cget( ) const;
 
         void set( const resource_t& value );
@@ -49,15 +53,21 @@ namespace engine::threading
 
 
     template <typename resource_t>
-    SafeResource<resource_t>::SafeResource( resource_t&& resource ): resource_( std::move( resource ) )
+    SafeResource<resource_t>::SafeResource( resource_t&& resource )
+        : resource_( std::move( resource ) ) { }
+
+
+    template <typename resource_t>
+    ResourceLock<std::lock_guard, resource_t> SafeResource<resource_t>::get( )
     {
+        return ResourceLock<std::lock_guard, resource_t>{ resource_guard_, resource_ };
     }
 
 
     template <typename resource_t>
-    ResourceLock<resource_t> SafeResource<resource_t>::get( )
+    ResourceLock<std::unique_lock, resource_t> SafeResource<resource_t>::get_unique( )
     {
-        return ResourceLock<resource_t>{ resource_guard_, resource_ };
+        return ResourceLock<std::unique_lock, resource_t>{ resource_guard_, resource_ };
     }
 
 

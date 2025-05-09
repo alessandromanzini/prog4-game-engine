@@ -17,9 +17,6 @@ namespace engine
     // ReSharper disable once CppInconsistentNaming
     struct UID final
     {
-        consteval UID()
-            : uid{ type_utility::hash_cast( 0 ) } { }
-
         template <typename value_t>
         explicit constexpr UID( value_t value )
             : uid{ type_utility::hash_cast( static_cast<type_utility::size_hash_t>( value ) ) } { }
@@ -40,6 +37,8 @@ namespace engine
         type_utility::hash_value_t uid{};
 
     };
+
+    inline constexpr UID NULL_UID{ "0" };
 
 }
 

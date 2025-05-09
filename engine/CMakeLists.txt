@@ -13,6 +13,7 @@ add_library(${PROJECT_NAME}
 		"include/public/controllers/BaseController.h"
 		"src/controllers/PlayerController.cpp"
 
+		"include/public/event/EventQueue.h"
         "src/event/Subject.cpp"
 
         "include/public/framework/Deleter.h"
@@ -38,6 +39,7 @@ add_library(${PROJECT_NAME}
 		"include/public/services/service_info.h"
 		"src/services/sound/SdlSoundSystem.cpp"
 		"src/services/sound/SoundSystemLogger.cpp"
+		"src/services/sound/ParallelSoundSystem.cpp"
 
         "src/singletons/GameTime.cpp"
         "src/singletons/InputSystem.cpp"

@@ -36,7 +36,7 @@ namespace engine
     // ReSharper disable once CppMemberFunctionMayBeConst
     void GameObjectView::set_local_transform( Transform&& transform )
     {
-        gameobject_ptr_->set_local_transform( std::move( transform ) );
+        gameobject_ptr_->set_local_transform( transform );
     }
 
 

@@ -145,7 +145,7 @@ namespace engine
 
     void GameObject::set_local_transform( Transform&& transform )
     {
-        local_transform_ = std::move( transform );
+        local_transform_ = transform;
         set_transform_dirty( );
     }
 

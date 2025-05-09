@@ -14,7 +14,7 @@ namespace engine
 
     AudioComponent::~AudioComponent( ) noexcept
     {
-        RESOURCE_MANAGER.signal_lifetime_event( event::LifetimeEvent::UNLOAD_AUDIO );
+        RESOURCE_MANAGER.signal_lifetime_event( event::LifetimeEvent::UNLOAD_AUDIO, audio_ptr_->get_sound_id(  ) );
     }
 
 

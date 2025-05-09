@@ -31,7 +31,7 @@ namespace game
 
     void TestController::device_registered( engine::InputMappingContext& context, const engine::binding::DeviceInfo deviceInfo )
     {
-        std::cout << "Test device registered at id " << static_cast<int>( deviceInfo.id ) << std::endl;
+        std::cout << "Test device registered at id " << static_cast<int>( deviceInfo.id ) << '\n';
 
         context.bind_to_input_action( *this, engine::UID( IA::MOVE ), &TestController::move,
                                       engine::binding::TriggerEvent::PRESSED );

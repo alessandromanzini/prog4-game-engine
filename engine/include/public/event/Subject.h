@@ -9,15 +9,15 @@
 // +--------------------------------+
 // | STANDARD HEADERS				|
 // +--------------------------------+
-#include <variant>
 #include <string_view>
+#include <variant>
 
 
 namespace engine
 {
     namespace event
     {
-        using broadcast_value_variant_t = std::variant<int, float, double, std::string_view>;
+        using broadcast_value_variant_t = std::variant<int, float, double, std::string_view, UID>;
     }
 
     class Observer;

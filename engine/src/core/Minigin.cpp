@@ -167,10 +167,6 @@ namespace engine
         // +---------------------------+
         // | UPDATE SERVICES           |
         // +---------------------------+
-        if ( SERVICE_LOCATOR.is_sound_system_registered( ) )
-        {
-            SERVICE_LOCATOR.get_sound_system( ).process_requests( );
-        }
         RENDERER.render( );
 
         // +--------------------------------+

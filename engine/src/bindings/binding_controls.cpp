@@ -19,12 +19,9 @@ namespace engine::binding
 
         if ( modifiers.test( bit_cast( Modifier::SWIZZLE ) ) )
         {
-            return glm::vec2{ 0.f, value };
+            return glm::vec2{ 0.F, value };
         }
-        else
-        {
-            return value;
-        }
+        return value;
     }
 
 

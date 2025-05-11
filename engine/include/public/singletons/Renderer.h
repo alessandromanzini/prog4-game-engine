@@ -49,7 +49,10 @@ namespace engine
         SDL_Window* window_ptr_{};
         SDL_Color clear_color_{};
 
-        Renderer() = default;
+        Renderer( ) = default;
+
+        void render_texture_ex_impl( SDL_Texture* texture, const SDL_Rect* dst, SDL_Rect* src ) const;
+        void render_texture_impl( SDL_Texture* texture, const SDL_Rect* dst, const SDL_Rect* src ) const;
 
     };
 

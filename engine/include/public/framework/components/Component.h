@@ -22,8 +22,8 @@ namespace engine
         Component& operator=( const Component& )     = delete;
         Component& operator=( Component&& ) noexcept = delete;
 
-        virtual void fixed_update( ) { }
-        virtual void update( ) { }
+        virtual void fixed_tick( ) { }
+        virtual void tick( ) { }
         virtual void render( ) const { }
 
         void mark_for_deletion( ) final;

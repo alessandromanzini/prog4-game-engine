@@ -3,9 +3,9 @@
 // +--------------------------------+
 // | PROJECT HEADERS				|
 // +--------------------------------+
-#include <event/Observer.h>
+#include <framework/event/Observer.h>
 #include <framework/resources/Font.h>
-#include <framework/resources/Texture2D.h>
+#include <framework/resources/texture/Texture2D.h>
 #include <singletons/Renderer.h>
 
 // +--------------------------------+

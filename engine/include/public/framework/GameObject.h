@@ -6,10 +6,11 @@
 // +--------------------------------+
 #include <core/type_utility.hpp>
 #include <framework/Deletable.h>
-#include <framework/Deleter.h>
 #include <framework/GameObject.h>
 #include <framework/Transform.h>
 #include <framework/components/Component.h>
+#include <framework/event/MulticastDelegate.h>
+#include <framework/resources/data/Deleter.h>
 
 #include <core/meta/concepts.h>
 
@@ -18,7 +19,6 @@
 // +--------------------------------+
 #include <map>
 #include <stdexcept>
-#include <event/MulticastDelegate.h>
 
 
 namespace engine
@@ -39,8 +39,8 @@ namespace engine
         GameObject& operator=( const GameObject& other )     = delete;
         GameObject& operator=( GameObject&& other ) noexcept = delete;
 
-        void fixed_update( );
-        void update( );
+        void fixed_tick( );
+        void tick( );
         void render( ) const;
 
         void cleanup( );

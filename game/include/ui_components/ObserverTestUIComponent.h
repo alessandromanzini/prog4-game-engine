@@ -4,7 +4,7 @@
 // +--------------------------------+
 // | PROJECT HEADERS				|
 // +--------------------------------+
-#include <event/Observer.h>
+#include <framework/event/Observer.h>
 #include <framework/ui_components/UIComponent.h>
 
 

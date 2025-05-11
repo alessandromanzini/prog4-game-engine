@@ -7,7 +7,7 @@
 #include <singletons/Renderer.h>
 
 #include <framework/resources/Font.h>
-#include <framework/resources/Texture2D.h>
+#include <framework/resources/texture/Texture2D.h>
 
 // +--------------------------------+
 // | STANDARD HEADERS				|
@@ -31,7 +31,7 @@ namespace engine
     }
 
 
-    void TextComponent::update( )
+    void TextComponent::tick( )
     {
         if ( needs_update_ )
         {

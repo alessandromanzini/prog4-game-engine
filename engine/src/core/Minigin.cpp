@@ -152,17 +152,17 @@ namespace engine
         // | GAME LOOP						|
         // +--------------------------------+
         quit_ = !INPUT_SYSTEM.process_input( );
-        while ( GAME_TIME.get_required_fixed_update( ) )
+        while ( GAME_TIME.is_fixed_tick_required( ) )
         {
             // Call the fixed update and tick the lag time
             GAME_TIME.set_timing_type( time::TimingType::FIXED_DELTA_TIME );
-            SCENE_POOL.fixed_update( );
+            SCENE_POOL.fixed_tick( );
             GAME_TIME.fixed_tick( );
         }
         GAME_TIME.set_timing_type( time::TimingType::DELTA_TIME );
 
-        SCENE_POOL.update( );
-        UI_CONTROLLER.update( );
+        SCENE_POOL.tick( );
+        UI_CONTROLLER.tick( );
 
         // +---------------------------+
         // | UPDATE SERVICES           |

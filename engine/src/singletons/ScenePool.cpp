@@ -16,22 +16,22 @@ namespace engine
     ScenePool& SCENE_POOL = ScenePool::get_instance( );
 
 
-    void ScenePool::fixed_update( )
+    void ScenePool::fixed_tick( )
     {
         for ( auto& scene : scenes_ )
         {
             active_scene_ptr_ = scene.get( );
-            scene->fixed_update( );
+            scene->fixed_tick( );
         }
     }
 
 
-    void ScenePool::update( )
+    void ScenePool::tick( )
     {
         for ( auto& scene : scenes_ )
         {
             active_scene_ptr_ = scene.get( );
-            scene->update( );
+            scene->tick( );
         }
     }
 

@@ -4,8 +4,8 @@
 // +--------------------------------+
 // | PROJECT HEADERS				|
 // +--------------------------------+
-#include <framework/Deleter.h>
 #include <framework/GameObject.h>
+#include <framework/resources/data/Deleter.h>
 
 
 namespace engine
@@ -30,8 +30,8 @@ namespace engine
         [[nodiscard]] const std::string& get_name( ) const;
         [[nodiscard]] uint16_t get_id( ) const;
 
-        void fixed_update( ) const;
-        void update( ) const;
+        void fixed_tick( ) const;
+        void tick( ) const;
         void render( ) const;
 
         void cleanup( );

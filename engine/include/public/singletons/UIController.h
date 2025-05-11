@@ -8,7 +8,7 @@
 #include <singletons/Singleton.h>
 
 #include <core/type_utility.hpp>
-#include <framework/Deleter.h>
+#include <framework/resources/data/Deleter.h>
 
 #include <core/meta/concepts.h>
 
@@ -34,7 +34,7 @@ namespace engine
 
         void process_input( const SDL_Event& event );
 
-        void update( );
+        void tick( );
         void render( );
 
         void cleanup( );

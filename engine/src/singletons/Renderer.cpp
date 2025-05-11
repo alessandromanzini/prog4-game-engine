@@ -3,7 +3,7 @@
 // +--------------------------------+
 // | PROJECT HEADERS				|
 // +--------------------------------+
-#include <framework/resources/Texture2D.h>
+#include <framework/resources/texture/Texture2D.h>
 #include <singletons/ScenePool.h>
 #include <singletons/UIController.h>
 
@@ -102,24 +102,24 @@ namespace engine
     {
         SDL_Rect dst = create_rect( position );
         SDL_QueryTexture( texture.get_SDL_texture( ), nullptr, nullptr, &dst.w, &dst.h );
-        SDL_RenderCopy( get_SDL_renderer( ), texture.get_SDL_texture( ), nullptr, &dst );
+        render_texture_impl( texture.get_SDL_texture( ), &dst, nullptr );
     }
 
 
     void Renderer::render_texture( const Texture2D& texture, const glm::vec4& dstRect ) const
     {
         const SDL_Rect dst = create_rect( dstRect );
-        SDL_RenderCopy( get_SDL_renderer( ), texture.get_SDL_texture( ), nullptr, &dst );
+        render_texture_impl( texture.get_SDL_texture( ), &dst, nullptr );
     }
 
 
     void Renderer::render_partial_texture( const Texture2D& texture, const glm::vec2 position, const glm::vec4& srcRect ) const
     {
-        const SDL_Rect src = create_rect( srcRect );
+        SDL_Rect src = create_rect( srcRect );
         SDL_Rect dst       = create_rect( position );
-        dst.w = src.w;
-        dst.h = src.h;
-        SDL_RenderCopy( get_SDL_renderer( ), texture.get_SDL_texture( ), &src, &dst );
+        dst.w              = src.w;
+        dst.h              = src.h;
+        render_texture_ex_impl( texture.get_SDL_texture( ), &dst, &src );
     }
 
 
@@ -127,9 +127,9 @@ namespace engine
                                            const glm::vec4& dstRect,
                                            const glm::vec4& srcRect ) const
     {
-        const SDL_Rect src = create_rect( srcRect );
+        SDL_Rect src = create_rect( srcRect );
         const SDL_Rect dst = create_rect( dstRect );
-        SDL_RenderCopy( get_SDL_renderer( ), texture.get_SDL_texture( ), &src, &dst );
+        render_texture_ex_impl( texture.get_SDL_texture( ), &dst, &src );
     }
 
 
@@ -148,6 +148,30 @@ namespace engine
     void Renderer::set_background_color( const SDL_Color& color )
     {
         clear_color_ = color;
+    }
+
+
+    void Renderer::render_texture_ex_impl( SDL_Texture* texture, const SDL_Rect* dst, SDL_Rect* src ) const
+    {
+        SDL_RendererFlip flip{ SDL_FLIP_NONE };
+        if ( src->w < 0 )
+        {
+            flip = static_cast<SDL_RendererFlip>( flip | SDL_FLIP_HORIZONTAL );
+            src->w = -src->w;
+        }
+        if ( src->h < 0 )
+        {
+            flip = static_cast<SDL_RendererFlip>( flip | SDL_FLIP_VERTICAL );
+            src->h = -src->h;
+        }
+
+        SDL_RenderCopyEx( get_SDL_renderer( ), texture, src, dst, 0, nullptr, flip );
+    }
+
+
+    void Renderer::render_texture_impl( SDL_Texture* texture, const SDL_Rect* dst, const SDL_Rect* src ) const
+    {
+        SDL_RenderCopy( get_SDL_renderer( ), texture, src, dst );
     }
 
 }

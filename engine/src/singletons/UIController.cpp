@@ -40,11 +40,11 @@ namespace engine
     }
 
 
-    void UIController::update( )
+    void UIController::tick( )
     {
         for ( const auto& [key, uiComponent] : ui_components_ )
         {
-            uiComponent->update( );
+            uiComponent->tick( );
         }
     }
 

@@ -63,20 +63,20 @@ namespace engine
     }
 
 
-    void Scene::fixed_update( ) const
+    void Scene::fixed_tick( ) const
     {
         for ( const auto& object : objects_ )
         {
-            object->fixed_update( );
+            object->fixed_tick( );
         }
     }
 
 
-    void Scene::update( ) const
+    void Scene::tick( ) const
     {
         for ( const auto& object : objects_ )
         {
-            object->update( );
+            object->tick( );
         }
     }
 

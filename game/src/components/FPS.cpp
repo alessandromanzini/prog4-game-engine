@@ -16,7 +16,7 @@ namespace game
         : Component( owner ) { }
 
 
-    void FPS::update( )
+    void FPS::tick( )
     {
         time_accumulator_ += GAME_TIME.get_delta_time( );
         if ( time_accumulator_ >= TIME_DELAY_ )

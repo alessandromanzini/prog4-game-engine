@@ -26,6 +26,8 @@ namespace game
         imc.register_input_action( InputAction{ UID( IA::MOVE ), Modifier::NEGATE }, SDL_CONTROLLER_BUTTON_DPAD_LEFT );
         imc.register_input_action( InputAction{ UID( IA::MOVE ) }, SDL_CONTROLLER_BUTTON_DPAD_RIGHT );
 
+        imc.register_input_action( UID( IA::JUMP ), SDL_CONTROLLER_BUTTON_A );
+
         imc.register_input_action( UID( IA::PLAY_SOUND ), SDLK_f );
 
         imc.register_input_action( UID( IA::VOLUME_UP ), SDLK_UP );

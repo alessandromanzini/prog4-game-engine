@@ -3,7 +3,7 @@
 
 #include <singletons/Singleton.h>
 
-#include <controllers/PlayerController.h>
+#include <framework/controllers/PlayerController.h>
 #include <services/sound/SoundSystem.h>
 
 #include <memory>

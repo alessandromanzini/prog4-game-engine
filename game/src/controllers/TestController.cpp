@@ -1,7 +1,7 @@
 #include <controllers/TestController.h>
 
-#include <components/MoveComponent.h>
 #include <framework/components/AudioComponent.h>
+#include <framework/components/RigidBodyComponent.h>
 #include <registration/input.h>
 
 #include <iostream>
@@ -14,7 +14,7 @@ namespace game
 {
     TestController::TestController( )
     {
-        try_register_device( engine::binding::DeviceType::KEYBOARD );
+        try_register_device( engine::binding::DeviceType::GAMEPAD );
     }
 
 
@@ -23,9 +23,9 @@ namespace game
         PlayerController::possess( pawn );
 
         audio_ptr_ = &pawn->get_component<engine::AudioComponent>( );
-        move_ptr_  = &pawn->get_component<MoveComponent>( );
+        rigid_body_ptr_  = &pawn->get_component<engine::RigidBodyComponent>( );
 
-        assert( audio_ptr_ && move_ptr_ && "TestController::possess: Missing components" );
+        assert( audio_ptr_ && rigid_body_ptr_ && "TestController::possess: Missing components" );
     }
 
 
@@ -35,6 +35,11 @@ namespace game
 
         context.bind_to_input_action( *this, engine::UID( IA::MOVE ), &TestController::move,
                                       engine::binding::TriggerEvent::PRESSED );
+        context.bind_to_input_action( *this, engine::UID( IA::MOVE ), &TestController::move,
+                                      engine::binding::TriggerEvent::RELEASED );
+
+        context.bind_to_input_action( *this, engine::UID( IA::JUMP ), &TestController::jump,
+                                      engine::binding::TriggerEvent::TRIGGERED );
 
         context.bind_to_input_action( *this, engine::UID( IA::PLAY_SOUND ), &TestController::play_sound,
                                       engine::binding::TriggerEvent::TRIGGERED );
@@ -60,10 +65,26 @@ namespace game
             return;
         }
 
-        if ( not( dir.x == 0 && dir.y == 0 ) )
+        rigid_body_ptr_->reset_horizontal_velocity( );
+        if ( dir.x != 0.f )
         {
-            move_ptr_->move( dir );
+            rigid_body_ptr_->add_velocity( { dir.x * 100.f, 0.f } );
         }
+    }
+
+
+    void TestController::jump( ) const
+    {
+        if ( not has_pawn(  ) )
+        {
+            return;
+        }
+
+        if ( rigid_body_ptr_->get_velocity( ).y == 0.f )
+        {
+            rigid_body_ptr_->add_velocity( { 0.f, -100.f } );
+        }
+
     }
 
 

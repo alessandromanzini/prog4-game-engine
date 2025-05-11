@@ -21,7 +21,7 @@ namespace engine
         UIComponent& operator=( const UIComponent& )     = delete;
         UIComponent& operator=( UIComponent&& ) noexcept = delete;
 
-        virtual void update( ) { }
+        virtual void tick( ) { }
         virtual void render( ) { } // UI needs the render to be non-const
 
         void mark_for_deletion( ) final;

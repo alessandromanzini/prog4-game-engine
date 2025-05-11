@@ -20,7 +20,7 @@ namespace game
         RotatingComponent& operator=( const RotatingComponent& )     = delete;
         RotatingComponent& operator=( RotatingComponent&& ) noexcept = delete;
 
-        void update( ) override;
+        void tick( ) override;
 
     private:
         float rotation_speed_{};

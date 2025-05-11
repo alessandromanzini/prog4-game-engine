@@ -15,7 +15,7 @@ namespace game
     public:
         explicit FPS( owner_t& owner );
 
-        void update( ) override;
+        void tick( ) override;
 
     private:
         constexpr static float TIME_DELAY_{ 1.f };

@@ -22,7 +22,7 @@ namespace engine
     public:
         explicit TextComponent( owner_t& owner, const std::string& text, std::shared_ptr<Font> font );
 
-        void update( ) override;
+        void tick( ) override;
         void render( ) const override;
 
         void set_text( const std::string& text );

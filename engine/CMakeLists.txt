@@ -5,18 +5,22 @@ project(engine)
 
 # create library target
 add_library(${PROJECT_NAME}
-		"src/bindings/binding_controls.cpp"
-		"src/bindings/binding_device.cpp"
-		"src/bindings/InputBuffer.cpp"
-        "src/bindings/InputMappingContext.cpp"
+		"src/framework/behaviour/fsm/FiniteStateMachine.cpp"
+		"src/framework/behaviour/fsm/sprite_transitions.cpp"
+		"src/framework/behaviour/fsm/transitions.cpp"
 
-		"include/public/controllers/BaseController.h"
-		"src/controllers/PlayerController.cpp"
+		"src/framework/bindings/binding_controls.cpp"
+		"src/framework/bindings/binding_device.cpp"
+		"src/framework/bindings/InputBuffer.cpp"
+        "src/framework/bindings/InputMappingContext.cpp"
 
-		"include/public/event/EventQueue.h"
-        "src/event/Subject.cpp"
+		"include/public/framework/controllers/BaseController.h"
+		"src/framework/controllers/PlayerController.cpp"
 
-        "include/public/framework/Deleter.h"
+		"include/public/framework/event/EventQueue.h"
+        "src/framework/event/Subject.cpp"
+
+        "include/public/framework/resources/data/Deleter.h"
         "src/framework/GameObject.cpp"
         "src/framework/GameObjectView.cpp"
         "src/framework/Scene.cpp"
@@ -26,11 +30,16 @@ add_library(${PROJECT_NAME}
 		"src/framework/components/Component.cpp"
         "src/framework/components/TextComponent.cpp"
         "src/framework/components/TextureComponent.cpp"
+		"src/framework/components/RigidBodyComponent.cpp"
+		"src/framework/components/SpriteSelectorComponent.cpp"
         "src/framework/ui_components/InputDisplayUIComponent.cpp"
 		"src/framework/ui_components/UIComponent.cpp"
 
 	    "src/framework/resources/Font.cpp"
-        "src/framework/resources/Texture2D.cpp"
+		"include/public/framework/resources/data/Blackboard.h"
+		"include/public/framework/resources/data/blackboard_ids.h"
+		"src/framework/resources/texture/Sprite2D.cpp"
+        "src/framework/resources/texture/Texture2D.cpp"
 		"src/framework/resources/sound/Audio.cpp"
 		"src/framework/resources/sound/SdlAudio.cpp"
 
@@ -48,8 +57,7 @@ add_library(${PROJECT_NAME}
         "src/singletons/ScenePool.cpp"
         "src/singletons/UIController.cpp"
 		"src/singletons/ServiceLocator.cpp"
-		src/framework/components/SpriteComponent.cpp
-		include/public/framework/components/SpriteComponent.h)
+)
 
 # include platform specific sources
 if (APPLE)

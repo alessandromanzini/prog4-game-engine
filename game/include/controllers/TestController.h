@@ -1,9 +1,13 @@
 #ifndef TESTCONTROLLER_H
 #define TESTCONTROLLER_H
 
-#include <controllers/PlayerController.h>
 #include <framework/components/AudioComponent.h>
-#include <components/MoveComponent.h>
+#include <framework/controllers/PlayerController.h>
+
+namespace engine
+{
+    class RigidBodyComponent;
+}
 
 namespace game
 {
@@ -16,11 +20,12 @@ namespace game
 
     private:
         engine::AudioComponent* audio_ptr_{ nullptr };
-        MoveComponent* move_ptr_{ nullptr };
+        engine::RigidBodyComponent* rigid_body_ptr_{ nullptr };
 
-        void device_registered( engine::InputMappingContext& context, const engine::binding::DeviceInfo deviceInfo ) override;
+        void device_registered( engine::InputMappingContext& context, engine::binding::DeviceInfo deviceInfo ) override;
 
         void move( glm::vec2 dir ) const;
+        void jump( ) const;
 
         void play_sound( ) const;
         void volume_up( ) const;

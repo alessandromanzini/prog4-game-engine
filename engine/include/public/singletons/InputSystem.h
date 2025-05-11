@@ -4,10 +4,10 @@
 // +--------------------------------+
 // | PROJECT HEADERS				|
 // +--------------------------------+
-#include <bindings/binding_device.h>
-#include <bindings/binding_types.h>
-#include <bindings/InputBuffer.h>
-#include <bindings/InputMappingContext.h>
+#include <framework/bindings/binding_device.h>
+#include <framework/bindings/binding_types.h>
+#include <framework/bindings/InputBuffer.h>
+#include <framework/bindings/InputMappingContext.h>
 #include <singletons/Singleton.h>
 
 // +--------------------------------+

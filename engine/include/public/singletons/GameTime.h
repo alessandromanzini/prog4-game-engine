@@ -49,7 +49,7 @@ namespace engine
         [[nodiscard]] float get_delta_time( ) const;
         [[nodiscard]] float get_fps( ) const;
 
-        [[nodiscard]] bool get_required_fixed_update( ) const;
+        [[nodiscard]] bool is_fixed_tick_required( ) const;
         [[nodiscard]] std::chrono::nanoseconds get_sleep_time( ) const;
 
         /**

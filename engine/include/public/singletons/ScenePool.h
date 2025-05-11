@@ -24,8 +24,8 @@ namespace engine
         Scene& create_scene( const std::string& name );
         void unload_all_scenes( );
 
-        void fixed_update( );
-        void update( );
+        void fixed_tick( );
+        void tick( );
         void render( );
 
         [[nodiscard]] Scene& get_active_scene( ) const;

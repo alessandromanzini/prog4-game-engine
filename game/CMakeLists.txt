@@ -12,7 +12,10 @@ elseif(APPLE)
     set(TARGET_PARAM )
 else()
     set(TARGET_NAME ${PROJECT_NAME})
-    set(TARGET_PARAM )
+    set(TARGET_PARAM
+            include/entities/character_controls_state_machine.cpp
+            include/entities/character_controls_state_machine.h
+    )
 endif()
 
 # set minigin as the default startup project
@@ -24,7 +27,6 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
         "src/main.cpp"
 
         "src/components/RotatingComponent.cpp"
-        "src/components/MoveComponent.cpp"
         "src/components/FPS.cpp"
 
 		"src/controllers/TestController.cpp"
@@ -53,7 +55,9 @@ target_include_directories(${PROJECT_NAME}
 		PRIVATE "src/ui_components" )
 
 # copy the data directory to the build directory
+include(reload_resources_macro)
+
 set(RESOURCES_SRC_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/resources")
 set(RESOURCES_DST_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/resources")
-add_custom_command(TARGET ${PROJECT_NAME} POST_BUILD
-    COMMAND "${CMAKE_COMMAND}" -E copy_directory_if_different ${RESOURCES_SRC_DIRECTORY} ${RESOURCES_DST_DIRECTORY} )
+reload_resources(${PROJECT_NAME} ${RESOURCES_SRC_DIRECTORY} ${RESOURCES_DST_DIRECTORY})
+

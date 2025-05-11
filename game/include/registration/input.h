@@ -7,6 +7,8 @@ namespace game
     enum class IA
     {
         MOVE,
+        JUMP,
+
         PLAY_SOUND,
         KILL,
 

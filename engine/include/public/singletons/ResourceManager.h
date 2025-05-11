@@ -5,8 +5,8 @@
 // | PROJECT HEADERS				|
 // +--------------------------------+
 #include <core/UID.h>
-#include <event/Subject.h>
-#include <framework/threading.h>
+#include <framework/resources/data/SafeResource.h>
+#include <framework/event/Subject.h>
 #include <singletons/Singleton.h>
 
 // +--------------------------------+

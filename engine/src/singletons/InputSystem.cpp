@@ -3,8 +3,8 @@
 // +--------------------------------+
 // | PROJECT HEADERS				|
 // +--------------------------------+
-#include <bindings/binding_device.h>
-#include <bindings/InputMappingContext.h>
+#include <framework/bindings/binding_device.h>
+#include <framework/bindings/InputMappingContext.h>
 #include <singletons/UIController.h>
 
 // +--------------------------------+

@@ -40,20 +40,20 @@ namespace engine
     }
 
 
-    void GameObject::fixed_update( )
+    void GameObject::fixed_tick( )
     {
         for ( const auto& [key, component] : components_ )
         {
-            component->fixed_update( );
+            component->fixed_tick( );
         }
     }
 
 
-    void GameObject::update( )
+    void GameObject::tick( )
     {
         for ( const auto& [key, component] : components_ )
         {
-            component->update( );
+            component->tick( );
         }
     }
 

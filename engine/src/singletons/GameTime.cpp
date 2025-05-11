@@ -48,7 +48,7 @@ namespace engine
     }
 
 
-    bool GameTime::get_required_fixed_update( ) const
+    bool GameTime::is_fixed_tick_required( ) const
     {
         return lag_ >= FIXED_TIME_STEP_;
     }

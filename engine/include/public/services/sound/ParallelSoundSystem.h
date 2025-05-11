@@ -3,12 +3,12 @@
 
 #include <services/sound/SoundSystem.h>
 
-#include <event/EventQueue.h>
-#include <framework/threading.h>
+#include <framework/resources/data/SafeResource.h>
+#include <framework/event/EventQueue.h>
+#include <framework/event/Observer.h>
 
 #include <cassert>
 #include <thread>
-#include <event/Observer.h>
 
 
 namespace engine

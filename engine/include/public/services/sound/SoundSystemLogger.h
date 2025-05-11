@@ -1,7 +1,7 @@
 #ifndef SOUNDSYSTEMLOGGER_H
 #define SOUNDSYSTEMLOGGER_H
 
-#include <event/Observer.h>
+#include <framework/event/Observer.h>
 #include <services/sound/SoundSystem.h>
 
 #include <sstream>

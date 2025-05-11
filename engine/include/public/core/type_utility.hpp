@@ -33,9 +33,16 @@ namespace type_utility
 		// ReSharper disable once CppStaticAssertFailure
 		static_assert( prefixPos != std::string_view::npos, "prefix format is incorrect!" );
 
+		// Cleanup
 		constexpr std::size_t start = prefixPos + prefix.size( );
 		constexpr std::size_t end = function.rfind( suffix );
-		return function.substr( start, end - start );
+		std::string_view name = function.substr( start, end - start );
+		while ( name.starts_with("const ") ) { name.remove_prefix(6 ); }
+		while ( name.ends_with(" const") ) { name.remove_suffix( 6 ); }
+		while ( name.ends_with( "*" ) ) { name.remove_suffix( 1 ); }
+
+		// ReSharper disable once CppDFALocalValueEscapesFunction
+		return name;
 	}
 
 	// +--------------------------------+

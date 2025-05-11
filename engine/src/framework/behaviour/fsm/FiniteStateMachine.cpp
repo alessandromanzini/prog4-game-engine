@@ -1,5 +1,7 @@
-#include <cassert>
 #include <framework/behaviour/fsm/FiniteStateMachine.h>
+
+#include <cassert>
+#include <stdexcept>
 
 
 namespace engine

@@ -41,7 +41,7 @@ namespace engine
         float accumulated_time_{ 0.f };
         int current_frame_{ 0 };
 
-        std::pair<int8_t, int8_t> flip_{ 1, 1 };
+        std::pair<int8_t, int8_t> flip_{ static_cast<int8_t>( 1 ), static_cast<int8_t>( 1 ) };
 
     };
 

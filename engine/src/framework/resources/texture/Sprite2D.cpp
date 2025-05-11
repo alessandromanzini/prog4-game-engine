@@ -74,7 +74,7 @@ namespace engine
     {
         accumulated_time_ = 0.f;
         current_frame_    = 0;
-        flip_             = std::make_pair( 1, 1 );
+        flip_             = std::make_pair( static_cast<int8_t>( 1 ), static_cast<int8_t>( 1 ) );
     }
 
 }

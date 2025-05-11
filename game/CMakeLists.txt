@@ -13,8 +13,8 @@ elseif(APPLE)
 else()
     set(TARGET_NAME ${PROJECT_NAME})
     set(TARGET_PARAM
-            include/entities/character_controls_state_machine.cpp
-            include/entities/character_controls_state_machine.h
+            
+            
     )
 endif()
 

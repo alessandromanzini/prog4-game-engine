@@ -23,7 +23,7 @@ namespace type_utility
 		constexpr std::string_view suffix = "]";
 #elif defined(_MSC_VER)
 		constexpr std::string_view function = __FUNCSIG__;
-		constexpr std::string_view prefix = "type_utility::type_name<class ";
+		constexpr std::string_view prefix = "type_utility::type_name<";
 		//constexpr std::string_view prefix = "std::string_view __cdecl type_name<";
 		constexpr std::string_view suffix = ">";
 #else

@@ -31,11 +31,13 @@ namespace game
         {
             ImGui::PushStyleColor(ImGuiCol_ChildBg, IM_COL32(30, 30, 30, 100));
             ImGui::BeginChild("ControlsBox", ImVec2(0, 100), true, ImGuiWindowFlags_AlwaysUseWindowPadding);
-            ImGui::Text( "F: Play sound" );
-            ImGui::Text( "UP ARROW: Volume up" );
-            ImGui::Text( "DOWN ARROW: Volume down" );
-            ImGui::Spacing();
-            ImGui::Text( "K: Kill pacman" );
+            // ImGui::Text( "F: Play sound" );
+            // ImGui::Text( "UP ARROW: Volume up" );
+            // ImGui::Text( "DOWN ARROW: Volume down" );
+            // ImGui::Spacing();
+            // ImGui::Text( "K: Kill pacman" );
+            ImGui::Text( "A: Jump" );
+            ImGui::Text( "D-PAD: Walk" );
             ImGui::EndChild();
             ImGui::PopStyleColor();
         }

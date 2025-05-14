@@ -3,7 +3,7 @@
 // +--------------------------------+
 // | PROJECT HEADERS				|
 // +--------------------------------+
-#include <singletons/InputSystem.h>
+#include <singleton/InputSystem.h>
 
 using namespace engine;
 using namespace engine::binding;

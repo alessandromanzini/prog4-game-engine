@@ -12,10 +12,7 @@ elseif(APPLE)
     set(TARGET_PARAM )
 else()
     set(TARGET_NAME ${PROJECT_NAME})
-    set(TARGET_PARAM
-            
-            
-    )
+    set(TARGET_PARAM )
 endif()
 
 # set minigin as the default startup project
@@ -26,17 +23,18 @@ endif()
 add_executable(${TARGET_NAME} ${TARGET_PARAM} 
         "src/main.cpp"
 
-        "src/components/RotatingComponent.cpp"
-        "src/components/FPS.cpp"
+        "src/component/RotatingComponent.cpp"
+        "src/component/BubStateComponent.cpp"
+        "src/component/FPS.cpp"
 
-		"src/controllers/TestController.cpp"
+		"src/controller/TestController.cpp"
 
         "src/registration/input.cpp"
         "src/registration/audio.cpp"
 
-        "src/ui_components/AudioTestUIComponent.cpp"
-        "src/ui_components/DemoUIComponent.cpp"
-        "src/ui_components/ObserverTestUIComponent.cpp" )
+        "src/ui_component/AudioTestUIComponent.cpp"
+        "src/ui_component/DemoUIComponent.cpp"
+        "src/ui_component/ObserverTestUIComponent.cpp" )
 
 # set maximum warning level and treat warnings as errors
 include(set_warning_level)

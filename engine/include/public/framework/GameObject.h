@@ -8,9 +8,9 @@
 #include <framework/Deletable.h>
 #include <framework/GameObject.h>
 #include <framework/Transform.h>
-#include <framework/components/Component.h>
+#include <framework/component/Component.h>
 #include <framework/event/MulticastDelegate.h>
-#include <framework/resources/data/Deleter.h>
+#include <framework/resource/data/Deleter.h>
 
 #include <core/meta/concepts.h>
 

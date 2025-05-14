@@ -5,9 +5,9 @@
 // +--------------------------------+
 #include <framework/GameObjectView.h>
 #include <framework/Scene.h>
-#include <framework/components/Component.h>
-#include <singletons/Renderer.h>
-#include <singletons/ResourceManager.h>
+#include <framework/component/Component.h>
+#include <singleton/Renderer.h>
+#include <singleton/ResourceManager.h>
 
 
 namespace engine

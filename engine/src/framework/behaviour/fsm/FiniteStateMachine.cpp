@@ -6,25 +6,51 @@
 
 namespace engine
 {
-    FiniteStateMachine::FiniteStateMachine( fsm::State* const startState, Blackboard& blackboard )
-        : blackboard_ref_( blackboard )
+    // +---------------------------+
+    // | STATE STACK               |
+    // +---------------------------+
+    void fsm::StateStack::trigger_on_enter( Blackboard& blackboard ) const
     {
-        change_state( startState );
+        for ( auto& state : states )
+        {
+            state->on_enter( blackboard );
+        }
     }
 
 
-    void FiniteStateMachine::add_transition( fsm::State* const from, fsm::State* const to, const fsm::Condition* condition )
+    void fsm::StateStack::trigger_on_exit( Blackboard& blackboard ) const
     {
-        transitions_[from].push_back( std::make_pair( condition, to ) );
+        for ( auto& state : states )
+        {
+            state->on_exit( blackboard );
+        }
+    }
+
+
+    void fsm::StateStack::trigger_tick( Blackboard& blackboard ) const
+    {
+        for ( auto& state : states )
+        {
+            state->tick( blackboard );
+        }
+    }
+
+
+    // +---------------------------+
+    // | FINITE STATE MACHINE      |
+    // +---------------------------+
+    FiniteStateMachine::FiniteStateMachine( Blackboard& blackboard )
+        : blackboard_ref_{ blackboard }
+    {
     }
 
 
     void FiniteStateMachine::tick( )
     {
         // Check the transitions map for a TransitionState pair
-        if ( const auto it = transitions_.find( current_state_ptr_ ); it != transitions_.end( ) )
+        if ( const auto it = stacks_.find( current_state_id_ ); it != stacks_.end( ) )
         {
-            for ( auto& pairs = it->second; auto& [condition, state] : pairs )
+            for ( auto& stack = it->second; auto& [condition, state] : stack.transitions )
             {
                 if ( condition->evaluate( blackboard_ref_ ) )
                 {
@@ -35,34 +61,30 @@ namespace engine
         }
 
         // Tick the (new or unchanged) state
-        current_state_ptr_->tick( blackboard_ref_ );
+        stacks_.at( current_state_id_ ).trigger_tick( blackboard_ref_ );
     }
 
 
-    void FiniteStateMachine::render( ) const
+    void FiniteStateMachine::change_state( const UID state )
     {
-        current_state_ptr_->render( blackboard_ref_ );
-    }
+        assert( stacks_.contains( state ) && "FiniteStateMachine::change_state: Invalid state!" );
 
-
-    void FiniteStateMachine::change_state( fsm::State* const state )
-    {
-        if ( not state )
+        if ( current_state_id_ == state )
         {
-            throw std::invalid_argument( "New state cannot be null!" );
+            return;
         }
 
         // 1. On exit the current state (if any)
-        if ( current_state_ptr_ != nullptr )
+        if ( current_state_id_ != NULL_UID )
         {
-            current_state_ptr_->on_exit( blackboard_ref_ );
+            stacks_.at( current_state_id_ ).trigger_on_exit( blackboard_ref_ );
         }
 
         // 2. Set the new state
-        current_state_ptr_ = state;
+        current_state_id_ = state;
 
         // 3. On enter the new state
-        current_state_ptr_->on_enter( blackboard_ref_ );
+        stacks_.at( current_state_id_ ).trigger_on_enter( blackboard_ref_ );
     }
 
 

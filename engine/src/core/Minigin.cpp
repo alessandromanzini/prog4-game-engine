@@ -3,12 +3,12 @@
 // +--------------------------------+
 // | PROJECT HEADERS				|
 // +--------------------------------+
-#include <singletons/GameTime.h>
-#include <singletons/InputSystem.h>
-#include <singletons/Renderer.h>
-#include <singletons/ResourceManager.h>
-#include <singletons/ScenePool.h>
-#include <singletons/UIController.h>
+#include <singleton/GameTime.h>
+#include <singleton/InputSystem.h>
+#include <singleton/Renderer.h>
+#include <singleton/ResourceManager.h>
+#include <singleton/ScenePool.h>
+#include <singleton/UIController.h>
 
 // +--------------------------------+
 // | STANDARD HEADERS				|
@@ -28,7 +28,7 @@
 #include <SDL_image.h>
 #include <SDL_ttf.h>
 #include <thread>
-#include <singletons/ServiceLocator.h>
+#include <singleton/ServiceLocator.h>
 
 
 namespace engine

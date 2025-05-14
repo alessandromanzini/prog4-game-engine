@@ -2,8 +2,8 @@
 #ifndef META_H
 #define META_H
 
-#include <framework/components/Component.h>
-#include <framework/ui_components/UIComponent.h>
+#include <framework/component/Component.h>
+#include <framework/ui_component/UIComponent.h>
 
 #include <concepts>
 

@@ -1,9 +1,9 @@
 #include <registration/audio.h>
 
-#include <services/sound/ParallelSoundSystem.h>
-#include <services/sound/SdlSoundSystem.h>
-#include <services/sound/SoundSystemLogger.h>
-#include <singletons/ServiceLocator.h>
+#include <service/sound/ParallelSoundSystem.h>
+#include <service/sound/SdlSoundSystem.h>
+#include <service/sound/SoundSystemLogger.h>
+#include <singleton/ServiceLocator.h>
 
 #include <iostream>
 

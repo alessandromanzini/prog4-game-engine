@@ -5,7 +5,7 @@
 // | PROJECT HEADERS				|
 // +--------------------------------+
 #include <framework/GameObject.h>
-#include <framework/resources/data/Deleter.h>
+#include <framework/resource/data/Deleter.h>
 
 
 namespace engine

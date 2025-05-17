@@ -27,10 +27,13 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
         "src/component/BubStateComponent.cpp"
         "src/component/FPS.cpp"
 
-		"src/controller/TestController.cpp"
+        "src/controller/DebugController.cpp"
+        "src/controller/CharacterController.cpp"
 
         "src/registration/input.cpp"
         "src/registration/audio.cpp"
+
+        "src/state/SpriteState.cpp"
 
         "src/ui_component/AudioTestUIComponent.cpp"
         "src/ui_component/DemoUIComponent.cpp"

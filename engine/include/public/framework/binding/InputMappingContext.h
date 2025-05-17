@@ -48,8 +48,8 @@ namespace engine
 
         // Bind a member function to the input action of the given code. Command will be called once the input action is signaled.
         template <typename method_signature_t>
-            requires std::derived_from<typename binding::method_traits<method_signature_t>::class_t, PlayerController>
-        void bind_to_input_action( typename binding::method_traits<method_signature_t>::class_t& controller,
+            requires std::derived_from<typename meta::function_traits<method_signature_t>::class_t, PlayerController>
+        void bind_to_input_action( typename meta::function_traits<method_signature_t>::class_t* controller,
                                    UID uid,
                                    method_signature_t command,
                                    binding::TriggerEvent trigger = binding::TriggerEvent::TRIGGERED );
@@ -71,7 +71,8 @@ namespace engine
         threading::SafeResource<device_contexts_container_t> device_contexts_{ {} };
 
         using optional_device_it = std::optional<device_contexts_container_t::iterator>;
-        [[nodiscard]] optional_device_it find_device_context( device_contexts_container_t& contexts, const PlayerController& controller ) const;
+        [[nodiscard]] optional_device_it find_device_context( device_contexts_container_t& contexts,
+                                                              const PlayerController& controller ) const;
 
         void bind_to_input_action_impl( const PlayerController& controller, UID uid,
                                         binding::input_command_variant_t&& command,
@@ -81,29 +82,33 @@ namespace engine
 
 
     template <typename method_signature_t>
-        requires std::derived_from<typename binding::method_traits<method_signature_t>::class_t, PlayerController>
+        requires std::derived_from<typename meta::function_traits<method_signature_t>::class_t, PlayerController>
     void InputMappingContext::bind_to_input_action(
-        typename binding::method_traits<method_signature_t>::class_t& controller,
+        typename meta::function_traits<method_signature_t>::class_t* controller,
         UID uid, method_signature_t command,
         binding::TriggerEvent trigger )
     {
-        using traits         = binding::method_traits<method_signature_t>;
-        using filler_param_t = std::conditional_t<std::is_void_v<typename traits::param_t>, bool, typename traits::param_t>;
-        using delegate_t     = std::function<void( filler_param_t )>;
+        assert( controller && "InputMappingContext::bind_to_input_action: controller cannot be nullptr!" );
 
-        auto wrapper = [&, command]( [[maybe_unused]] auto param )
+        using traits_t = meta::function_traits<method_signature_t>;
+        using param_t  = meta::safe_tuple_element_t<0, typename traits_t::params_t, bool>;
+
+        static_assert(traits_t::ARITY <= 1, "InputMappingContext::bind_to_input_action only supports one/zero-parameter functions.");
+
+        std::function<void( param_t )> wrapper = [=]( [[maybe_unused]] auto param )
             {
-                if constexpr ( std::is_void_v<typename traits::param_t> )
+                if constexpr ( traits_t::ARITY == 0 )
                 {
-                    std::invoke( command, &controller );
+                    std::invoke( command, controller );
                 }
                 else
                 {
-                    std::invoke( command, &controller, param );
+                    std::invoke( command, controller, param );
                 }
             };
 
-        bind_to_input_action_impl( controller, uid, delegate_t{ wrapper }, trigger );
+        // ReSharper disable once CppDFANullDereference
+        bind_to_input_action_impl( *controller, uid, wrapper, trigger );
     }
 
 }

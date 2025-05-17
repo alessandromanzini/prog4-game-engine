@@ -35,6 +35,7 @@ namespace engine
         [[nodiscard]] int32_t get_id( ) const;
 
         [[nodiscard]] bool operator==( const BaseController& other ) const;
+        [[nodiscard]] bool operator==( const BaseController* other ) const;
 
     protected:
         const int32_t id_{ -1 };
@@ -52,13 +53,19 @@ namespace engine
     inline void BaseController::possess( GameObject* pawn )
     {
         assert( pawn && "BaseController::possess: Pawn cannot be nullptr!" );
+
+        if ( pawn_ptr_ )
+        {
+            unpossess( );
+        }
         pawn_ptr_ = pawn;
-        pawn_ptr_->bind_to_object_deletion( std::bind( &BaseController::unpossess, this ) );
+        pawn_ptr_->on_deletion.bind( this, &BaseController::unpossess );
     }
 
 
     inline void BaseController::unpossess( )
     {
+        pawn_ptr_->on_deletion.unbind( this );
         pawn_ptr_ = nullptr;
     }
 
@@ -90,6 +97,12 @@ namespace engine
     inline bool BaseController::operator==( const BaseController& other ) const
     {
         return id_ == other.id_;
+    }
+
+
+    inline bool BaseController::operator==( const BaseController* other ) const
+    {
+        return id_ == other->id_;
     }
 
 

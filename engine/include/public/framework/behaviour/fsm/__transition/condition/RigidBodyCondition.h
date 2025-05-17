@@ -9,54 +9,43 @@ namespace engine
     class RigidBodyComponent;
 }
 
-namespace engine::fsm::conditions
+namespace engine::fsm::condition
 {
     class RigidBodyCondition : public Condition
     {
     public:
-        explicit RigidBodyCondition( Blackboard& blackboard );
+        bool is_idle( const Blackboard& blackboard ) const;
+        bool is_moving( const Blackboard& blackboard ) const;
 
-        bool is_idle( ) const;
-        bool is_moving( ) const;
-
-        bool is_falling( ) const;
-        bool is_grounded( ) const;
+        bool is_falling( const Blackboard& blackboard ) const;
+        bool is_grounded( const Blackboard& blackboard ) const;
 
     protected:
-        [[nodiscard]] const RigidBodyComponent& get_rigid_body( ) const;
+        [[nodiscard]] const RigidBodyComponent& get_rigid_body( const Blackboard& blackboard ) const;
 
     private:
         static constexpr float IDLE_THRESHOLD_ = 0.1f;
 
-        const RigidBodyComponent* rigid_body_ptr_;
-
     };
 
-    class IsGroundedCondition final : public RigidBodyCondition
+    struct IsGroundedCondition final : RigidBodyCondition
     {
-    public:
-        explicit IsGroundedCondition( Blackboard& blackboard );
-
         bool evaluate( Blackboard& blackboard ) const override;
-
     };
 
-    class IsIdleCondition final : public RigidBodyCondition
+    struct IsIdleCondition final : RigidBodyCondition
     {
-    public:
-        explicit IsIdleCondition( Blackboard& blackboard );
-
         bool evaluate( Blackboard& blackboard ) const override;
-
     };
 
-    class IsMovingHorizontallyCondition final : public RigidBodyCondition
+    struct IsMovingHorizontallyCondition final : RigidBodyCondition
     {
-    public:
-        explicit IsMovingHorizontallyCondition( Blackboard& blackboard );
-
         bool evaluate( Blackboard& blackboard ) const override;
+    };
 
+    struct IsFallingCondition final : RigidBodyCondition
+    {
+        bool evaluate( Blackboard& blackboard ) const override;
     };
 
 }

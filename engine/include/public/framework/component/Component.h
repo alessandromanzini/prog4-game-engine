@@ -15,7 +15,7 @@ namespace engine
     public:
         using owner_t = GameObject;
 
-        ~Component( ) override = default;
+        ~Component( ) override;
 
         Component( const Component& )                = delete;
         Component( Component&& ) noexcept            = delete;

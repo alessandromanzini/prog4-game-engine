@@ -8,6 +8,7 @@ add_library(${PROJECT_NAME}
 		"include/public/framework/behaviour/fsm/transitions.h"
 		"include/public/framework/behaviour/fsm/__transition/base_transitions.h"
 		"src/framework/behaviour/fsm/FiniteStateMachine.cpp"
+		"src/framework/behaviour/fsm/__transition/conditions/RigidBodyCondition.cpp"
 
 		"src/framework/binding/binding_controls.cpp"
 		"src/framework/binding/binding_device.cpp"
@@ -30,7 +31,7 @@ add_library(${PROJECT_NAME}
 		"src/framework/component/Component.cpp"
         "src/framework/component/TextComponent.cpp"
         "src/framework/component/TextureComponent.cpp"
-		"src/framework/component/RigidBodyComponent.cpp"
+		"src/framework/component/physics/RigidBodyComponent.cpp"
 		"src/framework/ui_component/InputDisplayUIComponent.cpp"
 		"src/framework/ui_component/UIComponent.cpp"
 
@@ -49,6 +50,7 @@ add_library(${PROJECT_NAME}
 		"src/service/sound/SoundSystemLogger.cpp"
 		"src/service/sound/ParallelSoundSystem.cpp"
 
+		"src/singleton/GameInstance.cpp"
         "src/singleton/GameTime.cpp"
         "src/singleton/InputSystem.cpp"
         "src/singleton/Renderer.cpp"
@@ -56,6 +58,11 @@ add_library(${PROJECT_NAME}
         "src/singleton/ScenePool.cpp"
         "src/singleton/UIController.cpp"
 		"src/singleton/ServiceLocator.cpp"
+		src/framework/component/physics/BoxColliderComponent.cpp
+		include/public/framework/component/physics/BoxColliderComponent.h
+		src/framework/component/physics/ColliderComponent.cpp
+		include/public/framework/component/physics/ColliderComponent.h
+		include/public/framework/event/Dispatcher.h
 )
 
 # include platform specific sources

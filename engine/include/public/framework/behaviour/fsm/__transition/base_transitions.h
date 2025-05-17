@@ -9,6 +9,7 @@ namespace engine::fsm
     class State
     {
     public:
+        State( ) = default;
         virtual ~State( ) = default;
 
         State( const State& )                = delete;
@@ -20,9 +21,6 @@ namespace engine::fsm
         virtual void on_exit( Blackboard& ) { }
 
         virtual void tick( Blackboard& ) { }
-
-    protected:
-        State( ) = default;
 
     };
 

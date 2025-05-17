@@ -17,8 +17,8 @@ namespace engine
         last_time_ = currentTime;
         lag_ += delta_time_;
 
-        handle_callbacks( timeouts_, true );
-        handle_callbacks( intervals_, false );
+        handle_delegates( timeouts_, true );
+        handle_delegates( intervals_, false );
     }
 
 
@@ -60,27 +60,27 @@ namespace engine
     }
 
 
-    void GameTime::set_interval( const float seconds, std::function<bool( )>&& callback )
+    void GameTime::set_interval( const float seconds, std::function<bool( )>&& delegate )
     {
-        intervals_.emplace_back( std::make_pair( time::TimeSpan{ seconds, seconds }, std::move( callback ) ) );
+        intervals_.emplace_back( std::make_pair( time::TimeSpan{ seconds, seconds }, std::move( delegate ) ) );
     }
 
 
-    void GameTime::set_interval( const float seconds, const std::function<void( )>& callback )
+    void GameTime::set_interval( const float seconds, const std::function<void( )>& delegate )
     {
         set_interval( seconds, std::function{
-                          [callback]( ) -> bool
+                          [delegate]( ) -> bool
                               {
-                                  callback( );
+                                  delegate( );
                                   return false;
                               }
                       } );
     }
 
 
-    void GameTime::set_timeout( const float seconds, std::function<void( )>&& callback )
+    void GameTime::set_timeout( const float seconds, std::function<void( )>&& delegate )
     {
-        timeouts_.emplace_back( std::make_pair( time::TimeSpan{ seconds, seconds }, std::move( callback ) ) );
+        timeouts_.emplace_back( std::make_pair( time::TimeSpan{ seconds, seconds }, std::move( delegate ) ) );
     }
 
 

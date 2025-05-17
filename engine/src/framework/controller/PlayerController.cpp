@@ -83,6 +83,7 @@ namespace engine
             }
             catch ( std::runtime_error& )
             {
+                // TODO: kill on shutdown (if program is terminated this causes issues)
                 has_registered_device_.set( false );
             }
 

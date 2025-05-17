@@ -66,7 +66,7 @@ namespace engine::binding
 
                     else
                     {
-                        static_assert( binding::BAD_CONVERSION<arg_t, cast_target_t>, "No valid conversion available for arg_t to cast_target_t." );
+                        static_assert( meta::BAD_CONVERSION<arg_t, cast_target_t>, "No valid conversion available for arg_t to cast_target_t." );
                     }
                     // ReSharper disable once CppNotAllPathsReturnValue
                 },

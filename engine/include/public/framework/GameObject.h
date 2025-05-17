@@ -28,9 +28,11 @@ namespace engine
     class GameObjectView;
     class GameObject final : public Deletable
     {
-        MulticastDelegate<void> on_deletion_{};
+        Dispatcher<> on_deletion_dispatcher_{};
 
     public:
+        MulticastDelegate<> on_deletion{ on_deletion_dispatcher_ };
+
         explicit GameObject( Scene* scene );
         ~GameObject( ) noexcept override;
 
@@ -53,6 +55,8 @@ namespace engine
         void set_local_transform( const Transform& transform );
         void set_local_transform( Transform&& transform );
 
+        TransformOperator get_transform_operator( );
+
         template <typename component_t, typename... args_t>
             requires meta::DerivedComponentWithBaseContructor<component_t, args_t...>
         component_t& add_component( args_t&&... args );
@@ -70,9 +74,6 @@ namespace engine
         [[nodiscard]] std::vector<GameObject*>& get_children( );
         [[nodiscard]] const std::vector<GameObject*>& get_children( ) const;
         void collect_children( std::vector<GameObject*>& children ) const;
-
-        void bind_to_object_deletion( decltype(on_deletion_)::delegate_t&& delegate );
-        void unbind_from_object_deletion( decltype(on_deletion_)::delegate_t&& delegate );
 
         void mark_for_deletion( ) override;
 

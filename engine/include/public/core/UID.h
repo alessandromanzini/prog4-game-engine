@@ -17,6 +17,7 @@ namespace engine
     // ReSharper disable once CppInconsistentNaming
     struct UID final
     {
+        // TODO: add debug info when debug mode
         template <typename value_t>
         explicit constexpr UID( value_t value )
             : uid{ type_utility::hash_cast( static_cast<type_utility::size_hash_t>( value ) ) } { }

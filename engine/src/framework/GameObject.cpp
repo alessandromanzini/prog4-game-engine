@@ -36,7 +36,7 @@ namespace engine
         }
 
         // Broadcast that owner is being deleted
-        on_deletion_.broadcast( );
+        on_deletion_dispatcher_.broadcast( );
     }
 
 
@@ -150,6 +150,12 @@ namespace engine
     }
 
 
+    TransformOperator GameObject::get_transform_operator( )
+    {
+        return TransformOperator{ *this };
+    }
+
+
     void GameObject::remove_component( Component& component )
     {
         deleter_.mark_element_for_deletion( &component );
@@ -175,18 +181,6 @@ namespace engine
             children.push_back( child );
             child->collect_children( children );
         }
-    }
-
-
-    void GameObject::bind_to_object_deletion( decltype(on_deletion_)::delegate_t&& delegate )
-    {
-        on_deletion_.bind( std::move( delegate ) );
-    }
-
-
-    void GameObject::unbind_from_object_deletion( decltype(on_deletion_)::delegate_t&& delegate )
-    {
-        on_deletion_.unbind( std::move( delegate ) );
     }
 
 

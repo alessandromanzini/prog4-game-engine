@@ -20,8 +20,6 @@ namespace engine
         [[nodiscard]] SoundSystem& get_sound_system() const;
         [[nodiscard]] bool is_sound_system_registered() const;
 
-        std::unique_ptr<PlayerController> tempPlayerController{ nullptr };
-
     private:
         std::unique_ptr<SoundSystem> sound_system_instance_ptr_{};
 

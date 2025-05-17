@@ -45,6 +45,13 @@ namespace engine
     }
 
 
+    void FiniteStateMachine::start( const UID startStateId )
+    {
+        assert( current_state_id_ == NULL_UID && "FiniteStateMachine::start: State machine already started!" );
+        change_state( startStateId );
+    }
+
+
     void FiniteStateMachine::tick( )
     {
         // Check the transitions map for a TransitionState pair
@@ -65,11 +72,11 @@ namespace engine
     }
 
 
-    void FiniteStateMachine::change_state( const UID state )
+    void FiniteStateMachine::change_state( const UID uid )
     {
-        assert( stacks_.contains( state ) && "FiniteStateMachine::change_state: Invalid state!" );
+        assert( stacks_.contains( uid ) && "FiniteStateMachine::change_state: Invalid state!" );
 
-        if ( current_state_id_ == state )
+        if ( current_state_id_ == uid )
         {
             return;
         }
@@ -81,7 +88,7 @@ namespace engine
         }
 
         // 2. Set the new state
-        current_state_id_ = state;
+        current_state_id_ = uid;
 
         // 3. On enter the new state
         stacks_.at( current_state_id_ ).trigger_on_enter( blackboard_ref_ );

@@ -39,7 +39,7 @@ namespace engine::binding
                 [&]( auto&& fn )
                     {
                         using function_sig_t = std::decay_t<decltype( fn )>;
-                        using param_t        = std::tuple_element_t<0, typename function_traits<function_sig_t>::params_t>;
+                        using param_t        = std::tuple_element_t<0, typename meta::function_traits<function_sig_t>::params_t>;
                         fn( convert_input_value<param_t>( value ) );
                     },
                 command

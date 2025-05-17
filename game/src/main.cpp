@@ -15,28 +15,25 @@
 #include <framework/GameObject.h>
 #include <framework/Scene.h>
 #include <framework/component/AudioComponent.h>
-#include <framework/component/RigidBodyComponent.h>
 #include <framework/component/TextComponent.h>
+#include <framework/component/physics/RigidBodyComponent.h>
 
 #include <framework/behaviour/fsm/transitions.h>
 #include <framework/resource/texture/Sprite2D.h>
 
+#include <singleton/GameInstance.h>
 #include <singleton/ResourceManager.h>
 #include <singleton/ScenePool.h>
 #include <singleton/ServiceLocator.h>
-#include <singleton/UIController.h>
 
 #include <registration/audio.h>
 #include <registration/input.h>
 
 #include <component/BubStateComponent.h>
-#include <ui_component/AudioTestUIComponent.h>
 
-#include <controller/TestController.h>
+#include <controller/CharacterController.h>
+#include <controller/DebugController.h>
 
-// +--------------------------------+
-// | Standard Headers				|
-// +--------------------------------+
 #include <filesystem>
 namespace fs = std::filesystem;
 namespace cnd = engine::fsm::condition;
@@ -46,42 +43,10 @@ void create_bub( engine::GameObject& object )
 {
     object.set_world_transform( engine::Transform::from_translation( { 200.f, 375.f } ) );
 
-    object.add_component<engine::RigidBodyComponent>( );
+    auto& rb = object.add_component<engine::RigidBodyComponent>( );
+    rb.set_simulate_physics( false );
 
-    // auto& selector = object.add_component<game::BubStateComponent>( );
-    // selector.add_sprite( engine::UID( "idle" ),
-    //                      engine::Sprite2D{
-    //                          "characters/bub/bub_idle_1x8.png",
-    //                          static_cast<uint8_t>( 1u ), static_cast<uint8_t>( 8u ), 0.2f, 2.f
-    //                      } );
-    // selector.add_sprite( engine::UID( "walk" ),
-    //                      engine::Sprite2D{
-    //                          "characters/bub/bub_walk_1x6.png",
-    //                          static_cast<uint8_t>( 1u ), static_cast<uint8_t>( 6u ),
-    //                          0.2f, 2.f, { 0.f, -3.f }
-    //                      } );
-    // selector.add_sprite( engine::UID( "jump" ),
-    //                      engine::Sprite2D{
-    //                          "characters/bub/bub_jump_1x2.png",
-    //                          static_cast<uint8_t>( 1u ), static_cast<uint8_t>( 2u ),
-    //                          0.2f, 2.f, {}, false
-    //                      } );
-    // selector.add_sprite( engine::UID( "fall" ),
-    //                      engine::Sprite2D{
-    //                          "characters/bub/bub_fall_1x1.png",
-    //                          static_cast<uint8_t>( 1u ), static_cast<uint8_t>( 1u ),
-    //                          0.2f, 2.f
-    //                      } );
-    // selector.make_transition<cnd::IsMovingHorizontallyCondition>( engine::UID( "idle" ), engine::UID( "walk" ) );
-    // selector.make_transition<cnd::IsIdleCondition>( engine::UID( "walk" ), engine::UID( "idle" ) );
-    //
-    // selector.make_transition<cnd::IsNotGroundedCondition>( engine::UID( "walk" ), engine::UID( "jump" ) );
-    // selector.make_transition<cnd::IsNotGroundedCondition>( engine::UID( "idle" ), engine::UID( "jump" ) );
-    //
-    // selector.make_transition<cnd::IsFallingCondition>( engine::UID( "jump" ), engine::UID( "fall" ) );
-    //
-    // selector.make_transition<cnd::IsGroundedIdleCondition>( engine::UID( "fall" ), engine::UID( "idle" ) );
-    // selector.make_transition<cnd::IsGroundedMovingCondition>( engine::UID( "fall" ), engine::UID( "walk" ) );
+    object.add_component<game::BubStateComponent>( );
 
     object.add_component<engine::AudioComponent>( "victory.wav", engine::sound::SoundType::SOUND_EFFECT,
                                                   engine::UID( game::AudioCue::GENERAL ) );
@@ -95,19 +60,28 @@ void load( )
     game::initialize_input( );
     game::initialize_audio( );
 
+    engine::GAME_INSTANCE.set_gravity_coefficient( 100.f );
+
     const auto font = engine::RESOURCE_MANAGER.load_font( "fonts/Lingua.otf", 36 );
     auto& scene     = engine::SCENE_POOL.create_scene( "Demo" );
 
+    auto& bobby = scene.create_object( );
+    create_bub( bobby );
     // Bub
     auto& bub = scene.create_object( );
     create_bub( bub );
 
-    engine::SERVICE_LOCATOR.tempPlayerController = std::make_unique<game::TestController>( );
-    engine::SERVICE_LOCATOR.tempPlayerController->possess( &bub );
+#ifndef NDEBUG
+    engine::GAME_INSTANCE.add_player_controller<game::DebugController>( );
+#endif
 
-    // engine::UI_CONTROLLER.add_ui_component<game::DemoUIComponent>( );
-    // engine::UI_CONTROLLER.add_ui_component<engine::InputDisplayUIComponent>( );
-    engine::UI_CONTROLLER.add_ui_component<game::AudioTestUIComponent>( );
+    auto& controller = engine::GAME_INSTANCE.add_player_controller<game::CharacterController>( );
+    controller.possess( &bobby );
+
+    controller.possess( &bub );
+
+    bobby.mark_for_deletion(  );
+
 }
 
 

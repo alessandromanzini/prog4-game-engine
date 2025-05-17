@@ -37,7 +37,7 @@ namespace engine
         friend class Singleton;
 
         template <typename return_t>
-        using timed_callback_t = std::pair<time::TimeSpan<float>, std::function<return_t( )>>;
+        using timed_delegate_t = std::pair<time::TimeSpan<float>, std::function<return_t( )>>;
 
     public:
         void tick( );
@@ -53,25 +53,25 @@ namespace engine
         [[nodiscard]] std::chrono::nanoseconds get_sleep_time( ) const;
 
         /**
-         * Register a callback to be repeated every amount seconds until the callback return true.
+         * Register a delegate to be repeated every amount seconds until the delegate return true.
          * @param seconds Interval in seconds between calls
-         * @param callback
+         * @param delegate
          */
-        void set_interval( float seconds, std::function<bool( )>&& callback );
+        void set_interval( float seconds, std::function<bool( )>&& delegate );
 
         /**
-         * Register a callback to be repeated every amount seconds indefinitely.
+         * Register a delegate to be repeated every amount seconds indefinitely.
          * @param seconds Interval in seconds between calls
-         * @param callback
+         * @param delegate
          */
-        void set_interval( float seconds, const std::function<void( )>& callback );
+        void set_interval( float seconds, const std::function<void( )>& delegate );
 
         /**
-         * Register a callback to be called once after the amount of seconds.
+         * Register a delegate to be called once after the amount of seconds.
          * @param seconds Interval in seconds before the call
-         * @param callback
+         * @param delegate
          */
-        void set_timeout( float seconds, std::function<void( )>&& callback );
+        void set_timeout( float seconds, std::function<void( )>&& delegate );
 
     private:
         static constexpr int MS_PER_FRAME_{ 16 };
@@ -83,22 +83,22 @@ namespace engine
         std::chrono::high_resolution_clock::time_point last_time_{};
         float lag_{ 0.f };
 
-        std::list<timed_callback_t<bool>> intervals_{};
-        std::list<timed_callback_t<void>> timeouts_{};
+        std::list<timed_delegate_t<bool>> intervals_{};
+        std::list<timed_delegate_t<void>> timeouts_{};
 
         GameTime( ) = default;
 
-        template <typename callback_return_t>
-        void handle_callbacks( std::list<timed_callback_t<callback_return_t>>& callbacks, const bool discardFinished ) const;
+        template <typename delegate_return_t>
+        void handle_delegates( std::list<timed_delegate_t<delegate_return_t>>& delegates, const bool discardFinished ) const;
 
     };
 
 
-    template <typename callback_return_t>
-    void GameTime::handle_callbacks( std::list<timed_callback_t<callback_return_t>>& callbacks,
+    template <typename delegate_return_t>
+    void GameTime::handle_delegates( std::list<timed_delegate_t<delegate_return_t>>& delegates,
                                      const bool discardFinished ) const
     {
-        for ( auto& [span, callback] : callbacks )
+        for ( auto& [span, delegate] : delegates )
         {
             span.current -= delta_time_;
 
@@ -106,14 +106,14 @@ namespace engine
             {
                 bool shouldReset = false;
 
-                if constexpr ( std::is_void_v<callback_return_t> )
+                if constexpr ( std::is_void_v<delegate_return_t> )
                 {
-                    callback( );
+                    delegate( );
                     shouldReset = !discardFinished;
                 }
                 else
                 {
-                    shouldReset = !discardFinished || callback( );
+                    shouldReset = !discardFinished || delegate( );
                 }
 
                 if ( shouldReset )
@@ -123,7 +123,7 @@ namespace engine
             }
         }
 
-        std::erase_if( callbacks, []( auto& pair )
+        std::erase_if( delegates, []( auto& pair )
                            {
                                return pair.first.current <= 0.f;
                            } );

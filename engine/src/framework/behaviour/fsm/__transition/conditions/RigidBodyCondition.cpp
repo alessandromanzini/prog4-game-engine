@@ -1,94 +1,87 @@
-#include <framework/behaviour/fsm/__transitions/conditions/RigidBodyCondition.h>
+#include <framework/behaviour/fsm/__transition/condition/RigidBodyCondition.h>
 
 #include <framework/GameObject.h>
-#include <framework/components/RigidBodyComponent.h>
-#include <framework/resources/data/blackboard_ids.h>
+#include <framework/component/physics/RigidBodyComponent.h>
+#include <framework/resource/data/blackboard_ids.h>
 
-#include <type_traits>
 #include <cassert>
+#include <type_traits>
 
 
-namespace engine::fsm::conditions
+namespace engine::fsm::condition
 {
-        RigidBodyCondition::RigidBodyCondition( Blackboard& blackboard )
-        {
-            blackboard.retrieve( ids::RIGID_BODY_UID, rigid_body_ptr_ );
-            assert( rigid_body_ptr_ && "RigidBodyCondition::RigidBodyCondition: Missing rigid body" );
-        }
+    bool RigidBodyCondition::is_idle( const Blackboard& blackboard ) const
+    {
+        const auto velocity = get_rigid_body( blackboard ).get_velocity( );
+        return glm::dot( velocity, velocity ) <= IDLE_THRESHOLD_ * IDLE_THRESHOLD_;
+    }
 
 
-        bool RigidBodyCondition::is_idle( ) const
-        {
-            const auto velocity = rigid_body_ptr_->get_velocity( );
-            return glm::dot( velocity, velocity ) <= IDLE_THRESHOLD_ * IDLE_THRESHOLD_;
-        }
+    bool RigidBodyCondition::is_moving( const Blackboard& blackboard ) const
+    {
+        return not is_idle( blackboard );
+    }
 
 
-        bool RigidBodyCondition::is_moving( ) const
-        {
-            return not is_idle( );
-        }
+    bool RigidBodyCondition::is_falling( const Blackboard& blackboard ) const
+    {
+        return get_rigid_body( blackboard ).get_velocity( ).y > 0.f;
+    }
 
 
-        bool RigidBodyCondition::is_falling( ) const
-        {
-            return get_rigid_body( ).get_velocity( ).y > 0.f;
-        }
+    bool RigidBodyCondition::is_grounded( const Blackboard& blackboard ) const
+    {
+        constexpr float EPSILON = std::numeric_limits<float>::epsilon( );
+        const float vely        = get_rigid_body( blackboard ).get_velocity( ).y;
+        return vely > -EPSILON && vely < EPSILON;
+    }
 
 
-        bool RigidBodyCondition::is_grounded( ) const
-        {
-            constexpr float EPSILON = std::numeric_limits<float>::epsilon( );
-            const float vely        = get_rigid_body( ).get_velocity( ).y;
-            return vely > -EPSILON && vely < EPSILON;
-        }
+    const RigidBodyComponent& RigidBodyCondition::get_rigid_body( const Blackboard& blackboard ) const
+    {
+        RigidBodyComponent* rigidBody{ nullptr };
+        blackboard.retrieve( ids::RIGID_BODY_UID, rigidBody );
+        assert( rigidBody && "RigidBodyCondition::RigidBodyCondition: Missing rigid body" );
+        return *rigidBody;
+    }
 
 
-        const RigidBodyComponent& RigidBodyCondition::get_rigid_body( ) const
-        {
-            return *rigid_body_ptr_;
-        }
+    // +---------------------------+
+    // | IS GROUNDED CONDITION     |
+    // +---------------------------+
+    bool IsGroundedCondition::evaluate( Blackboard& blackboard ) const
+    {
+        return is_grounded( blackboard );
+    }
 
 
-        // +---------------------------+
-        // | IS GROUNDED CONDITION     |
-        // +---------------------------+
-        IsGroundedCondition::IsGroundedCondition( Blackboard& blackboard )
-            : RigidBodyCondition( blackboard ) { }
+    // +---------------------------+
+    // | IS IDLE CONDITION         |
+    // +---------------------------+
+    bool IsIdleCondition::evaluate( Blackboard& blackboard ) const
+    {
+        return is_idle( blackboard );
+    }
 
 
-        bool IsGroundedCondition::evaluate( Blackboard& ) const
-        {
-            return is_grounded( );
-        }
+    // +----------------------------------+
+    // | IS MOVING HORIZONTALLY CONDITION |
+    // +----------------------------------+
+    bool IsMovingHorizontallyCondition::evaluate( Blackboard& blackboard ) const
+    {
+        constexpr float EPSILON = std::numeric_limits<float>::epsilon( );
+        const float velx        = get_rigid_body( blackboard ).get_velocity( ).x;
+        return velx < -EPSILON || velx > EPSILON;
+    }
 
 
-        // +---------------------------+
-        // | IS IDLE CONDITION         |
-        // +---------------------------+
-        IsIdleCondition::IsIdleCondition( Blackboard& blackboard )
-            : RigidBodyCondition( blackboard ) { }
-
-
-        bool IsIdleCondition::evaluate( Blackboard& ) const
-        {
-            return is_idle( );
-        }
-
-
-        // +----------------------------------+
-        // | IS MOVING HORIZONTALLY CONDITION |
-        // +----------------------------------+
-        IsMovingHorizontallyCondition::IsMovingHorizontallyCondition( Blackboard& blackboard )
-            : RigidBodyCondition( blackboard ) { }
-
-
-        bool IsMovingHorizontallyCondition::evaluate( Blackboard& ) const
-        {
-            constexpr float EPSILON = std::numeric_limits<float>::epsilon( );
-            const float velx        = get_rigid_body( ).get_velocity( ).x;
-            return velx < -EPSILON || velx > EPSILON;
-        }
+    // +----------------------------------+
+    // | IS FALLING CONDITION             |
+    // +----------------------------------+
+    bool IsFallingCondition::evaluate( Blackboard& blackboard ) const
+    {
+        return is_falling( blackboard );
+    }
 
 
 }

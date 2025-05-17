@@ -1,8 +1,8 @@
-#ifndef TESTCONTROLLER_H
-#define TESTCONTROLLER_H
+#ifndef CHARACTERCONTROLLER_H
+#define CHARACTERCONTROLLER_H
 
-#include <framework/component/AudioComponent.h>
 #include <framework/controller/PlayerController.h>
+
 
 namespace engine
 {
@@ -11,15 +11,14 @@ namespace engine
 
 namespace game
 {
-    class TestController final : public engine::PlayerController
+    class CharacterController final : public engine::PlayerController
     {
     public:
-        TestController( );
+        CharacterController( );
 
         void possess( engine::GameObject* pawn ) override;
 
     private:
-        engine::AudioComponent* audio_ptr_{ nullptr };
         engine::RigidBodyComponent* rigid_body_ptr_{ nullptr };
 
         void device_registered( engine::InputMappingContext& context, engine::binding::DeviceInfo deviceInfo ) override;
@@ -27,17 +26,11 @@ namespace game
         void move( glm::vec2 dir ) const;
         void jump( ) const;
 
-        void play_sound( ) const;
-        void volume_up( ) const;
-        void volume_down( ) const;
-
         void kill( );
-
-        void quit( ) const;
 
     };
 
 }
 
 
-#endif //!TESTCONTROLLER_H
+#endif //!CHARACTERCONTROLLER_H

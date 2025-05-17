@@ -35,21 +35,22 @@ namespace engine
          * Create a state in the state machine linked to the UID. Multiple states can exist with the same UID, and they will all take action.
          * @tparam state_t Type of the state
          * @tparam state_args_t Arguments to be passed to the state constructor
-         * @param state
+         * @param stateId
          * @param args
          */
         template <typename state_t, typename... state_args_t>
-            requires std::derived_from<state_t, fsm::Condition>
+            requires std::derived_from<state_t, fsm::State>
                      && std::constructible_from<state_t, state_args_t...>
-        void create_state( UID state, state_args_t&&... args );
+        state_t& create_state( UID stateId, state_args_t&&... args );
 
         template <typename condition_t> requires std::derived_from<condition_t, fsm::Condition>
         void add_transition( UID from, UID to );
 
+        void start( UID startStateId );
         void tick( );
 
     private:
-        void change_state( UID state );
+        void change_state( UID uid );
 
         Blackboard& blackboard_ref_;
 
@@ -61,17 +62,12 @@ namespace engine
 
 
     template <typename state_t, typename... state_args_t>
-        requires std::derived_from<state_t, fsm::Condition>
+        requires std::derived_from<state_t, fsm::State>
                  && std::constructible_from<state_t, state_args_t...>
-    void FiniteStateMachine::create_state( const UID state, state_args_t&&... args )
+    state_t& FiniteStateMachine::create_state( const UID stateId, state_args_t&&... args )
     {
-        stacks_[state].states.push_back( std::make_unique<state_t>( std::forward<state_args_t...>( args... ) ) );
-
-        // Lazy initialization of the state machine to assign the first state
-        if ( current_state_id_ == NULL_UID )
-        {
-            change_state( state );
-        }
+        const auto& state = stacks_[stateId].states.emplace_back( std::make_unique<state_t>( std::forward<state_args_t>( args )... ) );
+        return static_cast<state_t&>( *state );
     }
 
 

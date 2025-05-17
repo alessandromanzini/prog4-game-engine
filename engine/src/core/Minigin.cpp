@@ -28,6 +28,7 @@
 #include <SDL_image.h>
 #include <SDL_ttf.h>
 #include <thread>
+#include <singleton/GameInstance.h>
 #include <singleton/ServiceLocator.h>
 
 
@@ -134,7 +135,7 @@ namespace engine
             run_one_frame( );
         }
         SCENE_POOL.unload_all_scenes( );
-        SERVICE_LOCATOR.tempPlayerController = nullptr;
+        GAME_INSTANCE.destroy( );
 #else
 		emscripten_set_main_loop_arg( &LoopCallback, this, 0, true );
 #endif

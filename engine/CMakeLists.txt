@@ -63,6 +63,7 @@ add_library(${PROJECT_NAME}
 		src/framework/component/physics/ColliderComponent.cpp
 		include/public/framework/component/physics/ColliderComponent.h
 		include/public/framework/event/Dispatcher.h
+		include/public/framework/resource/data/SparseSet.h
 )
 
 # include platform specific sources

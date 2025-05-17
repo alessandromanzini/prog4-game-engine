@@ -4,6 +4,7 @@
 // | PROJECT HEADERS				|
 // +--------------------------------+
 #include <framework/Scene.h>
+#include <framework/component/physics/ColliderComponent.h>
 
 // +--------------------------------+
 // | STANDARD HEADERS				|
@@ -33,6 +34,7 @@ namespace engine
             active_scene_ptr_ = scene.get( );
             scene->tick( );
         }
+        ColliderComponent::late_tick( );
     }
 
 

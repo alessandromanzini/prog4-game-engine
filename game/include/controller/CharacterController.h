@@ -21,9 +21,11 @@ namespace game
     private:
         engine::RigidBodyComponent* rigid_body_ptr_{ nullptr };
 
+        glm::vec2 prev_movement_{ 0.f };
+
         void device_registered( engine::InputMappingContext& context, engine::binding::DeviceInfo deviceInfo ) override;
 
-        void move( glm::vec2 dir ) const;
+        void move( glm::vec2 dir );
         void jump( ) const;
 
         void kill( );

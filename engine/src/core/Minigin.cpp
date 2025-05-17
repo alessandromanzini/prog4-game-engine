@@ -3,11 +3,13 @@
 // +--------------------------------+
 // | PROJECT HEADERS				|
 // +--------------------------------+
+#include <singleton/GameInstance.h>
 #include <singleton/GameTime.h>
 #include <singleton/InputSystem.h>
 #include <singleton/Renderer.h>
 #include <singleton/ResourceManager.h>
 #include <singleton/ScenePool.h>
+#include <singleton/ServiceLocator.h>
 #include <singleton/UIController.h>
 
 // +--------------------------------+
@@ -15,9 +17,10 @@
 // +--------------------------------+
 #include <iostream>
 #include <stdexcept>
+#include <thread>
 
 #if WIN32
-#define WIN32_LEAN_AND_MEAN 
+#define WIN32_LEAN_AND_MEAN
 #include <windows.h>
 #endif
 
@@ -27,9 +30,6 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
-#include <thread>
-#include <singleton/GameInstance.h>
-#include <singleton/ServiceLocator.h>
 
 
 namespace engine

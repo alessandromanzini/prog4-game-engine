@@ -1,9 +1,16 @@
+#include <framework/component/physics/ColliderComponent.h>
 #include <singleton/GameInstance.h>
 
 
 namespace engine
 {
     GameInstance& GAME_INSTANCE = GameInstance::get_instance( );
+
+
+    void GameInstance::destroy( )
+    {
+        player_controllers_.clear( );
+    }
 
 
     void GameInstance::remove_player_controller( const PlayerController& controller )
@@ -24,12 +31,6 @@ namespace engine
     float GameInstance::get_gravity_coefficient( ) const
     {
         return gravity_coefficient_;
-    }
-
-
-    void GameInstance::destroy( )
-    {
-        player_controllers_.clear( );
     }
 
 }

@@ -35,6 +35,7 @@
 #include <controller/DebugController.h>
 
 #include <filesystem>
+#include <framework/component/physics/BoxColliderComponent.h>
 namespace fs = std::filesystem;
 namespace cnd = engine::fsm::condition;
 
@@ -46,6 +47,8 @@ void create_bub( engine::GameObject& object )
     auto& rb = object.add_component<engine::RigidBodyComponent>( );
     rb.set_simulate_physics( false );
 
+    object.add_component<engine::BoxColliderComponent>( glm::vec2{ 50.f, 50.f } );
+
     object.add_component<game::BubStateComponent>( );
 
     object.add_component<engine::AudioComponent>( "victory.wav", engine::sound::SoundType::SOUND_EFFECT,
@@ -54,6 +57,15 @@ void create_bub( engine::GameObject& object )
                                                   engine::UID( game::AudioCue::GENERAL ) ).set_playback_on_deletion( );
 }
 
+void log( engine::ColliderComponent& coll1, engine::ColliderComponent& coll2 )
+{
+    printf( "Collision START between %p and %p\n", static_cast<void*>( &coll1 ), static_cast<void*>( &coll2 ) );
+}
+
+void log2( engine::ColliderComponent& coll1, engine::ColliderComponent& coll2 )
+{
+    printf( "Collision OVER between %p and %p\n", static_cast<void*>( &coll1 ), static_cast<void*>( &coll2 ) );
+}
 
 void load( )
 {
@@ -65,22 +77,21 @@ void load( )
     const auto font = engine::RESOURCE_MANAGER.load_font( "fonts/Lingua.otf", 36 );
     auto& scene     = engine::SCENE_POOL.create_scene( "Demo" );
 
-    auto& bobby = scene.create_object( );
-    create_bub( bobby );
     // Bub
     auto& bub = scene.create_object( );
     create_bub( bub );
+
+    auto& block = scene.create_object( );
+    auto& coll = block.add_component<engine::BoxColliderComponent>( glm::vec2{ 100.f, 1500.f } );
+    coll.on_begin_overlap.bind( log );
+    coll.on_end_overlap.bind( log2 );
 
 #ifndef NDEBUG
     engine::GAME_INSTANCE.add_player_controller<game::DebugController>( );
 #endif
 
     auto& controller = engine::GAME_INSTANCE.add_player_controller<game::CharacterController>( );
-    controller.possess( &bobby );
-
     controller.possess( &bub );
-
-    bobby.mark_for_deletion(  );
 
 }
 

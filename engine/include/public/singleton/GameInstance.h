@@ -10,11 +10,14 @@
 
 namespace engine
 {
+    class ColliderComponent;
     class GameInstance final : public Singleton<GameInstance>
     {
         friend class Singleton;
 
     public:
+        void destroy( );
+
         template <typename controller_t, typename... controller_args_t>
             requires std::derived_from<controller_t, PlayerController> && std::constructible_from<controller_t, controller_args_t...>
         controller_t& add_player_controller( controller_args_t&&... args );
@@ -23,10 +26,10 @@ namespace engine
         void set_gravity_coefficient( float coeffiecient );
         [[nodiscard]] float get_gravity_coefficient( ) const;
 
-        void destroy( );
-
     private:
         std::vector<std::unique_ptr<PlayerController>> player_controllers_{};
+
+        std::vector<ColliderComponent*> colliders_{};
 
         float gravity_coefficient_{ 10.f };
 

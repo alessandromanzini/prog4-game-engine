@@ -4,6 +4,7 @@
 #include <core/meta/binding_traits.h>
 #include <framework/event/Dispatcher.h>
 
+#include <cassert>
 #include <functional>
 #include <vector>
 

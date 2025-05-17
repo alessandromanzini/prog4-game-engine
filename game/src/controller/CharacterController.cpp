@@ -29,8 +29,8 @@ namespace game
 
         context.bind_to_input_action( this, engine::UID( IA::MOVE ), &CharacterController::move,
                                       engine::binding::TriggerEvent::PRESSED );
-        // context.bind_to_input_action( this, engine::UID( IA::MOVE ), &CharacterController::move,
-        //                               engine::binding::TriggerEvent::RELEASED );
+        context.bind_to_input_action( this, engine::UID( IA::MOVE ), &CharacterController::move,
+                                      engine::binding::TriggerEvent::RELEASED );
 
         context.bind_to_input_action( this, engine::UID( IA::JUMP ), &CharacterController::jump,
                                       engine::binding::TriggerEvent::TRIGGERED );
@@ -40,14 +40,18 @@ namespace game
     }
 
 
-    void CharacterController::move( const glm::vec2 dir ) const
+    void CharacterController::move( const glm::vec2 dir )
     {
         if ( not has_pawn(  ) )
         {
             return;
         }
 
-        rigid_body_ptr_->add_force( { dir.x * 100.f, 0.f } );
+        rigid_body_ptr_->add_force( -prev_movement_ );
+
+        const glm::vec2 movement{ dir.x * 100.f, 0.f };
+        rigid_body_ptr_->add_force( movement );
+        prev_movement_ = movement;
     }
 
 

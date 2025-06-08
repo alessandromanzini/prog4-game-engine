@@ -21,7 +21,7 @@ namespace engine
 {
     Texture2D::Texture2D( const std::string& fullPath )
     {
-        texture_ptr_ = IMG_LoadTexture( RENDERER.get_SDL_renderer( ), fullPath.c_str( ) );
+        texture_ptr_ = IMG_LoadTexture( RENDERER.get_sdl_renderer( ), fullPath.c_str( ) );
         if ( texture_ptr_ == nullptr )
             throw std::runtime_error( std::string( "Failed to load texture: " ) + SDL_GetError( ) );
     }

@@ -26,7 +26,7 @@ namespace engine
 
     GameObject& Scene::create_object( )
     {
-        return *objects_.emplace_back( std::make_unique<GameObject>( this ) );
+        return *objects_.emplace_back( std::make_unique<GameObject>( *this ) );
     }
 
 

@@ -26,12 +26,12 @@ namespace engine
         virtual void tick( ) { }
         virtual void render( ) const { }
 
+        [[nodiscard]] owner_t& get_owner( ) const;
+
         void mark_for_deletion( ) final;
 
     protected:
         explicit Component( owner_t& owner );
-
-        [[nodiscard]] owner_t& get_owner( ) const;
 
         virtual void begin_owner_deletion( ) { }
 

@@ -19,6 +19,9 @@
 // +--------------------------------+
 #include <map>
 #include <stdexcept>
+#include <core/UID.h>
+
+#include "resource/data/OptionalRef.h"
 
 
 namespace engine
@@ -33,7 +36,7 @@ namespace engine
     public:
         MulticastDelegate<> on_deletion{ on_deletion_dispatcher_ };
 
-        explicit GameObject( Scene* scene );
+        explicit GameObject( Scene& scene );
         ~GameObject( ) noexcept override;
 
         GameObject( const GameObject& other )                = delete;
@@ -46,6 +49,12 @@ namespace engine
         void render( ) const;
 
         void cleanup( );
+
+        [[nodiscard]] Scene& get_owning_scene( );
+        [[nodiscard]] const Scene& get_owning_scene( ) const;
+
+        void set_tag( UID tag );
+        [[nodiscard]] UID get_tag( ) const;
 
         void set_parent( GameObject* parent, bool keepWorldPosition = true );
 
@@ -63,14 +72,15 @@ namespace engine
 
         template <typename component_t>
             requires meta::DerivedComponent<component_t>
-        [[nodiscard]] component_t& get_component( ) const;
+        [[nodiscard]] OptionalRef<component_t> get_component( ) const;
 
         template <typename component_t>
             requires meta::DerivedComponent<component_t>
-        [[nodiscard]] component_t& get_components( ) const;
+        [[nodiscard]] OptionalRef<component_t> get_components( ) const;
 
         void remove_component( Component& component );
 
+        [[nodiscard]] GameObject& create_child( );
         [[nodiscard]] std::vector<GameObject*>& get_children( );
         [[nodiscard]] const std::vector<GameObject*>& get_children( ) const;
         void collect_children( std::vector<GameObject*>& children ) const;
@@ -79,7 +89,9 @@ namespace engine
 
     private:
         // std::unique_ptr<GameObjectView> view_ptr_{};
-        Scene* scene_ptr_{ nullptr };
+        UID tag_{ NULL_UID };
+
+        Scene& scene_ref_;
         GameObject* parent_ptr_{ nullptr };
 
         Transform local_transform_{};
@@ -118,17 +130,20 @@ namespace engine
 
     template <typename component_t>
         requires meta::DerivedComponent<component_t>
-    [[nodiscard]] component_t& GameObject::get_component( ) const
+    [[nodiscard]] OptionalRef<component_t> GameObject::get_component( ) const
     {
         auto it = components_.find( type_utility::type_hash<component_t>( ) );
-        assert( it != components_.end( ) && "Component not found!" );
-        return static_cast<component_t&>( *it->second.get( ) );
+        if ( it == components_.end( ) )
+        {
+            return nullptr;
+        }
+        return static_cast<component_t*>( it->second.get( ) );
     }
 
 
     template <typename component_t>
         requires meta::DerivedComponent<component_t>
-    [[nodiscard]] component_t& GameObject::get_components( ) const
+    [[nodiscard]] OptionalRef<component_t> GameObject::get_components( ) const
     {
         throw std::runtime_error( "Not implemented!" );
     }

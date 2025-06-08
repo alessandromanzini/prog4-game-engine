@@ -11,6 +11,12 @@ namespace engine
     }
 
 
+    Component::owner_t& Component::get_owner( ) const
+    {
+        return owner_ref_;
+    }
+
+
     void Component::mark_for_deletion( )
     {
         get_owner( ).remove_component( *this );
@@ -21,12 +27,6 @@ namespace engine
         : owner_ref_{ owner }
     {
         get_owner( ).on_deletion.bind( this, &Component::begin_owner_deletion );
-    }
-
-
-    Component::owner_t& Component::get_owner( ) const
-    {
-        return owner_ref_;
     }
 
 }

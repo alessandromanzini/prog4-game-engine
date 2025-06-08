@@ -23,7 +23,7 @@ namespace engine
     {
         IMGUI_CHECKVERSION( );
         ImGui::CreateContext( );
-        imgui_core::init( RENDERER.window_ptr_, RENDERER.get_SDL_renderer( ) );
+        imgui_core::init( RENDERER.window_ptr_, RENDERER.get_sdl_renderer( ) );
     }
 
 
@@ -85,7 +85,7 @@ namespace engine
     void UIController::end_imgui_render( ) const
     {
         ImGui::Render( );
-        imgui_core::render( ImGui::GetDrawData( ), RENDERER.get_SDL_renderer( ) );
+        imgui_core::render( ImGui::GetDrawData( ), RENDERER.get_sdl_renderer( ) );
     }
 
 }

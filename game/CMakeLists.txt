@@ -12,7 +12,8 @@ elseif(APPLE)
     set(TARGET_PARAM )
 else()
     set(TARGET_NAME ${PROJECT_NAME})
-    set(TARGET_PARAM )
+    set(TARGET_PARAM
+            project/registration/tags.h)
 endif()
 
 # set minigin as the default startup project
@@ -21,42 +22,38 @@ if(MSVC)
 endif()
 
 add_executable(${TARGET_NAME} ${TARGET_PARAM} 
-        "src/main.cpp"
+        "project/main.cpp"
 
-        "src/component/RotatingComponent.cpp"
-        "src/component/BubStateComponent.cpp"
-        "src/component/FPS.cpp"
+        "project/command/AttackCommand.cpp"
+        "project/command/JumpCommand.cpp"
+        "project/command/MoveCommand.cpp"
 
-        "src/controller/DebugController.cpp"
-        "src/controller/CharacterController.cpp"
+        "project/component/BubbleComponent.cpp"
+        "project/component/CharacterComponent.cpp"
+        "project/component/CollisionsComponent.cpp"
+        "project/component/FPS.cpp"
+        "project/component/RotatingComponent.cpp"
 
-        "src/registration/input.cpp"
-        "src/registration/audio.cpp"
+        "project/controller/DebugController.cpp"
+        "project/controller/CharacterController.cpp"
 
-        "src/state/SpriteState.cpp"
+        "project/registration/input.cpp"
+        "project/registration/audio.cpp"
 
-        "src/ui_component/AudioTestUIComponent.cpp"
-        "src/ui_component/DemoUIComponent.cpp"
-        "src/ui_component/ObserverTestUIComponent.cpp" )
+        "project/state/__base/CharacterState.cpp"
+        "project/state/character/character_conditions.cpp" )
 
 # set maximum warning level and treat warnings as errors
 include(set_warning_level)
 
 # link library
 target_link_libraries(${PROJECT_NAME}
-		PRIVATE engine )
-
-# include program directories
-target_include_directories(${PROJECT_NAME}
-		PRIVATE "include"
-		PRIVATE "src"
-		PRIVATE "src/components"
-		PRIVATE "src/controllers"
-        PRIVATE "src/registration"
-		PRIVATE "src/ui_components" )
+		PRIVATE "engine" )
 
 # copy the data directory to the build directory
 include(reload_resources_macro)
+
+target_include_directories(${PROJECT_NAME} PRIVATE "./project" )
 
 set(RESOURCES_SRC_DIRECTORY "${CMAKE_CURRENT_SOURCE_DIR}/resources")
 set(RESOURCES_DST_DIRECTORY "${CMAKE_CURRENT_BINARY_DIR}/resources")

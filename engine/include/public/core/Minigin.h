@@ -13,7 +13,7 @@ namespace engine
     class Minigin final
     {
     public:
-        explicit Minigin( const std::filesystem::path& dataPath );
+        explicit Minigin( const std::filesystem::path& dataPath, uint32_t width = 640, uint32_t height = 480 );
         ~Minigin( ) noexcept;
 
         Minigin( const Minigin& )                = delete;
@@ -25,6 +25,9 @@ namespace engine
         void run_one_frame( );
 
     private:
+        const uint32_t viewport_width_;
+        const uint32_t viewport_height_;
+
         bool quit_{};
 
     };

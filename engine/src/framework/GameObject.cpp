@@ -16,11 +16,8 @@ namespace engine
     //     : view_ptr_( new GameObjectView{ *this } ) { }
 
 
-    GameObject::GameObject( Scene* scene )
-        : scene_ptr_{ scene }
-    {
-        assert( scene != nullptr && "Scene pointer cannot be null!" );
-    }
+    GameObject::GameObject( Scene& scene )
+        : scene_ref_{ scene } { }
 
 
     GameObject::~GameObject( ) noexcept
@@ -76,6 +73,30 @@ namespace engine
     }
 
 
+    Scene& GameObject::get_owning_scene( )
+    {
+        return scene_ref_;
+    }
+
+
+    const Scene& GameObject::get_owning_scene( ) const
+    {
+        return scene_ref_;
+    }
+
+
+    void GameObject::set_tag( const UID tag )
+    {
+        tag_ = tag;
+    }
+
+
+    UID GameObject::get_tag( ) const
+    {
+        return tag_;
+    }
+
+
     void GameObject::set_parent( GameObject* const parent, const bool keepWorldPosition /* = true */ )
     {
         // Parent validation
@@ -103,8 +124,8 @@ namespace engine
         }
 
         // Re-parenting logic
-        if ( parent_ptr_ != nullptr ) parent_ptr_->remove_child( this );
-        if ( parent != nullptr ) parent->add_child( this );
+        if ( parent_ptr_ != nullptr ) { parent_ptr_->remove_child( this ); }
+        if ( parent != nullptr ) { parent->add_child( this ); }
         parent_ptr_ = parent;
     }
 
@@ -130,7 +151,7 @@ namespace engine
         }
         else
         {
-            const glm::mat3x3 parentInverse{ glm::inverse( parent_ptr_->get_world_transform( ).get_matrix( ) ) };
+            const glm::mat3x3 parentInverse{ inverse( parent_ptr_->get_world_transform( ).get_matrix( ) ) };
             set_local_transform( parentInverse * transform.get_matrix( ) );
         }
     }
@@ -162,6 +183,14 @@ namespace engine
     }
 
 
+    GameObject& GameObject::create_child( )
+    {
+        auto& child = scene_ref_.create_object( );
+        child.set_parent( this );
+        return child;
+    }
+
+
     std::vector<GameObject*>& GameObject::get_children( )
     {
         return children_;
@@ -186,7 +215,7 @@ namespace engine
 
     void GameObject::mark_for_deletion( )
     {
-        scene_ptr_->remove( *this );
+        scene_ref_.remove( *this );
     }
 
 

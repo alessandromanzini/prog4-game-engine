@@ -84,7 +84,9 @@ namespace engine
     }
 
 
-    Minigin::Minigin( const std::filesystem::path& dataPath )
+    Minigin::Minigin( const std::filesystem::path& dataPath, const uint32_t width, const uint32_t height )
+        : viewport_width_{ width }
+        , viewport_height_{ height }
     {
         print_sdl_version( );
 
@@ -97,8 +99,8 @@ namespace engine
             "Bubble Bobble - 2GD10 Manzini Alessandro",
             SDL_WINDOWPOS_CENTERED,
             SDL_WINDOWPOS_CENTERED,
-            640,
-            480,
+            viewport_width_,
+            viewport_height_,
             SDL_WINDOW_OPENGL
         );
         if ( g_window_ptr == nullptr )

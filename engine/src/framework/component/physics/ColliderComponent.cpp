@@ -4,10 +4,14 @@
 
 namespace engine
 {
-    ColliderComponent::ColliderComponent( owner_t& owner )
+    // +---------------------------+
+    // | COLLIDER COMPONENT        |
+    // +---------------------------+
+    ColliderComponent::ColliderComponent( owner_t& owner, const glm::vec2 position )
         : Component{ owner }
     {
         s_colliders_.emplace_back( this );
+        offset_to( position );
     }
 
 
@@ -17,78 +21,37 @@ namespace engine
     }
 
 
-    void ColliderComponent::tick( )
-    {
-        // Check for overlaps with other colliders
-        for ( auto* const collider : overlapping_colliders_.data( ) )
-        {
-            auto& other{ *collider };
-            auto pair = make_cross_check_pair( other );
-            if ( s_colliders_cross_check_.contains( pair ) )
-            {
-                continue;
-            }
-            if ( not hit_test( other, true ) )
-            {
-                handle_end_overlap( other );
-                other.handle_end_overlap( *this );
-                s_colliders_cross_check_.insert( std::move( pair ) );
-            }
-        }
-
-        // Check for overlaps with colliders that are not in the overlapping set
-        for ( auto* const collider : s_colliders_ )
-        {
-            if ( collider == this )
-            {
-                continue;
-            }
-
-            auto& other{ *collider };
-            auto pair = make_cross_check_pair( other );
-            if ( s_colliders_cross_check_.contains( pair ) )
-            {
-                continue;
-            }
-            hit_test( *collider );
-            s_colliders_cross_check_.insert( std::move( pair ) );
-        }
-    }
-
-
     void ColliderComponent::late_tick( )
     {
         // TODO: This should be done in a better way
-        s_colliders_cross_check_.clear( );
-    }
-
-
-    bool ColliderComponent::hit_test( ColliderComponent& other, const bool ignoreOverlaps )
-    {
-        if ( not ignoreOverlaps && overlapping_colliders_.contains( &other ) )
+        // Check for overlaps with colliders that are not in the overlapping set or persisting overlaps
+        for ( size_t i{}; i < s_colliders_.size( ) - 1u; ++i )
         {
-            return true;
-        }
-        if ( hit_test_impl( other ) )
-        {
-            if ( not ignoreOverlaps )
+            for ( size_t j{ i + 1u }; j < s_colliders_.size( ); ++j )
             {
-                handle_begin_overlap( other );
-                other.handle_begin_overlap( *this );
+                auto& colliderA{ *s_colliders_[i] };
+                auto& colliderB{ *s_colliders_[j] };
+
+                if ( colliderA.overlapping_colliders_.contains( &colliderB ) )
+                {
+                    colliderA.handle_persist_overlap( colliderB );
+                }
+                else
+                {
+                    colliderA.hit_test( colliderB );
+                }
             }
-            return true;
         }
-        return false;
     }
 
 
-    void ColliderComponent::offset_by( const glm::vec2& offset )
+    void ColliderComponent::offset_by( const glm::vec2 offset )
     {
         offset_ += offset;
     }
 
 
-    void ColliderComponent::offset_to( const glm::vec2& offset )
+    void ColliderComponent::offset_to( const glm::vec2 offset )
     {
         offset_ = offset;
     }
@@ -100,23 +63,55 @@ namespace engine
     }
 
 
-    bool ColliderComponent::hit_test_impl( const ColliderComponent& other ) const
+    glm::vec2 ColliderComponent::get_position( ) const
     {
-        const auto offset = offset_ + get_owner( ).get_world_transform( ).get_position( );
-        for ( auto pivot : get_pivots( ) )
-        {
-            if ( other.hit_test( pivot + offset ) )
-            {
-                return true;
-            }
-        }
-        return false;
+        return offset_ + get_owner( ).get_world_transform( ).get_position( );
     }
 
 
-    void ColliderComponent::handle_begin_overlap( ColliderComponent& other )
+    void ColliderComponent::clear_overlap( ColliderComponent& other )
     {
-        on_begin_overlap_dispatcher_.broadcast( *this, other );
+        handle_end_overlap( other );
+        other.handle_end_overlap( *this );
+    }
+
+
+    CollisionInfo ColliderComponent::hit_test( ColliderComponent& other, const bool ignoreCache )
+    {
+        if ( not ignoreCache && overlapping_colliders_.contains( &other ) )
+        {
+            return { .status = CollisionStatus::CACHED };
+        }
+
+        if ( CollisionInfo info = hit_test_impl( other ); info.has_collided( ) )
+        {
+            if ( not ignoreCache )
+            {
+                handle_begin_overlap( other, info );
+
+                // Invert the normal to match the other collider's perspective
+                info.normal = -info.normal;
+                other.handle_begin_overlap( *this, info );
+            }
+            return info;
+        }
+
+        return { .status = CollisionStatus::NONE };
+    }
+
+
+    void ColliderComponent::handle_persist_overlap( ColliderComponent& other )
+    {
+        if ( not hit_test( other, true ).has_collided( ) )
+        {
+            clear_overlap( other );
+        }
+    }
+
+
+    void ColliderComponent::handle_begin_overlap( ColliderComponent& other, const CollisionInfo& info )
+    {
+        on_begin_overlap_dispatcher_.broadcast( *this, other, info );
         overlapping_colliders_.insert( &other );
     }
 
@@ -125,15 +120,6 @@ namespace engine
     {
         on_end_overlap_dispatcher_.broadcast( *this, other );
         overlapping_colliders_.remove( &other );
-    }
-
-    std::pair<ColliderComponent*, ColliderComponent*> ColliderComponent::make_cross_check_pair( ColliderComponent& other )
-    {
-        if ( this < &other )
-        {
-            return std::make_pair( this, &other );
-        }
-        return std::make_pair( &other, this );
     }
 
 }

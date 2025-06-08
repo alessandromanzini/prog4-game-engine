@@ -42,7 +42,7 @@ namespace engine
                 throw std::runtime_error( std::string( "Render text failed: " ) + SDL_GetError( ) );
             }
 
-            auto texture = SDL_CreateTextureFromSurface( RENDERER.get_SDL_renderer( ), surf );
+            auto texture = SDL_CreateTextureFromSurface( RENDERER.get_sdl_renderer( ), surf );
             if ( texture == nullptr )
             {
                 throw std::runtime_error(

@@ -21,6 +21,9 @@ namespace engine
 
         void flip( bool horizontal, bool vertical );
 
+        [[nodiscard]] bool is_animation_completed( ) const;
+        [[nodiscard]] bool is_looping( ) const;
+
         void reset( );
 
     private:
@@ -40,8 +43,11 @@ namespace engine
 
         float accumulated_time_{ 0.f };
         int current_frame_{ 0 };
+        bool completed_{};
 
         std::pair<int8_t, int8_t> flip_{ static_cast<int8_t>( 1 ), static_cast<int8_t>( 1 ) };
+
+        void wrap_frame( );
 
     };
 

@@ -110,6 +110,9 @@ namespace engine
                     forward_code_to_contexts( btn, TriggerEvent::RELEASED, { DeviceType::GAMEPAD, gamepadId } );
                     break;
 
+                case SDL_MOUSEBUTTONDOWN:
+                    printf( "Mouse button %d pressed at (%d, %d)\n", e.button.button, e.button.x, e.button.y );
+
                 default:
                     break;
             }

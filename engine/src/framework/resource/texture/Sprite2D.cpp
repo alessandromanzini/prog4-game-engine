@@ -52,13 +52,11 @@ namespace engine
         {
             accumulated_time_ -= frame_delay_;
             ++current_frame_;
-            if ( loop_ )
+
+            if ( current_frame_ >= total_frames_ )
             {
-                current_frame_ %= total_frames_;
-            }
-            else
-            {
-                current_frame_ = std::min( current_frame_, total_frames_ - 1 );
+                completed_ = true;
+                wrap_frame( );
             }
         }
     }
@@ -70,11 +68,37 @@ namespace engine
     }
 
 
+    bool Sprite2D::is_animation_completed( ) const
+    {
+        return completed_;
+    }
+
+
+    bool Sprite2D::is_looping( ) const
+    {
+        return loop_;
+    }
+
+
     void Sprite2D::reset( )
     {
         accumulated_time_ = 0.f;
         current_frame_    = 0;
+        completed_        = false;
         flip_             = std::make_pair( static_cast<int8_t>( 1 ), static_cast<int8_t>( 1 ) );
+    }
+
+
+    void Sprite2D::wrap_frame( )
+    {
+        if ( loop_ )
+        {
+            current_frame_ %= total_frames_;
+        }
+        else
+        {
+            current_frame_ = std::min( current_frame_, total_frames_ - 1 );
+        }
     }
 
 }

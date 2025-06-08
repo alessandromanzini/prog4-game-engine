@@ -10,8 +10,9 @@
 
 namespace engine
 {
-    TextureComponent::TextureComponent( owner_t& owner, const std::string& filename )
+    TextureComponent::TextureComponent( owner_t& owner, const std::string& filename, const glm::vec2 offset )
         : Component( owner )
+        , offset_{ offset }
         , texture_ptr_{ RESOURCE_MANAGER.load_texture( filename ) }
     {
     }
@@ -19,7 +20,7 @@ namespace engine
 
     void TextureComponent::render( ) const
     {
-        const auto pos = get_owner( ).get_world_transform( ).get_position( );
+        const auto pos = get_owner( ).get_world_transform( ).get_position( ) + offset_;
         RENDERER.render_texture( *texture_ptr_, pos );
     }
 

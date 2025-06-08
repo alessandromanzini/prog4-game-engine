@@ -6,7 +6,7 @@ namespace game
 {
     enum class AudioCue
     {
-        GENERAL
+        SFX
     };
 
     void initialize_audio( );

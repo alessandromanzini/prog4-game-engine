@@ -18,6 +18,7 @@ namespace game
     private:
         const float projectile_speed_{};
         const float projectile_offset_{};
+
         engine::GameObject& projectile_socket_ref_;
 
         glm::vec2 attack_direction_{ 0.f };

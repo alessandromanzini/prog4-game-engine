@@ -9,6 +9,8 @@ namespace game
         ALLY,
         ENEMY,
         BUBBLE,
+
+        PLATFORM,
     };
 
 }

@@ -1,12 +1,15 @@
 #include "CharacterState.h"
 
+#include <framework/component/AudioComponent.h>
+
 
 namespace game
 {
-    CharacterState::CharacterState( engine::Sprite2D* sprite, const bool canMove, const bool canJump, const bool canAttack )
+    CharacterState::CharacterState( engine::Sprite2D* sprite, engine::AudioComponent* audio, const bool canMove, const bool canJump, const bool canAttack )
         : can_move_{ canMove }
         , can_jump_{ canJump }
         , can_attack_{ canAttack }
+        , audio_ptr_{ audio }
     {
         set_current_sprite( sprite );
     }
@@ -34,6 +37,11 @@ namespace game
     {
         sprite_ptr_->reset( );
         blackboard.edit( engine::UID( "current_sprite" ), sprite_ptr_ );
+
+        if ( audio_ptr_ )
+        {
+            audio_ptr_->play( );
+        }
     }
 
 

@@ -30,6 +30,7 @@ namespace game
         overlap_handlers_.insert( { { UID( ObjectTags::ALLY ), UID( ObjectTags::ENEMY ) }, handle_ally_enemy_overlap } );
 
         overlap_handlers_.insert( { { UID( ObjectTags::BUBBLE ), UID( ObjectTags::BUBBLE ) }, handle_bubble_bounce } );
+        overlap_handlers_.insert( { { UID( ObjectTags::BUBBLE ), UID( ObjectTags::PLATFORM ) }, handle_bubble_bounce } );
         overlap_handlers_.insert( { { UID( ObjectTags::BUBBLE ), engine::NULL_UID }, handle_bubble_bounce } );
 
         overlap_handlers_.insert( { { UID( ObjectTags::ALLY ), UID( ObjectTags::ALLY ) }, do_nothing } );
@@ -67,8 +68,9 @@ namespace game
     void CollisionsComponent::handle_default_overlap( engine::ColliderComponent& self, engine::ColliderComponent& other,
                                                       const engine::CollisionInfo& info ) const
     {
-        // If collision is with the roof, ignore it
-        if ( dot( info.normal, glm::vec2{ 0.f, 1.f } ) == 1.f )
+        // If collision is with the platform roof, ignore it
+        if ( dot( info.normal, glm::vec2{ 0.f, 1.f } ) == 1.f
+            && other.get_owner( ).get_tag( ) == UID( ObjectTags::PLATFORM ) )
         {
             return;
         }
@@ -93,11 +95,13 @@ namespace game
                                                           const engine::CollisionInfo& info )
     {
         // If collision is vertical, bounce off
-        if ( dot( info.normal, glm::vec2{ 0.f, 1.f } ) == 1.f )
+        if ( dot( info.normal, glm::vec2{ 0.f, -1.f } ) == 1.f )
         {
+            constexpr float FLAT_BOUNCE_REBOUND{ -200.f };
+            constexpr float RELATIVE_BOUNCE_REBOUND{ 1.25f };
             if ( const auto physics = get_physics_component( self.get_owner( ) ) )
             {
-                physics->add_force( { 0.f, -physics->get_velocity( ).y * 1.9f } );
+                physics->add_force( { 0.f, FLAT_BOUNCE_REBOUND - physics->get_velocity( ).y * RELATIVE_BOUNCE_REBOUND } );
             }
         }
         else

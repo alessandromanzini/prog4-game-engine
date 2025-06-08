@@ -30,40 +30,48 @@ namespace game
 
     }
 
+    struct CharacterResources final
+    {
+        engine::Sprite2D idle_sprite;
+        engine::Sprite2D walk_sprite;
+        engine::Sprite2D rise_sprite;
+        engine::Sprite2D fall_sprite;
+        engine::Sprite2D attack_sprite;
+
+        std::string attack_audio_path{};
+        std::string jump_audio_path{};
+    };
+
+
     class CharacterComponent final : public engine::Component
     {
     public:
-        explicit CharacterComponent( owner_t& owner, engine::GameObject& projectileSocket );
+        explicit CharacterComponent( owner_t& owner, const CharacterResources& resources,
+            std::unique_ptr<AttackCommand>&& attackCommand, std::unique_ptr<JumpCommand>&& jumpCommand,
+            std::unique_ptr<MoveCommand>&& moveCommand );
 
         void tick( ) override;
         void render( ) const override;
 
-        void move( float movement );
-        void jump( );
+        void move( float movement ) const;
+        void jump( ) const;
         void attack( );
 
     private:
-        static constexpr float PROJECTILE_SPEED_{ 100.f };
-        static constexpr float PROJECTILE_OFFSET_{ 20.f };
-        static constexpr float JUMP_FORCE_{ 300.f };
-        static constexpr float MOVEMENT_SPEED_{ 80.f };
-
         engine::Blackboard blackboard_{};
-        engine::FiniteStateMachine state_machine_;
+        engine::FiniteStateMachine state_machine_{ blackboard_ };
 
         std::array<glm::vec2, 4> prev_positions_{};
         uint8_t current_position_index_{ 0 };
         glm::vec2 running_sum_{ 0.f };
 
-        AttackCommand attack_command_;
-        JumpCommand jump_command_;
-        MoveCommand move_command_;
+        CharacterResources resources_;
+        std::unique_ptr<AttackCommand> attack_command_ptr_{ nullptr };
+        std::unique_ptr<JumpCommand> jump_command_ptr_{ nullptr };
+        std::unique_ptr<MoveCommand> move_command_ptr_{ nullptr };
 
-        engine::Sprite2D idle_sprite_;
-        engine::Sprite2D walk_sprite_;
-        engine::Sprite2D rise_sprite_;
-        engine::Sprite2D fall_sprite_;
-        engine::Sprite2D attack_sprite_;
+        void initialize_resources( );
+        void create_transitions( );
 
         void average_positions( );
 

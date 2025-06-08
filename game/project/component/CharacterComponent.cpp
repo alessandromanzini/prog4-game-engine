@@ -9,6 +9,8 @@
 #include <framework/resource/texture/Sprite2D.h>
 
 #include <framework/behaviour/fsm/transitions.h>
+#include <framework/component/AudioComponent.h>
+#include <registration/audio.h>
 #include <singleton/Renderer.h>
 #include <state/character/character_conditions.h>
 
@@ -21,41 +23,84 @@ using namespace game::state;
 
 namespace game
 {
-    CharacterComponent::CharacterComponent( owner_t& owner, GameObject& projectileSocket )
+    CharacterComponent::CharacterComponent( owner_t& owner, const CharacterResources& resources,
+                                            std::unique_ptr<AttackCommand>&& attackCommand,
+                                            std::unique_ptr<JumpCommand>&& jumpCommand,
+                                            std::unique_ptr<MoveCommand>&& moveCommand )
         : Component( owner )
-        , state_machine_{ blackboard_ }
-
-        , attack_command_{ owner, projectileSocket, PROJECTILE_SPEED_, PROJECTILE_OFFSET_ }
-        , jump_command_{ owner, JUMP_FORCE_ }
-        , move_command_{ owner, MOVEMENT_SPEED_ }
-
-        , idle_sprite_{
-            "characters/bub/bub_idle_1x8.png",
-            static_cast<uint8_t>( 1u ), static_cast<uint8_t>( 8u ),
-            0.2f, 2.f
-        }
-        , walk_sprite_{
-            "characters/bub/bub_walk_1x6.png",
-            static_cast<uint8_t>( 1u ), static_cast<uint8_t>( 6u ),
-            0.2f, 2.f,
-            { 0.f, -4.f }
-        }
-        , rise_sprite_{
-            "characters/bub/bub_jump_1x2.png",
-            static_cast<uint8_t>( 1u ), static_cast<uint8_t>( 2u ),
-            0.2f, 2.f
-        }
-        , fall_sprite_{
-            "characters/bub/bub_fall_1x1.png",
-            static_cast<uint8_t>( 1u ), static_cast<uint8_t>( 1u ),
-            0.2f, 2.f
-        }
-        , attack_sprite_{
-            "characters/bub/bub_attack_1x3.png",
-            static_cast<uint8_t>( 1u ), static_cast<uint8_t>( 3u ),
-            .1f, 2.f, {}, false
-        }
+        , resources_{ resources }
+        , attack_command_ptr_{ std::move( attackCommand ) }
+        , jump_command_ptr_{ std::move( jumpCommand ) }
+        , move_command_ptr_{ std::move( moveCommand ) }
     {
+        initialize_resources( );
+        create_transitions( );
+    }
+
+
+    void CharacterComponent::tick( )
+    {
+        average_positions( );
+        state_machine_.tick( );
+    }
+
+
+    void CharacterComponent::render( ) const
+    {
+        Sprite2D* currentSprite{ nullptr };
+        blackboard_.retrieve( UID( "current_sprite" ), currentSprite );
+        if ( currentSprite )
+        {
+            currentSprite->flip( move_command_ptr_->is_facing_right( ), false );
+            RENDERER.set_z_index( 2 );
+            currentSprite->render( get_owner( ).get_world_transform( ).get_position( ) );
+            RENDERER.set_z_index( 0 );
+        }
+    }
+
+
+    void CharacterComponent::move( const float movement ) const
+    {
+        if ( const auto state = static_cast<CharacterState*>( state_machine_.get_current_state( ) ); state->can_move( ) )
+        {
+            move_command_ptr_->set_movement( movement );
+            move_command_ptr_->execute( );
+        }
+    }
+
+
+    void CharacterComponent::jump( ) const
+    {
+        if ( const auto state = static_cast<CharacterState*>( state_machine_.get_current_state( ) ); state->can_jump( ) )
+        {
+            jump_command_ptr_->execute( );
+        }
+    }
+
+
+    void CharacterComponent::attack( )
+    {
+        if ( const auto state = static_cast<CharacterState*>( state_machine_.get_current_state( ) ); state->can_attack( ) )
+        {
+            state_machine_.force_transition( UID( "attack" ) );
+            attack_command_ptr_->set_attack_direction( move_command_ptr_->is_facing_right( )
+                                                           ? glm::vec2{ 1.f, 0.f }
+                                                           : glm::vec2{ -1.f, 0.f } );
+            attack_command_ptr_->execute( );
+        }
+    }
+
+
+    void CharacterComponent::initialize_resources( )
+    {
+        AudioComponent& attackAudio = get_owner( ).add_component<AudioComponent>( resources_.attack_audio_path,
+                                                                                  sound::SoundType::SOUND_EFFECT,
+                                                                                  UID( AudioCue::SFX ) );
+
+        AudioComponent& jumpAudio = get_owner( ).add_component<AudioComponent>( resources_.jump_audio_path,
+                                                                                sound::SoundType::SOUND_EFFECT,
+                                                                                UID( AudioCue::SFX ) );
+
         // UTILITIES
         blackboard_.store( UID( "relative_movement" ), glm::vec2{ 0.f, 0.f } );
         blackboard_.store<Sprite2D*>( UID( "current_sprite" ), nullptr );
@@ -66,12 +111,26 @@ namespace game
         state_machine_.mark_intermediate_state( UID( "grounded" ) );
         state_machine_.mark_intermediate_state( UID( "airborne" ) );
 
-        state_machine_.create_state<CharacterState>( UID( "idle" ), &idle_sprite_, true, true, true );
-        state_machine_.create_state<CharacterState>( UID( "walk" ), &walk_sprite_, true, true, true );
-        state_machine_.create_state<CharacterState>( UID( "rise" ), &rise_sprite_, true, false, true );
-        state_machine_.create_state<CharacterState>( UID( "fall" ), &fall_sprite_, true, false, true );
-        state_machine_.create_state<CharacterState>( UID( "attack" ), &attack_sprite_, true, false, false );
 
+        state_machine_.create_state<CharacterState>( UID( "idle" ), &resources_.idle_sprite, nullptr,
+                                                     true, true, true );
+
+        state_machine_.create_state<CharacterState>( UID( "walk" ), &resources_.walk_sprite, nullptr,
+                                                     true, true, true );
+
+        state_machine_.create_state<CharacterState>( UID( "rise" ), &resources_.rise_sprite,
+                                                     &jumpAudio, true, false, true );
+
+        state_machine_.create_state<CharacterState>( UID( "fall" ), &resources_.fall_sprite, nullptr,
+                                                     true, false, true );
+
+        state_machine_.create_state<CharacterState>( UID( "attack" ), &resources_.attack_sprite,
+                                                     &attackAudio, true, false, false );
+    }
+
+
+    void CharacterComponent::create_transitions( )
+    {
         // IDLE
         state_machine_.add_transition<cnd::IsMovingHorzCondition>( UID( "idle" ), UID( "walk" ) );
         state_machine_.add_transition<lgc::Not<cnd::IsGroundedCondition>>( UID( "idle" ), UID( "airborne" ) );
@@ -103,59 +162,6 @@ namespace game
 
         // SET INITIAL STATE
         state_machine_.start( UID( "idle" ) );
-    }
-
-
-    void CharacterComponent::tick( )
-    {
-        average_positions( );
-        state_machine_.tick( );
-    }
-
-
-    void CharacterComponent::render( ) const
-    {
-        Sprite2D* currentSprite{ nullptr };
-        blackboard_.retrieve( UID( "current_sprite" ), currentSprite );
-        if ( currentSprite )
-        {
-            currentSprite->flip( move_command_.is_facing_right( ), false );
-            RENDERER.set_z_index( 2 );
-            currentSprite->render( get_owner( ).get_world_transform( ).get_position( ) );
-            RENDERER.set_z_index( 0 );
-        }
-    }
-
-
-    void CharacterComponent::move( const float movement )
-    {
-        if ( const auto state = static_cast<CharacterState*>( state_machine_.get_current_state( ) ); state->can_move( ) )
-        {
-            move_command_.set_movement( movement );
-            move_command_.execute( );
-        }
-    }
-
-
-    void CharacterComponent::jump( )
-    {
-        if ( const auto state = static_cast<CharacterState*>( state_machine_.get_current_state( ) ); state->can_jump( ) )
-        {
-            jump_command_.execute( );
-        }
-    }
-
-
-    void CharacterComponent::attack( )
-    {
-        if ( const auto state = static_cast<CharacterState*>( state_machine_.get_current_state( ) ); state->can_attack( ) )
-        {
-            state_machine_.force_transition( UID( "attack" ) );
-            attack_command_.set_attack_direction( move_command_.is_facing_right( )
-                                                      ? glm::vec2{ 1.f, 0.f }
-                                                      : glm::vec2{ -1.f, 0.f } );
-            attack_command_.execute( );
-        }
     }
 
 

@@ -5,12 +5,17 @@
 #include <framework/resource/texture/Sprite2D.h>
 
 
+namespace engine
+{
+    class AudioComponent;
+}
+
 namespace game
 {
     class CharacterState final : public engine::fsm::State
     {
     public:
-        explicit CharacterState( engine::Sprite2D* sprite, bool canMove, bool canJump, bool canAttack );
+        explicit CharacterState( engine::Sprite2D* sprite, engine::AudioComponent* audio, bool canMove, bool canJump, bool canAttack );
 
         void on_enter( engine::Blackboard& ) override;
         void tick( engine::Blackboard& ) override;
@@ -28,6 +33,7 @@ namespace game
         const bool can_attack_{};
 
         engine::Sprite2D* sprite_ptr_{ nullptr };
+        engine::AudioComponent* audio_ptr_{ nullptr };
 
     };
 

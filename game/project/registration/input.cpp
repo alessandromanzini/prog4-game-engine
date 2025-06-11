@@ -3,7 +3,7 @@
 // +--------------------------------+
 // | PROJECT HEADERS				|
 // +--------------------------------+
-#include <../../../engine/include/public/singleton/InputSystem.h>
+#include <singleton/InputSystem.h>
 
 using namespace engine;
 using namespace engine::binding;
@@ -31,6 +31,12 @@ namespace game
 
         imc.register_input_action( UID( IA::ATTACK ), SDL_CONTROLLER_BUTTON_X );
         imc.register_input_action( UID( IA::ATTACK ), SDLK_k );
+
+        imc.register_input_action( UID( IA::JOIN ), SDL_CONTROLLER_BUTTON_X );
+        imc.register_input_action( UID( IA::JOIN ), SDLK_RETURN );
+
+        imc.register_input_action( UID( IA::LEAVE ), SDL_CONTROLLER_BUTTON_B );
+        imc.register_input_action( UID( IA::LEAVE ), SDLK_BACKSPACE );
 
         imc.register_input_action( UID( IA::QUIT ), SDLK_ESCAPE );
         imc.register_input_action( UID( IA::QUIT ), SDL_CONTROLLER_BUTTON_START );

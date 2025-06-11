@@ -25,6 +25,11 @@ namespace engine
     {
         // TODO: This should be done in a better way
         // Check for overlaps with colliders that are not in the overlapping set or persisting overlaps
+        if ( s_colliders_.size( ) < 2u )
+        {
+            return;
+        }
+
         for ( size_t i{}; i < s_colliders_.size( ) - 1u; ++i )
         {
             for ( size_t j{ i + 1u }; j < s_colliders_.size( ); ++j )

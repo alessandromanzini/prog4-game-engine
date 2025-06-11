@@ -10,6 +10,9 @@ namespace game
         JUMP,
         ATTACK,
 
+        JOIN,
+        LEAVE,
+
         QUIT
     };
 

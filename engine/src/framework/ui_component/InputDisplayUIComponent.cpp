@@ -8,7 +8,7 @@
 // +--------------------------------+
 // | IMGUI HEADERS					|
 // +--------------------------------+
-#include <imgui.h>
+//#include <imgui.h>
 
 
 namespace engine
@@ -19,7 +19,7 @@ namespace engine
 
     void InputDisplayUIComponent::render( )
     {
-        ImGui::Begin( "Input Display" );
+        //ImGui::Begin( "Input Display" );
 
         /*ImGui::Text( "Controller status:" );
         ImGui::SameLine( );
@@ -88,7 +88,7 @@ namespace engine
             ImGui::TextColored( ImVec4{ .4f, .4f, .4f, 1.f }, "idle" );
         }*/
 
-        ImGui::End( );
+        //ImGui::End( );
     }
 
 }

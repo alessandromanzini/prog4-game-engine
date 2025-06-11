@@ -9,8 +9,8 @@
 // +--------------------------------+
 // | STANDARD HEADERS				|
 // +--------------------------------+
-#include <string>
 #include <memory>
+#include <string>
 
 
 namespace engine

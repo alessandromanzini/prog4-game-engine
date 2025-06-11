@@ -35,6 +35,9 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
         "project/component/ZenChanComponent.cpp"
         "project/component/FPS.cpp"
         "project/component/RotatingComponent.cpp"
+        "project/component/EnemyAiComponent.cpp"
+        "project/component/JoinMenuComponent.cpp"
+        "project/controller/JoinMenuController.cpp"
 
         "project/controller/DebugController.cpp"
         "project/controller/CharacterController.cpp"
@@ -44,9 +47,7 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
         "project/registration/object_initializers.cpp"
 
         "project/state/__base/CharacterState.cpp"
-        "project/state/character/character_conditions.cpp"
-        project/component/EnemyAiComponent.cpp
-        project/component/EnemyAiComponent.h)
+        "project/state/character/character_conditions.cpp" )
 
 # set maximum warning level and treat warnings as errors
 include(set_warning_level)

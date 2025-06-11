@@ -57,6 +57,10 @@ namespace engine
 
     void GameObject::render( ) const
     {
+        if ( not visible_ )
+        {
+            return;
+        }
         for ( const auto& [key, component] : components_ )
         {
             component->render( );
@@ -94,6 +98,12 @@ namespace engine
     UID GameObject::get_tag( ) const
     {
         return tag_;
+    }
+
+
+    void GameObject::set_visibility( const bool visible )
+    {
+        visible_ = visible;
     }
 
 

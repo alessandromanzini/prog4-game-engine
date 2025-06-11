@@ -21,7 +21,6 @@ namespace engine
     // +--------------------------------+
     void InputMappingContext::register_input_action( const InputAction& action, const UniformBindingCode code )
     {
-        assert( not action_binds_.contains( code ) && "Input action already registered on this code!" );
         action_binds_[code].push_back( action );
     }
 

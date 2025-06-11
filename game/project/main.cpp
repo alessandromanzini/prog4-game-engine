@@ -25,8 +25,10 @@
 
 #include <controller/CharacterController.h>
 #include <controller/DebugController.h>
+#include <component/JoinMenuComponent.h>
 
 #include <filesystem>
+#include <framework/component/TextureComponent.h>
 namespace fs = std::filesystem;
 
 
@@ -37,23 +39,39 @@ void load( )
 
     engine::GAME_INSTANCE.set_gravity_coefficient( 400.f );
 
-    const auto font = engine::RESOURCE_MANAGER.load_font( "fonts/Lingua.otf", 36 );
+    const auto font = engine::RESOURCE_MANAGER.load_font( "fonts/pixelify.ttf", 36 );
     auto& scene     = engine::SCENE_POOL.create_scene( "Demo" );
 
     // Bub
-    auto& bub = scene.create_object( );
-    game::create_bub( bub, { 200.f, 375.f } );
+    //auto& bub = scene.create_object( );
+    //game::create_bub( bub, { 200.f, 375.f } );
 
-    auto& zenchan = scene.create_object( );
-    game::create_zenchan( zenchan, { 300.f, 375.f }, { &bub } );
+    //auto& zenchan = scene.create_object( );
+    //game::create_zenchan( zenchan, { 300.f, 375.f }, { &bub } );
 
-    auto& grid = scene.create_object( );
-    game::create_grid( grid );
+    //auto& grid = scene.create_object( );
+    //game::create_grid( grid );
 
-    engine::GAME_INSTANCE.add_controller<game::DebugController>( );
+    auto& join = scene.create_object( );
+    join.add_component<engine::TextureComponent>( "maps/main_menu.png" );
 
-    auto& controller = engine::GAME_INSTANCE.add_controller<game::CharacterController>( );
-    controller.possess( &bub );
+    auto& player1 = join.create_child( );
+    auto& player2 = join.create_child( );
+
+    auto& selection = join.create_child( );
+
+    auto& arcade = selection.create_child(  );
+    arcade.add_component<engine::TextComponent>( "arcade", font );
+
+    auto& versus = selection.create_child(  );
+    versus.add_component<engine::TextComponent>( "versus", font );
+
+    join.add_component<game::JoinMenuComponent>( &selection, std::vector{ &player1, &player2 } );
+
+    //engine::GAME_INSTANCE.add_controller<game::DebugController>( );
+
+    // auto& controller = engine::GAME_INSTANCE.add_controller<game::CharacterController>( );
+    //controller.possess( &bub );
 }
 
 

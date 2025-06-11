@@ -13,7 +13,8 @@
 
 namespace engine
 {
-    Font::Font( const std::string& fullPath, unsigned int size ) : font_ptr_{ nullptr }
+    Font::Font( const std::string& fullPath, const unsigned int size )
+        : font_ptr_{ nullptr }
     {
         font_ptr_ = TTF_OpenFont( fullPath.c_str( ), size );
         if ( font_ptr_ == nullptr )
@@ -33,4 +34,5 @@ namespace engine
     {
         return font_ptr_;
     }
+
 }

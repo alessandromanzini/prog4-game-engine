@@ -23,7 +23,7 @@
 
 #include "resource/data/OptionalRef.h"
 
-
+//TODO: make component get const correct
 namespace engine
 {
     class Scene;
@@ -55,6 +55,8 @@ namespace engine
 
         void set_tag( UID tag );
         [[nodiscard]] UID get_tag( ) const;
+
+        void set_visibility( bool visible );
 
         void set_parent( GameObject* parent, bool keepWorldPosition = true );
 
@@ -90,6 +92,7 @@ namespace engine
     private:
         // std::unique_ptr<GameObjectView> view_ptr_{};
         UID tag_{ NULL_UID };
+        bool visible_{ true };
 
         Scene& scene_ref_;
         GameObject* parent_ptr_{ nullptr };

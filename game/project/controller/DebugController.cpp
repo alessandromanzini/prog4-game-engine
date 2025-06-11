@@ -2,7 +2,7 @@
 
 #include <registration/input.h>
 
-#include "../../../out/cmake-x64-release/_deps/sdl2-src/include/SDL_events.h"
+#include <SDL.h>
 
 
 namespace game

@@ -11,6 +11,8 @@
 
 #include <framework/behaviour/fsm/FiniteStateMachine.h>
 
+#include <array>
+
 
 namespace engine
 {

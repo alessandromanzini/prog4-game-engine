@@ -74,7 +74,7 @@ namespace engine
 
     void ScenePool::unload_scene( const std::string& name )
     {
-        std::erase_if( scenes_, [&name]( auto& s ){ return s.get_name( ) == name; } );
+        std::erase_if( scenes_, [&name]( auto& s ){ return s->get_name( ) == name; } );
     }
 
 

@@ -133,8 +133,8 @@ namespace engine
     {
         render::RenderRequest request{
             .texture = texture.get_SDL_texture( ),
-            .src = create_rect( srcRect ),
             .dst = create_rect( position ),
+            .src = create_rect( srcRect ),
             .ex = true,
             .z_index = z_index_
         };
@@ -150,8 +150,8 @@ namespace engine
     {
         render_queue_.insert( {
             .texture = texture.get_SDL_texture( ),
-            .src = create_rect( srcRect ),
             .dst = create_rect( dstRect ),
+            .src = create_rect( srcRect ),
             .ex = true,
             .z_index = z_index_
         } );

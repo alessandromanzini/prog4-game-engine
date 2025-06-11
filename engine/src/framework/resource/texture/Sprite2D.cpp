@@ -82,7 +82,7 @@ namespace engine
 
     uint16_t Sprite2D::get_frame_index( ) const
     {
-        return current_frame_;
+        return static_cast<uint16_t>( current_frame_ );
     }
 
 

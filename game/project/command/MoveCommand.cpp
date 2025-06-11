@@ -18,16 +18,16 @@ namespace game
     void MoveCommand::execute( )
     {
         physics_body_ptr_->add_force( { -physics_body_ptr_->get_velocity(  ).x, 0.f } );
-        physics_body_ptr_->add_force( { movement_, 0.f } );
+        physics_body_ptr_->add_force( movement_ );
     }
 
 
-    void MoveCommand::set_movement( const float movement )
+    void MoveCommand::set_movement( const glm::vec2 movement )
     {
-        movement_        = movement * speed_;
-        if ( movement_ != 0.f )
+        movement_ = movement * speed_;
+        if ( movement_.x != 0.f )
         {
-            is_facing_right_ = movement_ > 0.f;
+            is_facing_right_ = movement_.x > 0.f;
         }
     }
 

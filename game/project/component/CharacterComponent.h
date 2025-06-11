@@ -12,6 +12,11 @@
 #include <framework/behaviour/fsm/FiniteStateMachine.h>
 
 
+namespace engine
+{
+    class AudioComponent;
+}
+
 namespace game
 {
     namespace state
@@ -40,6 +45,7 @@ namespace game
 
         std::string attack_audio_path{};
         std::string jump_audio_path{};
+        std::string bounce_audio_path{};
     };
 
 
@@ -53,9 +59,11 @@ namespace game
         void tick( ) override;
         void render( ) const override;
 
-        void move( float movement ) const;
+        void move( glm::vec2 movement ) const;
         void jump( ) const;
         void attack( );
+
+        void set_physics_simulation( bool simulate ) const;
 
     private:
         engine::Blackboard blackboard_{};
@@ -69,6 +77,9 @@ namespace game
         std::unique_ptr<AttackCommand> attack_command_ptr_{ nullptr };
         std::unique_ptr<JumpCommand> jump_command_ptr_{ nullptr };
         std::unique_ptr<MoveCommand> move_command_ptr_{ nullptr };
+
+        engine::AudioComponent* attack_audio_ptr_{ nullptr };
+        engine::AudioComponent* jump_audio_ptr_{ nullptr };
 
         void initialize_resources( );
         void create_transitions( );

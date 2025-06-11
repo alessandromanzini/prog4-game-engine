@@ -3,6 +3,8 @@
 
 #include <framework/binding/command/GameObjectCommand.h>
 
+#include <vec2.hpp>
+
 
 namespace engine
 {
@@ -17,7 +19,7 @@ namespace game
         explicit MoveCommand( engine::GameObject& owner, float speed );
         void execute( ) override;
 
-        void set_movement( float movement );
+        void set_movement( glm::vec2 movement );
 
         [[nodiscard]] bool is_facing_right( ) const;
 
@@ -26,7 +28,7 @@ namespace game
 
         engine::PhysicsComponent* physics_body_ptr_{ nullptr };
 
-        float movement_{ 0.f };
+        glm::vec2 movement_{ 0.f };
         bool is_facing_right_{ false };
 
     };

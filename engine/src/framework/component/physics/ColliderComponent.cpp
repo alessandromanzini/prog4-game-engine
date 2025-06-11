@@ -32,6 +32,11 @@ namespace engine
                 auto& colliderA{ *s_colliders_[i] };
                 auto& colliderB{ *s_colliders_[j] };
 
+                if ( not colliderA.is_enabled( ) or not colliderB.is_enabled( ) )
+                {
+                    continue;
+                }
+
                 if ( colliderA.overlapping_colliders_.contains( &colliderB ) )
                 {
                     colliderA.handle_persist_overlap( colliderB );
@@ -60,6 +65,25 @@ namespace engine
     glm::vec2 ColliderComponent::get_offset( ) const
     {
         return offset_;
+    }
+
+
+    void ColliderComponent::set_enabled( const bool enabled )
+    {
+        enabled_ = enabled;
+        if ( not enabled )
+        {
+            for ( auto* collider : overlapping_colliders_.data( ) )
+            {
+                clear_overlap( *collider );
+            }
+        }
+    }
+
+
+    bool ColliderComponent::is_enabled( ) const
+    {
+        return enabled_;
     }
 
 

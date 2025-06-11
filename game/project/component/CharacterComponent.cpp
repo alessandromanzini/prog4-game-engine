@@ -10,6 +10,7 @@
 
 #include <framework/behaviour/fsm/transitions.h>
 #include <framework/component/AudioComponent.h>
+#include <framework/component/physics/BoxColliderComponent.h>
 #include <registration/audio.h>
 #include <singleton/Renderer.h>
 #include <state/character/character_conditions.h>
@@ -59,7 +60,7 @@ namespace game
     }
 
 
-    void CharacterComponent::move( const float movement ) const
+    void CharacterComponent::move( const glm::vec2 movement ) const
     {
         if ( const auto state = static_cast<CharacterState*>( state_machine_.get_current_state( ) ); state->can_move( ) )
         {
@@ -74,6 +75,10 @@ namespace game
         if ( const auto state = static_cast<CharacterState*>( state_machine_.get_current_state( ) ); state->can_jump( ) )
         {
             jump_command_ptr_->execute( );
+            if ( jump_audio_ptr_ )
+            {
+                jump_audio_ptr_->play( );
+            }
         }
     }
 
@@ -87,19 +92,45 @@ namespace game
                                                            ? glm::vec2{ 1.f, 0.f }
                                                            : glm::vec2{ -1.f, 0.f } );
             attack_command_ptr_->execute( );
+            if ( attack_audio_ptr_ )
+            {
+                attack_audio_ptr_->play( );
+            }
         }
+    }
+
+
+    void CharacterComponent::set_physics_simulation( const bool simulate ) const
+    {
+        get_owner( ).get_component<BoxColliderComponent>( ).value(  ).set_enabled( simulate );
+        auto& physics = get_owner( ).get_component<PhysicsComponent>( ).value(  );
+        physics.set_simulate_physics( simulate );
+        physics.add_force( -physics.get_velocity(  ) );
     }
 
 
     void CharacterComponent::initialize_resources( )
     {
-        AudioComponent& attackAudio = get_owner( ).add_component<AudioComponent>( resources_.attack_audio_path,
-                                                                                  sound::SoundType::SOUND_EFFECT,
-                                                                                  UID( AudioCue::SFX ) );
-
-        AudioComponent& jumpAudio = get_owner( ).add_component<AudioComponent>( resources_.jump_audio_path,
-                                                                                sound::SoundType::SOUND_EFFECT,
-                                                                                UID( AudioCue::SFX ) );
+        AudioComponent* bounceAudio{ nullptr };
+        if ( not resources_.attack_audio_path.empty( ) )
+        {
+            attack_audio_ptr_ = &get_owner( ).add_component<AudioComponent>( resources_.attack_audio_path,
+                                                                                      sound::SoundType::SOUND_EFFECT,
+                                                                                      UID( AudioCue::SFX ) );
+        }
+        if ( not resources_.jump_audio_path.empty( ) )
+        {
+            jump_audio_ptr_ = &get_owner( ).add_component<AudioComponent>( resources_.jump_audio_path,
+                                                                                    sound::SoundType::SOUND_EFFECT,
+                                                                                    UID( AudioCue::SFX ) );
+        }
+        if ( not resources_.bounce_audio_path.empty( ) )
+        {
+            bounceAudio = &get_owner( ).add_component<AudioComponent>( resources_.bounce_audio_path,
+                                                                                    sound::SoundType::SOUND_EFFECT,
+                                                                                    UID( AudioCue::SFX ) );
+            bounceAudio->set_volume( .05f );
+        }
 
         // UTILITIES
         blackboard_.store( UID( "relative_movement" ), glm::vec2{ 0.f, 0.f } );
@@ -112,20 +143,15 @@ namespace game
         state_machine_.mark_intermediate_state( UID( "airborne" ) );
 
 
-        state_machine_.create_state<CharacterState>( UID( "idle" ), &resources_.idle_sprite, nullptr,
-                                                     true, true, true );
+        state_machine_.create_state<CharacterState>( UID( "idle" ), &resources_.idle_sprite, nullptr, true, true, true );
 
-        state_machine_.create_state<CharacterState>( UID( "walk" ), &resources_.walk_sprite, nullptr,
-                                                     true, true, true );
+        state_machine_.create_state<CharacterState>( UID( "walk" ), &resources_.walk_sprite, nullptr, true, true, true );
 
-        state_machine_.create_state<CharacterState>( UID( "rise" ), &resources_.rise_sprite,
-                                                     &jumpAudio, true, false, true );
+        state_machine_.create_state<CharacterState>( UID( "rise" ), &resources_.rise_sprite, bounceAudio, true, false, true );
 
-        state_machine_.create_state<CharacterState>( UID( "fall" ), &resources_.fall_sprite, nullptr,
-                                                     true, false, true );
+        state_machine_.create_state<CharacterState>( UID( "fall" ), &resources_.fall_sprite, nullptr, true, false, true );
 
-        state_machine_.create_state<CharacterState>( UID( "attack" ), &resources_.attack_sprite,
-                                                     &attackAudio, true, false, false );
+        state_machine_.create_state<CharacterState>( UID( "attack" ), &resources_.attack_sprite, nullptr, true, false, false );
     }
 
 

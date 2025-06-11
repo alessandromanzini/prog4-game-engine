@@ -41,7 +41,7 @@ namespace game::condition
     bool IsRisingCondition::evaluate( Blackboard& blackboard ) const
     {
         const glm::vec2 relative = get_relative_movement( blackboard );
-        return relative.y < -FLT_EPSILON;
+        return relative.y < -IDLE_EPSILON;
     }
 
 
@@ -51,7 +51,7 @@ namespace game::condition
     bool IsFallingCondition::evaluate( Blackboard& blackboard ) const
     {
         const glm::vec2 relative = get_relative_movement( blackboard );
-        return relative.y > FLT_EPSILON;
+        return relative.y > IDLE_EPSILON;
     }
 
 

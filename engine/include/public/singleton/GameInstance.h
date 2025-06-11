@@ -19,28 +19,26 @@ namespace engine
         void destroy( );
 
         template <typename controller_t, typename... controller_args_t>
-            requires std::derived_from<controller_t, PlayerController> && std::constructible_from<controller_t, controller_args_t...>
-        controller_t& add_player_controller( controller_args_t&&... args );
-        void remove_player_controller( const PlayerController& controller );
+            requires std::derived_from<controller_t, BaseController> && std::constructible_from<controller_t, controller_args_t...>
+        controller_t& add_controller( controller_args_t&&... args );
+        void remove_controller( const PlayerController& controller );
 
         void set_gravity_coefficient( float coeffiecient );
         [[nodiscard]] float get_gravity_coefficient( ) const;
 
     private:
-        std::vector<std::unique_ptr<PlayerController>> player_controllers_{};
-
+        std::vector<std::unique_ptr<PlayerController>> controllers_{};
         std::vector<ColliderComponent*> colliders_{};
-
         float gravity_coefficient_{ 10.f };
 
     };
 
 
-    template <typename controller_t, typename ... controller_args_t> requires std::derived_from<controller_t, PlayerController> &&
+    template <typename controller_t, typename ... controller_args_t> requires std::derived_from<controller_t, BaseController> &&
         std::constructible_from<controller_t, controller_args_t...>
-    controller_t& GameInstance::add_player_controller( controller_args_t&&... args )
+    controller_t& GameInstance::add_controller( controller_args_t&&... args )
     {
-        auto& controller = player_controllers_.emplace_back( std::make_unique<controller_t>( std::forward<controller_args_t>( args )... ) );
+        auto& controller = controllers_.emplace_back( std::make_unique<controller_t>( std::forward<controller_args_t>( args )... ) );
         return static_cast<controller_t&>( *controller );
     }
 

@@ -47,7 +47,7 @@ namespace game
         {
             return;
         }
-        state_ptr_->move( dir.x );
+        state_ptr_->move( dir );
     }
 
 

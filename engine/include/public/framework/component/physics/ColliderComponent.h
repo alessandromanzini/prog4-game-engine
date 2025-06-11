@@ -73,6 +73,9 @@ namespace engine
 
         [[nodiscard]] glm::vec2 get_offset( ) const;
 
+        void set_enabled( bool enabled );
+        [[nodiscard]] bool is_enabled( ) const;
+
         /**
          * Returns the position of the collider in world space.
          * @return
@@ -92,6 +95,8 @@ namespace engine
 
         SparseSet<ColliderComponent*> overlapping_colliders_{};
         glm::vec2 offset_{};
+
+        bool enabled_{ true };
 
         void handle_persist_overlap( ColliderComponent& other );
         void handle_begin_overlap( ColliderComponent& other, const CollisionInfo& info );

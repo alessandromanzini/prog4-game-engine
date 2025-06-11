@@ -41,6 +41,12 @@ namespace engine
         }
 
 
+        value_t* operator&() const
+        {
+            return value_ptr_;
+        }
+
+
     private:
         value_t* value_ptr_{ nullptr };
 

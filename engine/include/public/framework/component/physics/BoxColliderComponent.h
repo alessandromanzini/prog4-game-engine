@@ -13,7 +13,6 @@ namespace engine
     {
     public:
         explicit BoxColliderComponent( owner_t& owner, glm::vec2 size, glm::vec2 position = {} );
-
         [[nodiscard]] std::span<const glm::vec2> get_pivots( ) const override;
 
     private:

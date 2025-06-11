@@ -3,8 +3,8 @@
 
 #include <framework/component/Component.h>
 
-#include <cstdio>
 #include <core/UID.h>
+#include <framework/GameObject.h>
 #include <framework/component/physics/ColliderComponent.h>
 
 
@@ -17,6 +17,7 @@ namespace engine
 namespace game
 {
     class BubbleComponent;
+    class BubbleCaptureComponent;
     class CollisionsComponent final : public engine::Component
     {
         using handlers_pair_t = std::pair<engine::UID, engine::UID>;
@@ -39,10 +40,12 @@ namespace game
         void owner_collider_begin_overlap( engine::ColliderComponent& self, engine::ColliderComponent& other,
                                            const engine::CollisionInfo& info );
 
-        void handle_default_overlap( engine::ColliderComponent& self, engine::ColliderComponent& other,
-                                     const engine::CollisionInfo& info ) const;
+        static void handle_default_overlap( engine::ColliderComponent& self, engine::ColliderComponent& other,
+                                     const engine::CollisionInfo& info );
 
         static void handle_ally_bubble_overlap( engine::ColliderComponent& self, engine::ColliderComponent& other,
+                                         const engine::CollisionInfo& info );
+        static void handle_ally_fruit_overlap( engine::ColliderComponent& self, engine::ColliderComponent& other,
                                          const engine::CollisionInfo& info );
         static void handle_enemy_bubble_overlap( engine::ColliderComponent& self, engine::ColliderComponent& other,
                                           const engine::CollisionInfo& info );
@@ -50,11 +53,21 @@ namespace game
                                         const engine::CollisionInfo& info );
         static void handle_bubble_bounce( engine::ColliderComponent& self, engine::ColliderComponent& other,
                                         const engine::CollisionInfo& info );
+        static void handle_fruit_bounce( engine::ColliderComponent& self, engine::ColliderComponent& other,
+                                        const engine::CollisionInfo& info );
         static void do_nothing( engine::ColliderComponent&, engine::ColliderComponent&,
                                          const engine::CollisionInfo& );
 
-        static engine::PhysicsComponent* get_physics_component( const engine::GameObject& object );
-        static BubbleComponent* get_bubble_component( const engine::GameObject& object );
+        template <typename component_t>
+        static component_t* get_component( const engine::GameObject& object )
+        {
+            if ( const auto component = object.get_component<component_t>( );
+                 component.has_value( ) )
+            {
+                return &component.value( );
+            }
+            return nullptr;
+        }
         static float get_overlap_jitter( glm::vec2 normal );
 
     };

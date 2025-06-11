@@ -80,6 +80,12 @@ namespace engine
     }
 
 
+    uint16_t Sprite2D::get_frame_index( ) const
+    {
+        return current_frame_;
+    }
+
+
     void Sprite2D::reset( )
     {
         accumulated_time_ = 0.f;

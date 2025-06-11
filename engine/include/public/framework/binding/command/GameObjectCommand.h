@@ -12,6 +12,8 @@ namespace engine
     public:
         explicit GameObjectCommand( GameObject& object ) : object_ref_{ object } { }
 
+        void execute( ) override { }
+
         const GameObject& get_object( ) const { return object_ref_; }
         GameObject& get_object( ) { return object_ref_; }
 

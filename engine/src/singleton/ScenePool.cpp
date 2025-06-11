@@ -59,8 +59,22 @@ namespace engine
 
     Scene& ScenePool::create_scene( const std::string& name )
     {
+        // TODO: use UID
         const auto& scene = scenes_.emplace_back( std::make_unique<Scene>( name ) );
         return *scene;
+    }
+
+
+    void ScenePool::load_scene( const std::string& name )
+    {
+        // todo: rename
+        active_scene_ptr_ = &get_scene( name );
+    }
+
+
+    void ScenePool::unload_scene( const std::string& name )
+    {
+        std::erase_if( scenes_, [&name]( auto& s ){ return s.get_name( ) == name; } );
     }
 
 
@@ -85,7 +99,7 @@ namespace engine
     {
         const auto scene =
                 std::ranges::find_if( scenes_,
-                                      [&name]( const auto& scene ) { return scene->get_name( ) == name; } );
+                                      [&name]( const auto& s ) { return s->get_name( ) == name; } );
         assert( scene != scenes_.end( ) && "Scene not found." );
         return **scene;
     }
@@ -95,7 +109,7 @@ namespace engine
     {
         const auto scene =
                 std::ranges::find_if( scenes_,
-                                      [&id]( const auto& scene ) { return scene->get_id( ) == id; } );
+                                      [&id]( const auto& s ) { return s->get_id( ) == id; } );
         assert( scene != scenes_.end( ) && "Scene not found." );
         return **scene;
     }

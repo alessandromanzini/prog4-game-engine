@@ -9,13 +9,13 @@ namespace engine
 
     void GameInstance::destroy( )
     {
-        player_controllers_.clear( );
+        controllers_.clear( );
     }
 
 
-    void GameInstance::remove_player_controller( const PlayerController& controller )
+    void GameInstance::remove_controller( const PlayerController& controller )
     {
-        std::erase_if( player_controllers_, [&]( const auto& controllerPtr )
+        std::erase_if( controllers_, [&]( const auto& controllerPtr )
                            {
                                return controllerPtr.get( ) == &controller;
                            } );

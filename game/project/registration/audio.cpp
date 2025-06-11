@@ -14,7 +14,7 @@ namespace game
 {
     void initialize_audio( )
     {
-        auto underlyingService = std::make_unique<SdlSoundSystem>( static_cast<uint8_t>( 8u ), sound::SdlInitInfo{}, sound::QueuePolicy::REPLACE_NEWEST );
+        auto underlyingService = std::make_unique<SdlSoundSystem>( static_cast<uint8_t>( 8u ), sound::SdlInitInfo{}, sound::QueuePolicy::DISCARD );
         auto soundService      = std::make_unique<ParallelSoundSystem>( std::move( underlyingService ) );
 
 #ifndef NDEBUG

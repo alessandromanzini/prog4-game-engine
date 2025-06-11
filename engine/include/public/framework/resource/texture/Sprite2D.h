@@ -24,6 +24,8 @@ namespace engine
         [[nodiscard]] bool is_animation_completed( ) const;
         [[nodiscard]] bool is_looping( ) const;
 
+        [[nodiscard]] uint16_t get_frame_index( ) const;
+
         void reset( );
 
     private:

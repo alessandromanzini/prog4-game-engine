@@ -12,8 +12,7 @@ elseif(APPLE)
     set(TARGET_PARAM )
 else()
     set(TARGET_NAME ${PROJECT_NAME})
-    set(TARGET_PARAM
-            project/registration/tags.h)
+    set(TARGET_PARAM )
 endif()
 
 # set minigin as the default startup project
@@ -29,8 +28,11 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
         "project/command/MoveCommand.cpp"
 
         "project/component/BubbleComponent.cpp"
+        "project/component/BubbleCaptureComponent.cpp"
         "project/component/CharacterComponent.cpp"
         "project/component/CollisionsComponent.cpp"
+        "project/component/FruitComponent.cpp"
+        "project/component/ZenChanComponent.cpp"
         "project/component/FPS.cpp"
         "project/component/RotatingComponent.cpp"
 
@@ -39,9 +41,12 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
 
         "project/registration/input.cpp"
         "project/registration/audio.cpp"
+        "project/registration/object_initializers.cpp"
 
         "project/state/__base/CharacterState.cpp"
-        "project/state/character/character_conditions.cpp" )
+        "project/state/character/character_conditions.cpp"
+        project/component/EnemyAiComponent.cpp
+        project/component/EnemyAiComponent.h)
 
 # set maximum warning level and treat warnings as errors
 include(set_warning_level)

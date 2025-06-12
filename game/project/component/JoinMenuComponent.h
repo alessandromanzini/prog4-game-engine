@@ -6,6 +6,8 @@
 #include <framework/binding/binding_device.h>
 
 #include <vector>
+#include <array>
+#include <optional>
 
 
 namespace engine

@@ -14,6 +14,7 @@
 using namespace engine::binding;
 
 
+// todo> allow thread safe access to the device contexts
 namespace engine
 {
     // +--------------------------------+
@@ -21,6 +22,7 @@ namespace engine
     // +--------------------------------+
     void InputMappingContext::register_input_action( const InputAction& action, const UniformBindingCode code )
     {
+        // assert( not action_binds_.contains( code ) && "Input action already registered on this code!" );
         action_binds_[code].push_back( action );
     }
 
@@ -33,17 +35,15 @@ namespace engine
 
     void InputMappingContext::register_device( PlayerController& controller, const DeviceInfo deviceInfo )
     {
-        auto [lock, contexts] = device_contexts_.get( );
-        contexts.emplace_back( controller, deviceInfo );
+        device_contexts_.emplace_back( controller, deviceInfo );
     }
 
 
     void InputMappingContext::unregister_device( const PlayerController& controller )
     {
-        auto [lock, contexts] = device_contexts_.get( );
-        if ( const auto it = find_device_context( contexts, controller ); it.has_value( ) )
+        if ( const auto it = find_device_context( device_contexts_, controller ); it.has_value( ) )
         {
-            contexts.erase( it.value( ) );
+            device_contexts_.erase( it.value( ) );
         }
     }
 
@@ -59,8 +59,7 @@ namespace engine
         const bool value = trigger_to_value( trigger );
 
         // For every input action bound to the ia, we signal the device context to stack the input (will be dispatched later)
-        auto [lock, contexts] = device_contexts_.get( );
-        for ( auto& device : contexts )
+        for ( auto& device : device_contexts_ )
         {
             if ( not device.is_device_suitable( deviceInfo ) )
             {
@@ -78,8 +77,7 @@ namespace engine
     void InputMappingContext::dispatch( )
     {
         // Dispatch all accumulated inputs
-        auto [lock, contexts] = device_contexts_.get( );
-        for ( auto& device : contexts )
+        for ( auto& device : device_contexts_ )
         {
             device.execute_commands( );
         }
@@ -88,7 +86,7 @@ namespace engine
 
     const std::list<DeviceContext>& InputMappingContext::get_devices( ) const
     {
-        return device_contexts_.cget( );
+        return device_contexts_;
     }
 
 
@@ -117,8 +115,7 @@ namespace engine
                                                          input_command_variant_t&& command,
                                                          const TriggerEvent trigger )
     {
-        auto [lock, contexts] = device_contexts_.get( );
-        const auto deviceIt = find_device_context( contexts, controller );
+        const auto deviceIt = find_device_context( device_contexts_, controller );
         assert( deviceIt.has_value() && "Can't bind IA: Device context has not been registered for this controller!" );
 
         deviceIt.value( )->bind_command( uid, { std::move( command ), trigger } );

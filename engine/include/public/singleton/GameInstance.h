@@ -22,6 +22,7 @@ namespace engine
             requires std::derived_from<controller_t, BaseController> && std::constructible_from<controller_t, controller_args_t...>
         controller_t& add_controller( controller_args_t&&... args );
         void remove_controller( const PlayerController& controller );
+        void clear_controllers( );
 
         void set_gravity_coefficient( float coeffiecient );
         [[nodiscard]] float get_gravity_coefficient( ) const;

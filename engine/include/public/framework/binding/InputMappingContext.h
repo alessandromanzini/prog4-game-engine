@@ -68,7 +68,7 @@ namespace engine
         std::unordered_map<binding::UniformBindingCode, std::vector<binding::InputAction>,
             binding::UniformBindingCodeHasher> action_binds_{};
 
-        threading::SafeResource<device_contexts_container_t> device_contexts_{ {} };
+        device_contexts_container_t device_contexts_{};
 
         using optional_device_it = std::optional<device_contexts_container_t::iterator>;
         [[nodiscard]] optional_device_it find_device_context( device_contexts_container_t& contexts,

@@ -22,6 +22,12 @@ namespace engine
     }
 
 
+    void GameInstance::clear_controllers( )
+    {
+        controllers_.clear( );
+    }
+
+
     void GameInstance::set_gravity_coefficient( const float coeffiecient )
     {
         gravity_coefficient_ = coeffiecient;

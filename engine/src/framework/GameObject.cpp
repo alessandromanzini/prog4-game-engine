@@ -104,6 +104,10 @@ namespace engine
     void GameObject::set_visibility( const bool visible )
     {
         visible_ = visible;
+        for ( const auto child : children_ )
+        {
+            child->set_visibility( visible );
+        }
     }
 
 

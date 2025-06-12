@@ -12,6 +12,8 @@ namespace game
 
         JOIN,
         LEAVE,
+        MODE_SELECTION,
+        CONFIRM,
 
         QUIT
     };

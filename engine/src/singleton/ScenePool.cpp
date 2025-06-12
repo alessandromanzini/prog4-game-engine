@@ -65,13 +65,6 @@ namespace engine
     }
 
 
-    void ScenePool::load_scene( const std::string& name )
-    {
-        // todo: rename
-        active_scene_ptr_ = &get_scene( name );
-    }
-
-
     void ScenePool::unload_scene( const std::string& name )
     {
         std::erase_if( scenes_, [&name]( auto& s ){ return s->get_name( ) == name; } );

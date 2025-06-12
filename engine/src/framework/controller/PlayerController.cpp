@@ -42,7 +42,6 @@ namespace engine
                 break;
 
             case DeviceType::GAMEPAD:
-                // Detach the thread to allow it to run independently
                 std::thread( &PlayerController::try_register_gamepad_impl, this, std::ref( context ),
                              timeout ).detach( );
                 break;

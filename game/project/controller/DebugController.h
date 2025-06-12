@@ -13,7 +13,6 @@ namespace game
 
     private:
         void device_registered( engine::InputMappingContext& context, engine::binding::DeviceInfo deviceInfo ) override;
-
         void quit( ) const;
 
     };

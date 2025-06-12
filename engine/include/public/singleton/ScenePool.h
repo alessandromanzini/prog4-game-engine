@@ -23,7 +23,6 @@ namespace engine
     public:
         Scene& create_scene( const std::string& name );
 
-        void load_scene( const std::string& name );
         void unload_scene( const std::string& name );
         void unload_all_scenes( );
 

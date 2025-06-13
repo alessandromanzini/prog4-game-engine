@@ -19,41 +19,30 @@ namespace engine
 
     void ScenePool::fixed_tick( )
     {
-        for ( auto& scene : scenes_ )
-        {
-            active_scene_ptr_ = scene.get( );
-            scene->fixed_tick( );
-        }
+        if ( not active_scene_ptr_ ) { return; }
+        active_scene_ptr_->fixed_tick( );
     }
 
 
     void ScenePool::tick( )
     {
-        for ( auto& scene : scenes_ )
-        {
-            active_scene_ptr_ = scene.get( );
-            scene->tick( );
-        }
+        if ( not active_scene_ptr_ ) { return; }
+        active_scene_ptr_->tick( );
         ColliderComponent::late_tick( );
     }
 
 
-    void ScenePool::render( )
+    void ScenePool::render( ) const
     {
-        for ( const auto& scene : scenes_ )
-        {
-            active_scene_ptr_ = scene.get( );
-            scene->render( );
-        }
+        if ( not active_scene_ptr_ ) { return; }
+        active_scene_ptr_->render( );
     }
 
 
     void ScenePool::cleanup( ) const
     {
-        for ( const auto& scene : scenes_ )
-        {
-            scene->cleanup( );
-        }
+        if ( not active_scene_ptr_ ) { return; }
+        active_scene_ptr_->cleanup( );
     }
 
 
@@ -62,6 +51,12 @@ namespace engine
         // TODO: use UID
         const auto& scene = scenes_.emplace_back( std::make_unique<Scene>( name ) );
         return *scene;
+    }
+
+
+    void ScenePool::select_scene( const std::string& name )
+    {
+        active_scene_ptr_ = &get_scene( name );
     }
 
 

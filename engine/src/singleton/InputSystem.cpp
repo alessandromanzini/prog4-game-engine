@@ -44,9 +44,9 @@ namespace engine
     }
 
 
-    InputSystem::device_id_t InputSystem::fetch_free_gamepad_id( ) const
+    InputSystem::device_id_t InputSystem::fetch_free_gamepad_id( )
     {
-        auto ids{ get_connected_gamepad_ids( ) };
+        auto ids = get_connected_gamepad_ids( );
 
         // Remove already-used gamepad IDs
         for ( const auto& device : input_mapping_context_.get_devices( ) )
@@ -86,8 +86,6 @@ namespace engine
             const UniformBindingCode key{ static_cast<binding::key_t>( e.key.keysym.sym ) };
             const UniformBindingCode btn{ static_cast<binding::btn_t>( e.cbutton.button ) };
 
-            const auto gamepadId{ static_cast<uint8_t>( e.cdevice.which ) };
-
             switch ( e.type )
             {
                 case SDL_QUIT:
@@ -103,11 +101,15 @@ namespace engine
                     break;
 
                 case SDL_CONTROLLERBUTTONDOWN:
-                    forward_code_to_contexts( btn, TriggerEvent::TRIGGERED, { DeviceType::GAMEPAD, gamepadId } );
-                    break;
-
                 case SDL_CONTROLLERBUTTONUP:
-                    forward_code_to_contexts( btn, TriggerEvent::RELEASED, { DeviceType::GAMEPAD, gamepadId } );
+                    if ( auto it = joystick_id_to_device_id_.find( e.cbutton.which );
+                        it != joystick_id_to_device_id_.end( ) )
+                    {
+                        const TriggerEvent event{
+                            e.type == SDL_CONTROLLERBUTTONDOWN ? TriggerEvent::TRIGGERED : TriggerEvent::RELEASED
+                        };
+                        forward_code_to_contexts( btn, event, { DeviceType::GAMEPAD, it->second } );
+                    }
                     break;
 
                 case SDL_MOUSEBUTTONDOWN:
@@ -175,22 +177,26 @@ namespace engine
             case DeviceType::GAMEPAD:
                 return gamepad_buffer_;
         }
-		throw std::invalid_argument( "Invalid device type." );
+        throw std::invalid_argument( "Invalid device type." );
     }
 
 
     std::vector<InputSystem::device_id_t> InputSystem::get_connected_gamepad_ids( )
     {
         std::vector<device_id_t> gamepadIds{};
-
         for ( int i{}; i < SDL_NumJoysticks( ); ++i )
         {
             if ( SDL_IsGameController( i ) )
             {
-                gamepadIds.push_back( static_cast<device_id_t>( i ) );
+                if ( SDL_GameController* controller = SDL_GameControllerOpen( i ) )
+                {
+                    SDL_Joystick* joystick                = SDL_GameControllerGetJoystick( controller );
+                    SDL_JoystickID instanceId             = SDL_JoystickInstanceID( joystick );
+                    joystick_id_to_device_id_[instanceId] = static_cast<device_id_t>( i );
+                    gamepadIds.push_back( static_cast<device_id_t>( i ) );
+                }
             }
         }
-
         return gamepadIds;
     }
 

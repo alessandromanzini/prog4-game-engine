@@ -60,8 +60,9 @@ namespace engine
     {
         if ( text_texture_ptr_ != nullptr )
         {
-            const auto pos = get_owner( ).get_world_transform( ).get_position( );
-            RENDERER.render_texture( *text_texture_ptr_, pos );
+            RENDERER.set_z_index( 10 );
+            RENDERER.render_texture( *text_texture_ptr_,  get_owner( ).get_world_transform( ).get_position( ) );
+            RENDERER.set_z_index( 0 );
         }
     }
 

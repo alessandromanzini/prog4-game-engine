@@ -1,10 +1,11 @@
 #include "JoinMenuComponent.h"
 
+#include <component/ScoreComponent.h>
 #include <controller/CharacterController.h>
-#include <controller/JoinMenuController.h>
 #include <framework/component/TextureComponent.h>
 #include <registration/object_initializers.h>
 #include <singleton/GameInstance.h>
+#include <singleton/ResourceManager.h>
 #include <singleton/ScenePool.h>
 
 
@@ -17,9 +18,9 @@ namespace game
         , selector_arrow_ref_{ get_owner(  ).create_child(  ) }
         , player_objects_{ std::move( playerObjects ) }
     {
-        engine::GAME_INSTANCE.add_controller<JoinMenuController>( this, engine::binding::DeviceType::KEYBOARD );
-        engine::GAME_INSTANCE.add_controller<JoinMenuController>( this, engine::binding::DeviceType::GAMEPAD );
-        engine::GAME_INSTANCE.add_controller<JoinMenuController>( this, engine::binding::DeviceType::GAMEPAD );
+        player_controllers_.emplace_back( &engine::GAME_INSTANCE.add_controller<CharacterController>( this, engine::binding::DeviceType::KEYBOARD ) );
+        player_controllers_.emplace_back( &engine::GAME_INSTANCE.add_controller<CharacterController>( this, engine::binding::DeviceType::GAMEPAD ) );
+        player_controllers_.emplace_back( &engine::GAME_INSTANCE.add_controller<CharacterController>( this, engine::binding::DeviceType::GAMEPAD ) );
 
         for ( const auto object : player_objects_ )
         {
@@ -92,25 +93,35 @@ namespace game
     }
 
 
-    void JoinMenuComponent::confirm_selection( )
+    void JoinMenuComponent::confirm_selection( ) const
     {
-        engine::SCENE_POOL.unload_scene( engine::SCENE_POOL.get_active_scene( ).get_name( ) );
         auto& scene = engine::SCENE_POOL.create_scene( "game" );
+        engine::SCENE_POOL.select_scene( "game" );
 
-        engine::GAME_INSTANCE.clear_controllers( );
+        const auto font = engine::RESOURCE_MANAGER.load_font( "fonts/pixelify.ttf", 36 );
 
-        // Bub
-        auto& bub = scene.create_object( );
-        create_bub( bub, { 200.f, 375.f } );
+        auto& score = scene.create_object( );
+        score.set_world_transform( engine::Transform::from_translation( { 45.f, 15.f } ) );
+        create_score( score, font );
+
+        std::vector<engine::GameObject*> characters{};
+        for ( auto* controller : player_controllers_ )
+        {
+            if ( controller->has_joined(  ) )
+            {
+                auto& bub = scene.create_object( );
+                create_bub( bub, &score.get_component<ScoreComponent>( ), { 200.f, 375.f } );
+                controller->possess( &bub );
+                characters.emplace_back( &bub );
+            }
+            controller->set_block_selection( true );
+        }
 
         auto& zenchan = scene.create_object( );
-        create_zenchan( zenchan, { 300.f, 375.f }, { &bub } );
+        create_zenchan( zenchan, { 300.f, 375.f }, characters );
 
         auto& grid = scene.create_object( );
         create_grid( grid );
-
-        // auto& controller = engine::GAME_INSTANCE.add_controller<CharacterController>( );
-        // controller.possess( &bub );
     }
 
 

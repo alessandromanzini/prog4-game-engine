@@ -13,7 +13,6 @@
 #include <core/Minigin.h>
 
 #include <framework/Scene.h>
-#include <framework/component/TextComponent.h>
 
 #include <singleton/GameInstance.h>
 #include <singleton/ResourceManager.h>
@@ -26,9 +25,10 @@
 #include <controller/CharacterController.h>
 #include <controller/DebugController.h>
 #include <component/JoinMenuComponent.h>
+#include <framework/component/TextComponent.h>
+#include <framework/component/TextureComponent.h>
 
 #include <filesystem>
-#include <framework/component/TextureComponent.h>
 namespace fs = std::filesystem;
 
 
@@ -40,7 +40,8 @@ void load( )
     engine::GAME_INSTANCE.set_gravity_coefficient( 400.f );
 
     const auto font = engine::RESOURCE_MANAGER.load_font( "fonts/pixelify.ttf", 36 );
-    auto& scene     = engine::SCENE_POOL.create_scene( "Demo" );
+    auto& scene     = engine::SCENE_POOL.create_scene( "demo" );
+    engine::SCENE_POOL.select_scene( "demo" );
 
     auto& join = scene.create_object( );
     join.add_component<engine::TextureComponent>( "maps/main_menu.png" );
@@ -55,11 +56,11 @@ void load( )
 
     auto& selection = join.create_child( );
 
-    auto& arcade = selection.create_child(  );
+    auto& arcade = selection.create_child( );
     arcade.add_component<engine::TextComponent>( "arcade", font );
     arcade.set_world_transform( engine::Transform::from_translation( { 130.f, 410.f } ) );
 
-    auto& versus = selection.create_child(  );
+    auto& versus = selection.create_child( );
     versus.add_component<engine::TextComponent>( "versus", font );
     versus.set_world_transform( engine::Transform::from_translation( { 370.f, 410.f } ) );
 

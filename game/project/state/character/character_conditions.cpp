@@ -74,4 +74,12 @@ namespace game::condition
         return relative.x * relative.x > IDLE_EPSILON * IDLE_EPSILON;
     }
 
+
+    bool IsRepositioningCondition::evaluate( Blackboard& blackboard ) const
+    {
+        bool repositioning{ false };
+        blackboard.retrieve( UID( "repositioning" ), repositioning );
+        return repositioning;
+    }
+
 }

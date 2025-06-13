@@ -15,6 +15,9 @@
 
 #include <component/CollisionsComponent.h>
 #include <component/FruitComponent.h>
+#include <component/ScoreComponent.h>
+#include <component/ScoreDelegateComponent.h>
+#include <component/StatsDisplayComponent.h>
 #include <component/ZenChanComponent.h>
 #include <framework/component/TextureComponent.h>
 #include <framework/component/AudioComponent.h>
@@ -24,7 +27,7 @@
 
 namespace game
 {
-    void create_bub( engine::GameObject& object, const glm::vec2 position )
+    void create_bub( engine::GameObject& object, ScoreComponent* score, const glm::vec2 position )
     {
         constexpr float PROJECTILE_SPEED{ 100.f };
         constexpr float PROJECTILE_OFFSET{ 20.f };
@@ -67,6 +70,11 @@ namespace game
                 static_cast<uint8_t>( 1u ), static_cast<uint8_t>( 3u ),
                 .1f, 2.f, {}, false
             },
+            .reposition_sprite = engine::Sprite2D{
+                "characters/bub/bub_reposition_1x4.png",
+                static_cast<uint8_t>( 1u ), static_cast<uint8_t>( 4u ),
+                .1f, 2.f
+            },
             .attack_audio_path = "characters/sfx/character_attack.wav",
             .jump_audio_path = "characters/sfx/character_jump.wav",
             .bounce_audio_path = "characters/sfx/character_bounce.wav",
@@ -80,12 +88,13 @@ namespace game
                                                       object, projectileSocket, PROJECTILE_SPEED, PROJECTILE_OFFSET ),
                                                   std::make_unique<JumpCommand>( object, JUMP_FORCE ),
                                                   std::make_unique<MoveCommand>( object, MOVEMENT_SPEED ) );
+        object.add_component<ScoreDelegateComponent>( score );
     }
 
 
     void create_zenchan( engine::GameObject& object, const glm::vec2 position, std::vector<engine::GameObject*> targets )
     {
-        constexpr float JUMP_FORCE{ 280.f };
+        constexpr float JUMP_FORCE{ 300.f };
         constexpr float MOVEMENT_SPEED{ 60.f };
 
         object.set_tag( engine::UID( ObjectTags::ENEMY ) );
@@ -119,6 +128,11 @@ namespace game
                 0.2f, 2.f
             },
             .attack_sprite = engine::Sprite2D{
+                "characters/zen_chan/zen_chan_walk_1x4.png",
+                static_cast<uint8_t>( 1u ), static_cast<uint8_t>( 4u ),
+                0.2f, 2.f
+            },
+            .reposition_sprite = engine::Sprite2D{
                 "characters/zen_chan/zen_chan_walk_1x4.png",
                 static_cast<uint8_t>( 1u ), static_cast<uint8_t>( 4u ),
                 0.2f, 2.f
@@ -198,6 +212,15 @@ namespace game
         platformsObject.add_component<engine::BoxColliderComponent>( glm::vec2{ 40.f, 20.f }, glm::vec2{ 40.f, 185.f } );
         platformsObject.add_component<engine::BoxColliderComponent>( glm::vec2{ 360.f, 20.f }, glm::vec2{ 140.f, 185.f } );
         platformsObject.add_component<engine::BoxColliderComponent>( glm::vec2{ 40.f, 20.f }, glm::vec2{ 560.f, 185.f } );
+    }
+
+
+    void create_score( engine::GameObject& object, std::shared_ptr<engine::Font> font )
+    {
+        auto& display = object.add_component<StatsDisplayComponent>( font );
+
+        auto& score = object.add_component<ScoreComponent>( );
+        score.add_observer( display );
     }
 
 }

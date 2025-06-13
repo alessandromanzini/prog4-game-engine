@@ -23,12 +23,14 @@ namespace engine
     public:
         Scene& create_scene( const std::string& name );
 
+        void select_scene( const std::string& name );
+
         void unload_scene( const std::string& name );
         void unload_all_scenes( );
 
         void fixed_tick( );
         void tick( );
-        void render( );
+        void render( ) const;
 
         [[nodiscard]] Scene& get_active_scene( ) const;
         [[nodiscard]] Scene& get_scene( const std::string& name ) const;

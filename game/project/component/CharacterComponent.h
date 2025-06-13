@@ -44,6 +44,7 @@ namespace game
         engine::Sprite2D rise_sprite;
         engine::Sprite2D fall_sprite;
         engine::Sprite2D attack_sprite;
+        engine::Sprite2D reposition_sprite;
 
         std::string attack_audio_path{};
         std::string jump_audio_path{};
@@ -66,6 +67,7 @@ namespace game
         void attack( );
 
         void set_physics_simulation( bool simulate ) const;
+        void reposition( );
 
     private:
         engine::Blackboard blackboard_{};

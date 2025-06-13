@@ -35,6 +35,12 @@ namespace game::condition
         bool evaluate( engine::Blackboard& blackboard ) const override;
     };
 
+
+    struct IsRepositioningCondition final : engine::fsm::Condition
+    {
+        bool evaluate( engine::Blackboard& blackboard ) const override;
+    };
+
 }
 
 

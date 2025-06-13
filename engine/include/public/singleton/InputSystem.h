@@ -33,7 +33,7 @@ namespace engine
     public:
         bool process_input( );
 
-        [[nodiscard]] device_id_t fetch_free_gamepad_id() const;
+        [[nodiscard]] device_id_t fetch_free_gamepad_id();
 
         [[nodiscard]] InputMappingContext& get_input_mapping_context( );
 
@@ -44,6 +44,7 @@ namespace engine
 
         binding::InputBuffer keyboard_buffer_{};
         binding::InputBuffer gamepad_buffer_{};
+        std::unordered_map<SDL_JoystickID, device_id_t> joystick_id_to_device_id_;
 
         InputSystem( ) = default;
 
@@ -55,7 +56,7 @@ namespace engine
 
         [[nodiscard]] binding::InputBuffer& select_buffer( binding::DeviceType deviceType );
 
-        [[nodiscard]] static std::vector<device_id_t> get_connected_gamepad_ids();
+        [[nodiscard]] std::vector<device_id_t> get_connected_gamepad_ids();
 
     };
 

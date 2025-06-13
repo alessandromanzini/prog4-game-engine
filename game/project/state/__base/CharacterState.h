@@ -12,7 +12,7 @@ namespace engine
 
 namespace game
 {
-    class CharacterState final : public engine::fsm::State
+    class CharacterState : public engine::fsm::State
     {
     public:
         explicit CharacterState( engine::Sprite2D* sprite, engine::AudioComponent* audio, bool canMove, bool canJump, bool canAttack );

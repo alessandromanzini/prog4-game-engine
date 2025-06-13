@@ -37,7 +37,9 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
         "project/component/RotatingComponent.cpp"
         "project/component/EnemyAiComponent.cpp"
         "project/component/JoinMenuComponent.cpp"
-        "project/controller/JoinMenuController.cpp"
+        "project/component/ScoreComponent.cpp"
+        "project/component/ScoreDelegateComponent.cpp"
+        "project/component/StatsDisplayComponent.cpp"
 
         "project/controller/DebugController.cpp"
         "project/controller/CharacterController.cpp"
@@ -47,7 +49,9 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
         "project/registration/object_initializers.cpp"
 
         "project/state/__base/CharacterState.cpp"
-        "project/state/character/character_conditions.cpp" )
+        "project/state/character/character_conditions.cpp"
+        project/state/character/RepositionState.cpp
+        project/state/character/RepositionState.h)
 
 # set maximum warning level and treat warnings as errors
 include(set_warning_level)

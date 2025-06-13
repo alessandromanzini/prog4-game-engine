@@ -11,7 +11,9 @@
 #include <registration/tags.h>
 
 #include "BubbleCaptureComponent.h"
+#include "CharacterComponent.h"
 #include "FruitComponent.h"
+#include "ScoreDelegateComponent.h"
 
 using engine::UID;
 
@@ -138,16 +140,15 @@ namespace game
     }
 
 
-    void CollisionsComponent::handle_ally_fruit_overlap( engine::ColliderComponent&, engine::ColliderComponent& other,
+    void CollisionsComponent::handle_ally_fruit_overlap( engine::ColliderComponent& self, engine::ColliderComponent& other,
                                                          const engine::CollisionInfo& )
     {
         if ( const auto fruit = get_component<FruitComponent>( other.get_owner( ) ); fruit->is_capturable(  ) )
         {
             // destroy the fruit object
             other.get_owner( ).mark_for_deletion( );
-
-            // add points to the player
-            // todo
+            const auto score = get_component<ScoreDelegateComponent>( self.get_owner( ) );
+            score->increase_score( fruit->get_fruit_value(  ) );
         }
     }
 
@@ -164,7 +165,7 @@ namespace game
     }
 
 
-    void CollisionsComponent::handle_ally_enemy_overlap( engine::ColliderComponent&, engine::ColliderComponent& other,
+    void CollisionsComponent::handle_ally_enemy_overlap( engine::ColliderComponent& self, engine::ColliderComponent& other,
                                                          const engine::CollisionInfo& )
     {
         if ( const auto capture = get_component<BubbleCaptureComponent>( other.get_owner( ) );
@@ -172,7 +173,16 @@ namespace game
         {
             return;
         }
-        // todo: ally death logic
+        if ( const auto score = get_component<ScoreDelegateComponent>( self.get_owner( ) ); score != nullptr )
+        {
+            // If the ally collides with the enemy, signal player death
+            score->signal_player_death( );
+        }
+        if ( const auto character = get_component<CharacterComponent>( self.get_owner( ) ); character != nullptr )
+        {
+            // If the ally collides with the enemy, reposition the character
+            character->reposition( );
+        }
     }
 
 

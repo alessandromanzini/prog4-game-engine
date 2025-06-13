@@ -58,8 +58,8 @@ namespace game
         // +---------------------------+
         imc.register_input_action( UID( IA::MODE_SELECTION ), SDL_CONTROLLER_BUTTON_DPAD_RIGHT );
         imc.register_input_action( InputAction{ UID( IA::MODE_SELECTION ), Modifier::NEGATE }, SDL_CONTROLLER_BUTTON_DPAD_LEFT );
-        imc.register_input_action( UID( IA::MODE_SELECTION ), SDLK_RIGHT );
-        imc.register_input_action( InputAction{ UID( IA::MODE_SELECTION ), Modifier::NEGATE }, SDLK_LEFT );
+        imc.register_input_action( UID( IA::MODE_SELECTION ), SDLK_d );
+        imc.register_input_action( InputAction{ UID( IA::MODE_SELECTION ), Modifier::NEGATE }, SDLK_a );
 
         // +---------------------------+
         // | CONFIRM                   |

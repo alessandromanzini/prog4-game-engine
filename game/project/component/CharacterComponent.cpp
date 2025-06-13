@@ -14,6 +14,7 @@
 #include <registration/audio.h>
 #include <singleton/Renderer.h>
 #include <state/character/character_conditions.h>
+#include <state/character/RepositionState.h>
 
 namespace cnd = game::condition;
 namespace lgc = engine::fsm::logic;
@@ -102,10 +103,16 @@ namespace game
 
     void CharacterComponent::set_physics_simulation( const bool simulate ) const
     {
-        get_owner( ).get_component<BoxColliderComponent>( ).value(  ).set_enabled( simulate );
-        auto& physics = get_owner( ).get_component<PhysicsComponent>( ).value(  );
+        get_owner( ).get_component<BoxColliderComponent>( ).value( ).set_enabled( simulate );
+        auto& physics = get_owner( ).get_component<PhysicsComponent>( ).value( );
         physics.set_simulate_physics( simulate );
-        physics.add_force( -physics.get_velocity(  ) );
+        physics.add_force( -physics.get_velocity( ) );
+    }
+
+
+    void CharacterComponent::reposition( )
+    {
+        state_machine_.force_transition( UID( "reposition" ) );
     }
 
 
@@ -115,25 +122,27 @@ namespace game
         if ( not resources_.attack_audio_path.empty( ) )
         {
             attack_audio_ptr_ = &get_owner( ).add_component<AudioComponent>( resources_.attack_audio_path,
-                                                                                      sound::SoundType::SOUND_EFFECT,
-                                                                                      UID( AudioCue::SFX ) );
+                                                                             sound::SoundType::SOUND_EFFECT,
+                                                                             UID( AudioCue::SFX ) );
         }
         if ( not resources_.jump_audio_path.empty( ) )
         {
             jump_audio_ptr_ = &get_owner( ).add_component<AudioComponent>( resources_.jump_audio_path,
-                                                                                    sound::SoundType::SOUND_EFFECT,
-                                                                                    UID( AudioCue::SFX ) );
+                                                                           sound::SoundType::SOUND_EFFECT,
+                                                                           UID( AudioCue::SFX ) );
         }
         if ( not resources_.bounce_audio_path.empty( ) )
         {
             bounceAudio = &get_owner( ).add_component<AudioComponent>( resources_.bounce_audio_path,
-                                                                                    sound::SoundType::SOUND_EFFECT,
-                                                                                    UID( AudioCue::SFX ) );
+                                                                       sound::SoundType::SOUND_EFFECT,
+                                                                       UID( AudioCue::SFX ) );
             bounceAudio->set_volume( .05f );
         }
 
         // UTILITIES
+        blackboard_.store( UID( "object" ), &get_owner( ) );
         blackboard_.store( UID( "relative_movement" ), glm::vec2{ 0.f, 0.f } );
+        blackboard_.store( UID( "repositioning" ), false );
         blackboard_.store<Sprite2D*>( UID( "current_sprite" ), nullptr );
 
         // CREATE STATES
@@ -152,6 +161,9 @@ namespace game
         state_machine_.create_state<CharacterState>( UID( "fall" ), &resources_.fall_sprite, nullptr, true, false, true );
 
         state_machine_.create_state<CharacterState>( UID( "attack" ), &resources_.attack_sprite, nullptr, true, false, false );
+
+        state_machine_.create_state<RepositionState>( UID( "reposition" ), &resources_.reposition_sprite, nullptr,
+                                                      get_owner( ).get_world_transform( ).get_position( ) );
     }
 
 
@@ -185,6 +197,12 @@ namespace game
         state_machine_.add_transition<lgc::And<cnd::IsAnimationCompletedCondition, cnd::IsGroundedCondition>>(
             UID( "attack" ), UID( "grounded" ) );
         state_machine_.add_transition<cnd::IsAnimationCompletedCondition>( UID( "attack" ), UID( "airborne" ) );
+
+        // REPOSITION
+        state_machine_.add_transition<lgc::And<lgc::Not<cnd::IsRepositioningCondition>, cnd::IsGroundedCondition>>(
+            UID( "reposition" ), UID( "grounded" ) );
+        state_machine_.add_transition<lgc::Not<cnd::IsRepositioningCondition>>(
+            UID( "reposition" ), UID( "airborne" ) );
 
         // SET INITIAL STATE
         state_machine_.start( UID( "idle" ) );

@@ -5,9 +5,9 @@
 
 #include <framework/binding/binding_device.h>
 
-#include <vector>
 #include <array>
 #include <optional>
+#include <vector>
 
 
 namespace engine
@@ -17,6 +17,7 @@ namespace engine
 
 namespace game
 {
+    class CharacterController;
     class JoinMenuComponent final : public engine::Component
     {
     public:
@@ -27,7 +28,7 @@ namespace game
 
         void next_selection( );
         void prev_selection( );
-        void confirm_selection( );
+        void confirm_selection( ) const;
 
     private:
         engine::GameObject* selection_object_ptr_{ nullptr };
@@ -35,6 +36,7 @@ namespace game
         uint8_t selection_index_{ 0 };
 
         std::vector<engine::GameObject*> player_objects_{};
+        std::vector<CharacterController*> player_controllers_{};
 
         std::array<std::optional<engine::binding::DeviceInfo>, 2> slot_devices_{};
 

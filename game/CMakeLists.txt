@@ -50,28 +50,17 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
 
         "project/state/__base/CharacterState.cpp"
         "project/state/character/character_conditions.cpp"
-        project/state/character/RepositionState.cpp
-        project/state/character/RepositionState.h
-        project/command/BubbleAttackCommand.cpp
-        project/command/BubbleAttackCommand.h
-        project/command/EmptyAttackCommand.cpp
-        project/command/EmptyAttackCommand.h
-        project/registration/object_stats.cpp
-        project/registration/object_stats.h
-        project/component/MaitaComponent.cpp
-        project/component/MaitaComponent.h
-        project/command/RockAttackCommand.cpp
-        project/command/RockAttackCommand.h
-        project/component/RockComponent.cpp
-        project/component/RockComponent.h
-        project/state/character/AttackState.cpp
-        project/state/character/AttackState.h
-        project/state/character/JumpState.cpp
-        project/state/character/JumpState.h
-        project/component/LevelLoaderComponent.cpp
-        project/component/LevelLoaderComponent.h
-        project/helpers/CsvReader.cpp
-        project/helpers/CsvReader.h)
+        "project/state/character/RepositionState.cpp"
+        "project/command/BubbleAttackCommand.cpp"
+        "project/command/EmptyAttackCommand.cpp"
+        "project/registration/object_stats.cpp"
+        "project/component/MaitaComponent.cpp"
+        "project/command/RockAttackCommand.cpp"
+        "project/component/RockComponent.cpp"
+        "project/state/character/AttackState.cpp"
+        "project/state/character/JumpState.cpp"
+        "project/component/LevelLoaderComponent.cpp"
+        "project/helpers/CsvReader.cpp" )
 
 # set maximum warning level and treat warnings as errors
 include(set_warning_level)

@@ -3,6 +3,8 @@
 
 #include <list>
 #include <unordered_map>
+#include <string>
+#include <filesystem>
 
 
 namespace game
@@ -11,6 +13,7 @@ namespace game
     {
     public:
         explicit CsvReader( const std::string& csvPath );
+        explicit CsvReader( const std::filesystem::path& csvPath );
 
         const std::string& get( int index ) const;
         int get_int( int index ) const;

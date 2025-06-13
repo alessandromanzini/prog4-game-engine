@@ -1,10 +1,12 @@
 #ifndef LEVELLOADERCOMPONENT_H
 #define LEVELLOADERCOMPONENT_H
 
-#include <vec2.hpp>
 #include <framework/component/Component.h>
 
+#include <vec2.hpp>
+
 #include <vector>
+#include <string>
 
 
 namespace game

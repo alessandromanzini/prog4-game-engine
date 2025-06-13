@@ -1,7 +1,7 @@
 #ifndef BUBBLEATTACKCOMMAND_H
 #define BUBBLEATTACKCOMMAND_H
 
-#include <command/AttackCommand.h>
+#include "AttackCommand.h"
 
 
 namespace game

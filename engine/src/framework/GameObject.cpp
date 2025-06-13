@@ -25,7 +25,7 @@ namespace engine
         // Notify hierarchy that this object is being deleted
         if ( parent_ptr_ != nullptr )
         {
-            // parent_ptr_->remove_child( this );
+            parent_ptr_->remove_child( this );
         }
         for ( size_t i{}; i < children_.size( ); ++i )
         {
@@ -251,7 +251,11 @@ namespace engine
 
     void GameObject::remove_child( GameObject* gameObject )
     {
-        std::erase( children_, gameObject );
+        // todo: check this
+        if (children_.size()) 
+        {
+            std::erase( children_, gameObject );
+        }
     }
 
 

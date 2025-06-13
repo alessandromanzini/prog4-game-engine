@@ -11,6 +11,11 @@ namespace game
         data_iterator_ = data_lines_.begin( );
     }
 
+    CsvReader::CsvReader(const std::filesystem::path& csvPath)
+        : CsvReader( csvPath.string( ) )
+    {
+    }
+
 
     const std::string& CsvReader::get( const int index ) const
     {

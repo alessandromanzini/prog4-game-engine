@@ -131,6 +131,7 @@ namespace engine
     {
         load( );
         GAME_TIME.reset( );
+        GAME_INSTANCE.set_screen_dimensions( { viewport_width_, viewport_height_ } );
 #ifndef __EMSCRIPTEN__
         while ( !quit_ )
         {

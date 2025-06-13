@@ -21,9 +21,11 @@ namespace game
         std::shared_ptr<engine::Font> font_ptr_{ nullptr };
         engine::GameObject* score_text_object_ptr_{ nullptr };
         engine::GameObject* lives_text_object_ptr_{ nullptr };
+        engine::GameObject* gameover_text_object_ptr_{ nullptr };
 
         void update_score_text( int score ) const;
         void update_lives_text( int lives ) const;
+        void update_gameover( bool highscore ) const;
 
     };
 

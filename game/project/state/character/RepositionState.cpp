@@ -10,9 +10,8 @@
 
 namespace game
 {
-    RepositionState::RepositionState( engine::Sprite2D* sprite, engine::AudioComponent* audio, const glm::vec2 target )
-        : CharacterState( sprite, audio, false, false, false )
-        , target_{ target } { }
+    RepositionState::RepositionState( engine::Sprite2D* sprite, engine::AudioComponent* audio )
+        : CharacterState( sprite, audio, false, false, false ) { }
 
 
     void RepositionState::on_enter( engine::Blackboard& blackboard )
@@ -25,8 +24,13 @@ namespace game
         blackboard.retrieve( engine::UID( "object" ), object );
         assert( object && "RepositionState::on_enter: Missing object in blackboard" );
 
-        const auto character = object->get_component<game::CharacterComponent>( );
+        const auto character = object->get_component<CharacterComponent>( );
         character.value( ).set_physics_simulation( false );
+
+        glm::vec2 target{};
+        blackboard.retrieve( engine::UID( "reposition_target" ), target );
+        direction_ = ( target - object->get_world_transform(  ).get_position(  ) ) / REPOSITION_TIME_;
+        accumulator_ = 0.f;
     }
 
 
@@ -38,8 +42,10 @@ namespace game
         blackboard.retrieve( engine::UID( "object" ), object );
         assert( object && "RepositionState::on_enter: Missing object in blackboard" );
 
-        const auto character = object->get_component<game::CharacterComponent>( );
+        const auto character = object->get_component<CharacterComponent>( );
         character.value( ).set_physics_simulation( true );
+
+        blackboard.edit( engine::UID( "iframes" ), REPOSITION_IFRAMES_ );
     }
 
 
@@ -51,11 +57,9 @@ namespace game
         blackboard.retrieve( engine::UID( "object" ), object );
         assert( object && "RepositionState::on_enter: Missing object in blackboard" );
 
-        const auto difference = target_ - object->get_world_transform( ).get_position( );
-        direction_ = normalize( difference );
-        object->get_transform_operator( ).translate( direction_ * REPOSITION_SPEED * engine::GAME_TIME.get_delta_time( ) );
-        printf("distance squared: %f, %f\n", direction_.x, direction_.y);
-        if ( dot( difference, difference ) < 100.f )
+        object->get_transform_operator( ).translate( direction_ * engine::GAME_TIME.get_delta_time( ) );
+        accumulator_ += engine::GAME_TIME.get_delta_time( );
+        if ( accumulator_ >= REPOSITION_TIME_ )
         {
             blackboard.edit( engine::UID( "repositioning" ), false );
         }

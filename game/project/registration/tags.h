@@ -9,6 +9,7 @@ namespace game
         ALLY,
         ENEMY,
         BUBBLE,
+        ROCK,
         FRUIT,
 
         PLATFORM,

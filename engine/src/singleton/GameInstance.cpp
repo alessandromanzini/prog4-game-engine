@@ -39,4 +39,16 @@ namespace engine
         return gravity_coefficient_;
     }
 
+
+    void GameInstance::set_screen_dimensions( const glm::vec2 dimensions )
+    {
+        screen_dimensions_ = dimensions;
+    }
+
+
+    glm::vec2 GameInstance::get_screen_dimensions( ) const
+    {
+        return screen_dimensions_;
+    }
+
 }

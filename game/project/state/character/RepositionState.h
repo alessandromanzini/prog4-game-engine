@@ -9,15 +9,16 @@ namespace game
     class RepositionState final : public CharacterState
     {
     public:
-        explicit RepositionState( engine::Sprite2D* sprite, engine::AudioComponent* audio, glm::vec2 target );
+        explicit RepositionState( engine::Sprite2D* sprite, engine::AudioComponent* audio );
         void on_enter( engine::Blackboard& ) override;
         void on_exit( engine::Blackboard& ) override;
         void tick( engine::Blackboard& ) override;
 
     private:
-        static constexpr float REPOSITION_SPEED{ 100.f };
-        const glm::vec2 target_{};
+        static constexpr float REPOSITION_TIME_{ 4.f };
+        static constexpr float REPOSITION_IFRAMES_{ 1.25f };
         glm::vec2 direction_{};
+        float accumulator_{ 0.f };
 
     };
 

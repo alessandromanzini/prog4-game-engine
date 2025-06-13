@@ -45,13 +45,19 @@ namespace game
 
         static void handle_ally_bubble_overlap( engine::ColliderComponent& self, engine::ColliderComponent& other,
                                          const engine::CollisionInfo& info );
-        static void handle_ally_fruit_overlap( engine::ColliderComponent& self, engine::ColliderComponent& other,
+        static void handle_ally_fruit_overlap( const engine::ColliderComponent& self, const engine::ColliderComponent& other,
                                          const engine::CollisionInfo& info );
-        static void handle_enemy_bubble_overlap( engine::ColliderComponent& self, engine::ColliderComponent& other,
+        static void handle_enemy_bubble_overlap( const engine::ColliderComponent& self, const engine::ColliderComponent& other,
                                           const engine::CollisionInfo& info );
-        static void handle_ally_enemy_overlap( engine::ColliderComponent& self, engine::ColliderComponent& other,
+        static void handle_ally_enemy_overlap( const engine::ColliderComponent& self, const engine::ColliderComponent& other,
                                         const engine::CollisionInfo& info );
-        static void handle_bubble_bounce( engine::ColliderComponent& self, engine::ColliderComponent& other,
+        static void handle_bubble_bounce( const engine::ColliderComponent& self, engine::ColliderComponent& other,
+                                        const engine::CollisionInfo& info );
+        static void handle_ally_death( const engine::ColliderComponent& self, const engine::ColliderComponent& other,
+                                         const engine::CollisionInfo& info );
+        static void handle_bubble_destroy( const engine::ColliderComponent& self, engine::ColliderComponent& other,
+                                        const engine::CollisionInfo& info );
+        static void handle_rock_destroy( const engine::ColliderComponent& self, engine::ColliderComponent& other,
                                         const engine::CollisionInfo& info );
         static void handle_fruit_bounce( engine::ColliderComponent& self, engine::ColliderComponent& other,
                                         const engine::CollisionInfo& info );

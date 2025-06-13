@@ -40,8 +40,8 @@ void load( )
     engine::GAME_INSTANCE.set_gravity_coefficient( 400.f );
 
     const auto font = engine::RESOURCE_MANAGER.load_font( "fonts/pixelify.ttf", 36 );
-    auto& scene     = engine::SCENE_POOL.create_scene( "demo" );
-    engine::SCENE_POOL.select_scene( "demo" );
+    auto& scene     = engine::SCENE_POOL.create_scene( "main" );
+    engine::SCENE_POOL.select_scene( "main" );
 
     auto& join = scene.create_object( );
     join.add_component<engine::TextureComponent>( "maps/main_menu.png" );

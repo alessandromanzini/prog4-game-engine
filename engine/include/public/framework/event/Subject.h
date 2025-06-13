@@ -17,7 +17,7 @@ namespace engine
 {
     namespace event
     {
-        using broadcast_value_variant_t = std::variant<int, float, double, std::string_view, UID>;
+        using broadcast_value_variant_t = std::variant<bool, int, float, double, std::string_view, UID>;
     }
 
     class Observer;

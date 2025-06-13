@@ -2,6 +2,7 @@
 
 #include <framework/GameObject.h>
 #include <framework/component/TextComponent.h>
+#include <singleton/GameInstance.h>
 
 #include "ScoreComponent.h"
 
@@ -13,8 +14,16 @@ namespace game
         , font_ptr_{ std::move( font ) }
     {
         score_text_object_ptr_ = &get_owner( ).create_child( );
+        score_text_object_ptr_->add_component<engine::TextComponent>( "", font_ptr_ );
+
         lives_text_object_ptr_ = &get_owner( ).create_child( );
+        lives_text_object_ptr_->add_component<engine::TextComponent>( "", font_ptr_ );
         lives_text_object_ptr_->set_local_transform( engine::Transform::from_translation( { 0.f, 25.f } ) );
+
+        gameover_text_object_ptr_ = &get_owner( ).create_child( );
+        gameover_text_object_ptr_->add_component<engine::TextComponent>( "", font_ptr_, true );
+        gameover_text_object_ptr_->set_world_transform(
+            engine::Transform::from_translation( engine::GAME_INSTANCE.get_screen_dimensions( ) / 2.f ) );
     }
 
 
@@ -29,6 +38,9 @@ namespace game
             case engine::UID( ScoreEvents::PLAYER_DEATH ).uid:
                 update_lives_text( std::get<int>( value ) );
                 break;
+            case engine::UID( ScoreEvents::GAMEOVER ).uid:
+                update_gameover( std::get<bool>( value ) );
+                break;
             default:
                 return;
         }
@@ -37,11 +49,10 @@ namespace game
 
     void StatsDisplayComponent::update_score_text( const int score ) const
     {
-        if ( const auto text = score_text_object_ptr_->get_component<engine::TextComponent>( ); text.has_value( ) )
+        if ( const auto text = score_text_object_ptr_->get_component<engine::TextComponent>(  ); text.has_value( ) )
         {
-            text.value( ).mark_for_deletion( );
+            text.value( ).set_text( "SCORE: " + std::to_string( score ) );
         }
-        score_text_object_ptr_->add_component<engine::TextComponent>( "SCORE: " + std::to_string( score ), font_ptr_ );
     }
 
 
@@ -49,9 +60,22 @@ namespace game
     {
         if ( const auto text = lives_text_object_ptr_->get_component<engine::TextComponent>( ); text.has_value( ) )
         {
-            text.value( ).mark_for_deletion( );
+            text.value( ).set_text( "LIVES: " + std::to_string( lives ) );
         }
-        lives_text_object_ptr_->add_component<engine::TextComponent>( "LIVES: " + std::to_string( lives ), font_ptr_ );
+    }
+
+
+    void StatsDisplayComponent::update_gameover( const bool highscore ) const
+    {
+        std::string gameoverText{ "GAMEOVER" };
+        if ( highscore )
+        {
+            gameoverText += " - NEW HIGHSCORE!";
+        }
+        if ( const auto text = gameover_text_object_ptr_->get_component<engine::TextComponent>( ); text.has_value( ) )
+        {
+            text.value( ).set_text( gameoverText );
+        }
     }
 
 }

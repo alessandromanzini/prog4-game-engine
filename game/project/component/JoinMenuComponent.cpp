@@ -8,6 +8,8 @@
 #include <singleton/ResourceManager.h>
 #include <singleton/ScenePool.h>
 
+#include "LevelLoaderComponent.h"
+
 
 namespace game
 {
@@ -29,6 +31,15 @@ namespace game
 
         selector_arrow_ref_.add_component<engine::TextureComponent>( "icons/selector.png" );
         move_selector( selection_object_ptr_->get_children( )[0] );
+    }
+
+
+    void JoinMenuComponent::tick( )
+    {
+        for ( const auto controller : player_controllers_ )
+        {
+            controller->set_block_selection( false );
+        }
     }
 
 
@@ -97,7 +108,6 @@ namespace game
     {
         auto& scene = engine::SCENE_POOL.create_scene( "game" );
         engine::SCENE_POOL.select_scene( "game" );
-
         const auto font = engine::RESOURCE_MANAGER.load_font( "fonts/pixelify.ttf", 36 );
 
         auto& score = scene.create_object( );
@@ -105,23 +115,30 @@ namespace game
         create_score( score, font );
 
         std::vector<engine::GameObject*> characters{};
+        bool alt{};
         for ( auto* controller : player_controllers_ )
         {
             if ( controller->has_joined(  ) )
             {
-                auto& bub = scene.create_object( );
-                create_bub( bub, &score.get_component<ScoreComponent>( ), { 200.f, 375.f } );
-                controller->possess( &bub );
-                characters.emplace_back( &bub );
+                engine::GameObject& character = scene.create_object( );
+                if ( not alt )
+                {
+                    create_bub( character, &score.get_component<ScoreComponent>( ) );
+                }
+                else
+                {
+                    create_bob( character, &score.get_component<ScoreComponent>( ) );
+                }
+                controller->possess( &character );
+                characters.emplace_back( &character );
+                alt = !alt;
             }
             controller->set_block_selection( true );
         }
 
-        auto& zenchan = scene.create_object( );
-        create_zenchan( zenchan, { 300.f, 375.f }, characters );
-
-        auto& grid = scene.create_object( );
-        create_grid( grid );
+        auto& levelLoader = scene.create_object( );
+        levelLoader.add_component<LevelLoaderComponent>( score, std::move( characters ),
+            std::vector{ "maps/level1.csv", "maps/level2.csv", "maps/level3.csv" } );
     }
 
 

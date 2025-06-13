@@ -24,6 +24,15 @@ namespace game::condition
     }
 
 
+    // +---------------------------+
+    // | TRUE CONDITION            |
+    // +---------------------------+
+    bool TrueCondition::evaluate( Blackboard& ) const
+    {
+        return true;
+    }
+
+
     // +----------------------------------+
     // | IS ANIMATION COMPLETED CONDITION |
     // +----------------------------------+

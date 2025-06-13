@@ -33,7 +33,7 @@ namespace engine
 
         [[nodiscard]] SDL_Texture* get_SDL_texture( ) const;
 
-        [[nodiscard]] glm::ivec2 get_size( ) const;
+        [[nodiscard]] glm::vec2 get_size( ) const;
 
     private:
         SDL_Texture* texture_ptr_;

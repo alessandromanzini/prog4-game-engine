@@ -36,7 +36,7 @@ namespace game
     {
         if ( not popped_ && not has_captured_target(  ) )
         {
-            engine::RENDERER.set_z_index( 1 );
+            engine::RENDERER.set_z_index( 5 );
             current_sprite_ptr_->render( get_owner( ).get_world_transform( ).get_position( ) );
             engine::RENDERER.set_z_index( 0 );
         }

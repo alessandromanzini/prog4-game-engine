@@ -25,7 +25,7 @@ namespace engine
 
         operator bool( ) const
         {
-            has_value( );
+            return has_value( );
         }
 
 

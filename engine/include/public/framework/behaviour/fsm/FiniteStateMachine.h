@@ -18,7 +18,8 @@ namespace engine
         void force_transition( UID stateId ) override;
         void tick( ) override;
 
-        fsm::State* get_current_state( ) const;
+        [[nodiscard]] fsm::State* get_current_state( ) const;
+        [[nodiscard]] UID get_current_state_id( ) const;
 
     protected:
         fsm::State& create_state_impl( UID stateId, std::unique_ptr<fsm::State>&& state ) override;

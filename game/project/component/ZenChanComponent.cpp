@@ -1,6 +1,7 @@
 #include "ZenChanComponent.h"
 
 #include <framework/GameObject.h>
+#include <singleton/GameTime.h>
 
 #include "CharacterComponent.h"
 
@@ -8,19 +9,16 @@
 namespace game
 {
     ZenChanComponent::ZenChanComponent( owner_t& owner )
-        : EnemyAiComponent{ owner }
-    {
-    }
+        : EnemyAiComponent{ owner } { }
 
 
-    glm::vec2 ZenChanComponent::calculate_steering( const glm::vec2 targetPosition ) const
+    glm::vec2 ZenChanComponent::calculate_steering( const glm::vec2 targetPosition )
     {
-        auto direction = targetPosition - get_owner( ).get_world_transform( ).get_position(  );
-        if ( direction.y < -50.f )
+        if ( const auto [success, steering, difference] = process_default_path_finding( targetPosition ); success )
         {
-            get_character_component(  )->jump(  );
+            steering_ = steering;
         }
-        return { direction.x, 0.f };
+        return steering_;
     }
 
 }

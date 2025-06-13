@@ -22,6 +22,7 @@ namespace game
     {
     public:
         explicit JoinMenuComponent( owner_t& owner, engine::GameObject* selectionObject, std::vector<engine::GameObject*>&& playerObjects );
+        void tick( ) override;
 
         bool join( engine::binding::DeviceInfo device );
         void leave( uint8_t id );

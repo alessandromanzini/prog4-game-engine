@@ -20,7 +20,7 @@ namespace engine
     class TextComponent final : public Component
     {
     public:
-        explicit TextComponent( owner_t& owner, const std::string& text, std::shared_ptr<Font> font );
+        explicit TextComponent( owner_t& owner, const std::string& text, std::shared_ptr<Font> font, bool centered = false );
 
         void tick( ) override;
         void render( ) const override;
@@ -28,6 +28,8 @@ namespace engine
         void set_text( const std::string& text );
 
     private:
+        const bool centered_{ false };
+
         bool needs_update_{};
         std::string text_;
 

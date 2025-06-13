@@ -24,6 +24,7 @@ namespace engine
         Scene& create_scene( const std::string& name );
 
         void select_scene( const std::string& name );
+        void select_first_scene( );
 
         void unload_scene( const std::string& name );
         void unload_all_scenes( );

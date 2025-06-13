@@ -10,6 +10,7 @@
 // | STANDARD HEADERS				|
 // +--------------------------------+
 #include <functional>
+#include <string>
 
 
 namespace engine

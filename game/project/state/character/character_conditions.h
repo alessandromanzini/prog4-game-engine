@@ -6,6 +6,12 @@
 
 namespace game::condition
 {
+    struct TrueCondition final : engine::fsm::Condition
+    {
+        bool evaluate( engine::Blackboard& blackboard ) const override;
+    };
+
+
     struct IsAnimationCompletedCondition final : engine::fsm::Condition
     {
         bool evaluate( engine::Blackboard& blackboard ) const override;

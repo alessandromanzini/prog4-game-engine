@@ -10,7 +10,8 @@ namespace game
     enum class ScoreEvents
     {
         SCORE_INCREASED,
-        PLAYER_DEATH
+        PLAYER_DEATH,
+        GAMEOVER
     };
 
     class ScoreComponent final : public engine::Component
@@ -18,8 +19,8 @@ namespace game
     public:
         explicit ScoreComponent( owner_t& owner );
 
-        [[nodiscard]] bool is_high_score( ) const;
         [[nodiscard]] int get_score( ) const;
+        [[nodiscard]] int get_lives( ) const;
 
         void increase_score( int value );
         void signal_player_death( );
@@ -31,6 +32,11 @@ namespace game
         engine::Subject subject_;
         int score_{ 0 };
         int player_lives_{ 3 };
+
+        bool gameover_{ false };
+
+        [[nodiscard]] bool is_high_score( ) const;
+        void update_high_score( ) const;
 
     };
 

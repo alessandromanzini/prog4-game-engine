@@ -39,11 +39,11 @@ namespace engine
     }
 
 
-    glm::ivec2 Texture2D::get_size( ) const
+    glm::vec2 Texture2D::get_size( ) const
     {
         SDL_Rect dst;
         SDL_QueryTexture( get_SDL_texture( ), nullptr, nullptr, &dst.w, &dst.h );
-        return { dst.w, dst.h };
+        return { static_cast<float>( dst.w ), static_cast<float>( dst.h ) };
     }
 
 

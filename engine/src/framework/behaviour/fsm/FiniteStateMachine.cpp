@@ -51,6 +51,12 @@ namespace engine
     }
 
 
+    UID FiniteStateMachine::get_current_state_id( ) const
+    {
+        return current_state_id_;
+    }
+
+
     fsm::State& FiniteStateMachine::create_state_impl( const UID stateId, std::unique_ptr<fsm::State>&& state )
     {
         assert( not stacks_.contains( stateId ) && "FiniteStateMachine::create_state_impl: State already exists!" );

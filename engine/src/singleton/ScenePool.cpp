@@ -60,6 +60,13 @@ namespace engine
     }
 
 
+    void ScenePool::select_first_scene( )
+    {
+        if ( scenes_.empty( ) ) { return; }
+        active_scene_ptr_ = scenes_[0].get( );
+    }
+
+
     void ScenePool::unload_scene( const std::string& name )
     {
         std::erase_if( scenes_, [&name]( auto& s ){ return s->get_name( ) == name; } );

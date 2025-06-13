@@ -1,5 +1,11 @@
 #include "ScoreComponent.h"
 
+#include <singleton/GameTime.h>
+#include <singleton/ResourceManager.h>
+#include <singleton/ScenePool.h>
+
+#include <fstream>
+#include <string>
 
 namespace game
 {
@@ -11,8 +17,24 @@ namespace game
 
     bool ScoreComponent::is_high_score( ) const
     {
-        // todo: implement high score logic
-        return true;
+        const auto path = engine::RESOURCE_MANAGER.get_data_path(  ) / "highscore.txt";
+        int highScore{};
+        if ( std::ifstream input{ path }; input.is_open( ) )
+        {
+            input >> highScore;
+            input.close();
+        }
+        return score_ > highScore;
+    }
+
+
+    void ScoreComponent::update_high_score( ) const
+    {
+        const auto path = engine::RESOURCE_MANAGER.get_data_path(  ) / "highscore.txt";
+        if ( std::ofstream output(path, std::ios::trunc); output.is_open( ) )
+        {
+            output << score_ << std::endl;
+        }
     }
 
 
@@ -22,8 +44,18 @@ namespace game
     }
 
 
+    int ScoreComponent::get_lives( ) const
+    {
+        return player_lives_;
+    }
+
+
     void ScoreComponent::increase_score( const int value )
     {
+        if ( gameover_ )
+        {
+            return;
+        }
         score_ += value;
         subject_.broadcast( engine::UID( ScoreEvents::SCORE_INCREASED ), score_ );
     }
@@ -31,8 +63,29 @@ namespace game
 
     void ScoreComponent::signal_player_death( )
     {
-        player_lives_ -= 1;
-        subject_.broadcast( engine::UID( ScoreEvents::PLAYER_DEATH ), player_lives_ );
+        if ( gameover_ )
+        {
+            return;
+        }
+        if ( --player_lives_ < 0 )
+        {
+            bool isHighScore = is_high_score( );
+            if ( isHighScore )
+            {
+                update_high_score(  );
+            }
+            subject_.broadcast( engine::UID( ScoreEvents::GAMEOVER ), isHighScore );
+            gameover_ = true;
+            engine::GAME_TIME.set_timeout( 3.f, [scene = engine::SCENE_POOL.get_active_scene( ).get_name( )]
+                {
+                    engine::SCENE_POOL.unload_scene( scene );
+                    engine::SCENE_POOL.select_first_scene( );
+                } );
+        }
+        else
+        {
+            subject_.broadcast( engine::UID( ScoreEvents::PLAYER_DEATH ), player_lives_ );
+        }
     }
 
 

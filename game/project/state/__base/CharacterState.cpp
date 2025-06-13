@@ -35,7 +35,10 @@ namespace game
 
     void CharacterState::on_enter( engine::Blackboard& blackboard )
     {
-        sprite_ptr_->reset( );
+        if ( sprite_ptr_ )
+        {
+            sprite_ptr_->reset( );
+        }
         blackboard.edit( engine::UID( "current_sprite" ), sprite_ptr_ );
 
         if ( audio_ptr_ )

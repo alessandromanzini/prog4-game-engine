@@ -3,6 +3,7 @@
 #include <framework/GameObject.h>
 #include <framework/component/physics/PhysicsComponent.h>
 
+using namespace std::chrono;
 
 namespace game
 {
@@ -17,7 +18,17 @@ namespace game
 
     void JumpCommand::execute( )
     {
-        physics_body_ptr_->add_force( { 0.f, -force_ } );
+        if ( can_jump( ) )
+        {
+            physics_body_ptr_->add_force( { 0.f, -force_ } );
+            jump_time_ = system_clock::now( );
+        }
+    }
+
+
+    bool JumpCommand::can_jump( ) const
+    {
+        return duration_cast<seconds>( system_clock::now( ) - jump_time_ ).count( ) > JUMP_TIME_DELAY_;
     }
 
 }

@@ -18,8 +18,9 @@
 
 namespace engine
 {
-    TextComponent::TextComponent( owner_t& owner, const std::string& text, std::shared_ptr<Font> font )
+    TextComponent::TextComponent( owner_t& owner, const std::string& text, std::shared_ptr<Font> font, bool centered )
         : Component( owner )
+        , centered_{ centered }
         , font_ptr_{ std::move( font ) }
     {
         set_text( text );
@@ -61,7 +62,10 @@ namespace engine
         if ( text_texture_ptr_ != nullptr )
         {
             RENDERER.set_z_index( 10 );
-            RENDERER.render_texture( *text_texture_ptr_,  get_owner( ).get_world_transform( ).get_position( ) );
+
+            const auto offset{ centered_ ? -text_texture_ptr_->get_size(  ) / 2.f : glm::vec2{} };
+            RENDERER.render_texture( *text_texture_ptr_,  get_owner( ).get_world_transform( ).get_position( ) + offset );
+
             RENDERER.set_z_index( 0 );
         }
     }

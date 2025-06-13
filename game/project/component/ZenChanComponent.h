@@ -12,7 +12,9 @@ namespace game
         explicit ZenChanComponent( owner_t& owner );
 
     private:
-        glm::vec2 calculate_steering( glm::vec2 targetPosition ) const override;
+        glm::vec2 steering_{};
+
+        glm::vec2 calculate_steering( glm::vec2 targetPosition ) override;
 
     };
 

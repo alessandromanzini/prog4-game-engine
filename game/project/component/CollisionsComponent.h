@@ -22,7 +22,7 @@ namespace game
     {
         using handlers_pair_t = std::pair<engine::UID, engine::UID>;
         using handler_fn_t    = std::function<void( engine::ColliderComponent&, engine::ColliderComponent&,
-                                                    const engine::CollisionInfo& )>;
+                                                 const engine::CollisionInfo& )>;
 
     public:
         explicit CollisionsComponent( engine::GameObject& owner );
@@ -41,39 +41,44 @@ namespace game
                                            const engine::CollisionInfo& info );
 
         static void handle_default_overlap( engine::ColliderComponent& self, engine::ColliderComponent& other,
-                                     const engine::CollisionInfo& info );
+                                            const engine::CollisionInfo& info );
 
+        static void handle_ally_ally_overlap( engine::ColliderComponent& self, engine::ColliderComponent& other,
+                                              const engine::CollisionInfo& info );
         static void handle_ally_bubble_overlap( engine::ColliderComponent& self, engine::ColliderComponent& other,
-                                         const engine::CollisionInfo& info );
+                                                const engine::CollisionInfo& info );
         static void handle_ally_fruit_overlap( const engine::ColliderComponent& self, const engine::ColliderComponent& other,
-                                         const engine::CollisionInfo& info );
+                                               const engine::CollisionInfo& info );
         static void handle_enemy_bubble_overlap( const engine::ColliderComponent& self, const engine::ColliderComponent& other,
-                                          const engine::CollisionInfo& info );
-        static void handle_ally_enemy_overlap( const engine::ColliderComponent& self, const engine::ColliderComponent& other,
-                                        const engine::CollisionInfo& info );
+                                                 const engine::CollisionInfo& info );
+        static void handle_ally_enemy_overlap( engine::ColliderComponent& self, engine::ColliderComponent& other,
+                                               const engine::CollisionInfo& info );
         static void handle_bubble_bounce( const engine::ColliderComponent& self, engine::ColliderComponent& other,
-                                        const engine::CollisionInfo& info );
-        static void handle_ally_death( const engine::ColliderComponent& self, const engine::ColliderComponent& other,
-                                         const engine::CollisionInfo& info );
+                                          const engine::CollisionInfo& info );
+        static void handle_ally_death( engine::ColliderComponent& self, engine::ColliderComponent& other,
+                                       const engine::CollisionInfo& info );
         static void handle_bubble_destroy( const engine::ColliderComponent& self, engine::ColliderComponent& other,
-                                        const engine::CollisionInfo& info );
+                                           const engine::CollisionInfo& info );
         static void handle_rock_destroy( const engine::ColliderComponent& self, engine::ColliderComponent& other,
-                                        const engine::CollisionInfo& info );
+                                         const engine::CollisionInfo& info );
         static void handle_fruit_bounce( engine::ColliderComponent& self, engine::ColliderComponent& other,
-                                        const engine::CollisionInfo& info );
+                                         const engine::CollisionInfo& info );
         static void do_nothing( engine::ColliderComponent&, engine::ColliderComponent&,
-                                         const engine::CollisionInfo& );
+                                const engine::CollisionInfo& );
+
 
         template <typename component_t>
         static component_t* get_component( const engine::GameObject& object )
         {
             if ( const auto component = object.get_component<component_t>( );
-                 component.has_value( ) )
+                component.has_value( ) )
             {
                 return &component.value( );
             }
             return nullptr;
         }
+
+
         static float get_overlap_jitter( glm::vec2 normal );
 
     };

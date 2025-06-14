@@ -15,6 +15,8 @@ namespace game
         MODE_SELECTION,
         CONFIRM,
 
+        SKIP_LEVEL,
+        TOGGLE_MUTE,
         QUIT
     };
 

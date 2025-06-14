@@ -13,6 +13,9 @@ namespace game
 
     private:
         void device_registered( engine::InputMappingContext& context, engine::binding::DeviceInfo deviceInfo ) override;
+
+        void skip_level( ) const;
+        void toggle_mute( ) const;
         void quit( ) const;
 
     };

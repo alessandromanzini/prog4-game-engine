@@ -36,9 +36,9 @@ namespace engine
     }
 
 
-    void AudioComponent::play( ) const
+    void AudioComponent::play( const int loops ) const
     {
-        SERVICE_LOCATOR.get_sound_system( ).play( *audio_ptr_, volume_ );
+        SERVICE_LOCATOR.get_sound_system( ).play( *audio_ptr_, volume_, loops );
     }
 
 

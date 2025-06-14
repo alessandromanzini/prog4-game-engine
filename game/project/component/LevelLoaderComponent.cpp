@@ -51,6 +51,29 @@ namespace game
     }
 
 
+    void LevelLoaderComponent::skip_level( )
+    {
+        std::set<const engine::GameObject*> found;
+        while ( true )
+        {
+            auto enemy = engine::SCENE_POOL.get_active_scene( ).find_object(
+                [&]( const engine::GameObject& object ) -> bool
+                    {
+                        return object.get_tag( ) == engine::UID( ObjectTags::ENEMY ) && not found.contains( &object );
+                    } );
+            if ( enemy )
+            {
+                enemy.value( ).mark_for_deletion( );
+                found.insert( &enemy );
+            }
+            else
+            {
+                break;
+            }
+        }
+    }
+
+
     void LevelLoaderComponent::load_level( const std::string& path, engine::GameObject& level )
     {
         CsvReader reader{ engine::RESOURCE_MANAGER.get_data_path( ) / path };
@@ -157,7 +180,7 @@ namespace game
                 load_level( level_paths_[current_level_], *next_level_object_ptr_ );
                 reposition_players( );
             };
-        engine::GAME_TIME.set_timeout( 5.f, std::move( createLevel ) );
+        engine::GAME_TIME.set_timeout( LEVEL_PERSISTANCE_SECONDS_, std::move( createLevel ) );
     }
 
 }

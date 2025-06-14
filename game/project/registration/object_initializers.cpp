@@ -16,6 +16,7 @@
 
 #include <component/CollisionsComponent.h>
 #include <component/FruitComponent.h>
+#include <component/JoinMenuComponent.h>
 #include <component/MaitaComponent.h>
 #include <component/ScoreComponent.h>
 #include <component/ScoreDelegateComponent.h>
@@ -23,6 +24,7 @@
 #include <component/ZenChanComponent.h>
 #include <framework/component/TextureComponent.h>
 #include <framework/component/AudioComponent.h>
+#include <framework/component/TextComponent.h>
 
 #include "audio.h"
 #include "object_stats.h"
@@ -50,6 +52,39 @@ namespace game
                                                   true );
         object.add_component<ScoreDelegateComponent>( score );
     }
+
+
+    void create_join_menu( engine::GameObject& join )
+    {
+        const auto font = engine::RESOURCE_MANAGER.load_font( "fonts/pixelify.ttf", 36 );
+
+        join.add_component<engine::TextureComponent>( "maps/main_menu.png" );
+
+        auto& player1 = join.create_child( );
+        player1.set_world_transform( engine::Transform::from_translation( { 530.f, 15.f } ) );
+        player1.add_component<engine::TextComponent>( "P1", font );
+
+        auto& player2 = join.create_child( );
+        player2.set_world_transform( engine::Transform::from_translation( { 530.f, 50.f } ) );
+        player2.add_component<engine::TextComponent>( "P2", font );
+
+        auto& selection = join.create_child( );
+
+        auto& arcade = selection.create_child( );
+        arcade.add_component<engine::TextComponent>( "arcade", font );
+        arcade.set_world_transform( engine::Transform::from_translation( { 130.f, 410.f } ) );
+
+        auto& versus = selection.create_child( );
+        versus.add_component<engine::TextComponent>( "versus", font );
+        versus.set_world_transform( engine::Transform::from_translation( { 370.f, 410.f } ) );
+
+        auto& audio = join.add_component<engine::AudioComponent>( "theme.mp3", engine::sound::SoundType::SOUND_TRACK );
+        audio.set_volume( .25f );
+        audio.play( -1 );
+
+        join.add_component<JoinMenuComponent>( &selection, std::vector{ &player1, &player2 } );
+    }
+
 
     void create_bub( engine::GameObject& object, ScoreComponent* score )
     {
@@ -108,7 +143,8 @@ namespace game
     }
 
 
-    void create_fruit( engine::GameObject& object, const std::string& texturePath, int value, const glm::vec2 position )
+    void create_fruit( engine::GameObject& object, const std::string& texturePath, int value, const glm::vec2 position,
+                       const glm::vec2 spawnerPosition )
     {
         object.set_local_transform( engine::Transform::from_translation( position ) );
         object.set_tag( engine::UID( ObjectTags::FRUIT ) );
@@ -116,7 +152,7 @@ namespace game
         object.add_component<engine::TextureComponent>( texturePath );
         object.add_component<engine::BoxColliderComponent>( glm::vec2{ 36.f, 30.f } );
         object.add_component<CollisionsComponent>( );
-        object.add_component<FruitComponent>( value, 5 );
+        object.add_component<FruitComponent>( value, 5, glm::normalize( position - spawnerPosition ) );
         object.add_component<engine::AudioComponent>( "characters/sfx/fruit_capture.wav",
                                                       engine::sound::SoundType::SOUND_EFFECT,
                                                       engine::UID( AudioCue::SFX ) ).set_playback_on_deletion( );

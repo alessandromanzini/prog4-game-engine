@@ -63,6 +63,19 @@ namespace engine
     }
 
 
+    OptionalRef<GameObject> Scene::find_object( const std::function<bool(const GameObject&)>& predicate ) const
+    {
+        for ( const auto& object : objects_ )
+        {
+            if ( predicate( *object ) )
+            {
+                return *object;
+            }
+        }
+        return nullptr;
+    }
+
+
     void Scene::fixed_tick( ) const
     {
         for ( const auto& object : objects_ )

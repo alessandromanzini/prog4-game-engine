@@ -4,9 +4,11 @@
 #include <controller/CharacterController.h>
 #include <framework/component/TextureComponent.h>
 #include <registration/object_initializers.h>
+#include <registration/tags.h>
 #include <singleton/GameInstance.h>
 #include <singleton/ResourceManager.h>
 #include <singleton/ScenePool.h>
+#include <singleton/ServiceLocator.h>
 
 #include "LevelLoaderComponent.h"
 
@@ -139,6 +141,7 @@ namespace game
         auto& levelLoader = scene.create_object( );
         levelLoader.add_component<LevelLoaderComponent>( score, std::move( characters ),
             std::vector{ "maps/level1.csv", "maps/level2.csv", "maps/level3.csv" } );
+        levelLoader.set_tag( engine::UID( ObjectTags::LEVEL_LOADER ) );
     }
 
 

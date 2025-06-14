@@ -13,6 +13,8 @@ namespace game
         FRUIT,
 
         PLATFORM,
+
+        LEVEL_LOADER,
     };
 
 }

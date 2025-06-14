@@ -78,7 +78,7 @@ namespace engine
         auto& sound          = sound_resources_.at( audio.get_sound_id( ) );
         const auto* instance = static_cast<SdlAudio*>( sound.instance.get( ) );
 
-        const int mixVolume{ static_cast<int>( MIX_MAX_VOLUME * volume ) };
+        const int mixVolume{ static_cast<int>( MIX_MAX_VOLUME * volume * tag_volumes_.at( audio.get_tag_id( ) ) ) };
 
         switch ( audio.get_type( ) )
         {
@@ -88,10 +88,10 @@ namespace engine
                 Mix_VolumeChunk( effect, mixVolume );
 
                 // Play the sound effect and store the channel
-                const auto channel = Mix_PlayChannel( find_channel(  ), effect, loops );
+                const auto channel = Mix_PlayChannel( find_channel( ), effect, loops );
                 if ( channel != -1 )
                 {
-                    sound.channel = static_cast<uint8_t>( channel );
+                    sound.channel      = static_cast<uint8_t>( channel );
                     last_used_channel_ = channel;
                 }
                 return channel;
@@ -244,6 +244,8 @@ namespace engine
     void SdlSoundSystem::set_master_volume( const float volume )
     {
         master_volume_ = std::clamp( volume, 0.f, 1.f );
+        Mix_Volume( -1, master_volume_ * MIX_MAX_VOLUME );
+        Mix_VolumeMusic( master_volume_ * MIX_MAX_VOLUME );
     }
 
 

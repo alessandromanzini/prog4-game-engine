@@ -68,6 +68,16 @@ namespace game
         imc.register_input_action( UID( IA::CONFIRM ), SDLK_e );
 
         // +---------------------------+
+        // | SKIP LEVEL                |
+        // +---------------------------+
+        imc.register_input_action( UID( IA::SKIP_LEVEL ), SDLK_F1 );
+
+        // +---------------------------+
+        // | TOGGLE MUTE               |
+        // +---------------------------+
+        imc.register_input_action( UID( IA::TOGGLE_MUTE ), SDLK_F2 );
+
+        // +---------------------------+
         // | QUIT                      |
         // +---------------------------+
         imc.register_input_action( UID( IA::QUIT ), SDLK_ESCAPE );

@@ -11,12 +11,14 @@ namespace game
 {
     class ScoreComponent;
 
+    void create_join_menu( engine::GameObject& join );
+
     void create_bub( engine::GameObject& object, ScoreComponent* score );
     void create_bob( engine::GameObject& object, ScoreComponent* score );
     void create_zenchan( engine::GameObject& object, glm::vec2 position, std::vector<engine::GameObject*> targets = {} );
     void create_maita( engine::GameObject& object, glm::vec2 position, std::vector<engine::GameObject*> targets = {} );
 
-    void create_fruit( engine::GameObject& object, const std::string& texturePath, int value, glm::vec2 position = { 0.f, 0.f } );
+    void create_fruit( engine::GameObject& object, const std::string& texturePath, int value, glm::vec2 position, glm::vec2 spawnerPosition );
 
     void create_grid( engine::GameObject& object );
     void create_score( engine::GameObject& object, std::shared_ptr<engine::Font> font );

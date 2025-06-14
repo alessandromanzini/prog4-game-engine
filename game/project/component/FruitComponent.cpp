@@ -1,9 +1,10 @@
 #include "FruitComponent.h"
 
-#include <algorithm>
-#include <random>
 #include <framework/GameObject.h>
 #include <singleton/GameTime.h>
+
+#include <algorithm>
+#include <random>
 
 
 namespace game
@@ -23,11 +24,11 @@ namespace game
     }
 
 
-    FruitComponent::FruitComponent( owner_t& owner, const int value, const int bounces )
+    FruitComponent::FruitComponent( owner_t& owner, const int value, const int bounces, const glm::vec2 preferredDirection )
         : Component( owner )
         , value_{ value }
         , bounces_( bounces )
-        , direction_{ normalize( random_vec( 0.f, 1.f ) ) } { }
+        , direction_{ normalize( preferredDirection + random_vec( 0.f, .25f ) ) } { }
 
 
     void FruitComponent::tick( )

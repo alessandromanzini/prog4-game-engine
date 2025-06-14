@@ -32,6 +32,7 @@ namespace game
         }
 
         // Register overlap handlers
+        overlap_handlers_.insert( { { UID( ObjectTags::ALLY ), UID( ObjectTags::ALLY ) }, handle_ally_ally_overlap } );
         overlap_handlers_.insert( { { UID( ObjectTags::ALLY ), UID( ObjectTags::BUBBLE ) }, handle_ally_bubble_overlap } );
         overlap_handlers_.insert( { { UID( ObjectTags::ALLY ), UID( ObjectTags::ROCK ) }, handle_ally_death } );
         overlap_handlers_.insert( { { UID( ObjectTags::ALLY ), UID( ObjectTags::ENEMY ) }, handle_ally_enemy_overlap } );
@@ -57,7 +58,6 @@ namespace game
         overlap_handlers_.insert( { { UID( ObjectTags::FRUIT ), UID( ObjectTags::PLATFORM ) }, handle_fruit_bounce } );
         overlap_handlers_.insert( { { UID( ObjectTags::FRUIT ), engine::NULL_UID }, handle_fruit_bounce } );
 
-        overlap_handlers_.insert( { { UID( ObjectTags::ALLY ), UID( ObjectTags::ALLY ) }, do_nothing } );
         overlap_handlers_.insert( { { UID( ObjectTags::ENEMY ), UID( ObjectTags::ENEMY ) }, do_nothing } );
     }
 
@@ -114,6 +114,17 @@ namespace game
     }
 
 
+    void CollisionsComponent::handle_ally_ally_overlap( engine::ColliderComponent& self, engine::ColliderComponent& other,
+                                                        const engine::CollisionInfo& info )
+    {
+        if ( dot( info.normal, glm::vec2{ 0.f, 1.f } ) == 1.f )
+        {
+            return;
+        }
+        handle_default_overlap( self, other, info );
+    }
+
+
     void CollisionsComponent::handle_ally_bubble_overlap( engine::ColliderComponent& self, engine::ColliderComponent& other,
                                                           const engine::CollisionInfo& info )
     {
@@ -121,10 +132,12 @@ namespace game
         if ( const auto bubble = get_component<BubbleComponent>( other.get_owner( ) );
             bubble && bubble->has_captured_target( ) )
         {
-            auto& fruit  = bubble->get_owner( ).get_owning_scene( ).create_object( );
+            auto& fruit        = bubble->get_owner( ).get_owning_scene( ).create_object( );
             const auto capture = bubble->get_captured_target( );
             create_fruit( fruit, capture->get_fruit_texture_path( ),
-                          capture->get_fruit_value( ), bubble->get_owner( ).get_world_transform( ).get_position( ) );
+                          capture->get_fruit_value( ),
+                          bubble->get_owner( ).get_world_transform( ).get_position( ),
+                          self.get_owner( ).get_world_transform( ).get_position( ) );
             bubble->get_owner( ).mark_for_deletion( );
             return;
         }
@@ -150,20 +163,22 @@ namespace game
     }
 
 
-    void CollisionsComponent::handle_ally_fruit_overlap( const engine::ColliderComponent& self, const engine::ColliderComponent& other,
+    void CollisionsComponent::handle_ally_fruit_overlap( const engine::ColliderComponent& self,
+                                                         const engine::ColliderComponent& other,
                                                          const engine::CollisionInfo& )
     {
-        if ( const auto fruit = get_component<FruitComponent>( other.get_owner( ) ); fruit->is_capturable(  ) )
+        if ( const auto fruit = get_component<FruitComponent>( other.get_owner( ) ); fruit->is_capturable( ) )
         {
             // destroy the fruit object
             other.get_owner( ).mark_for_deletion( );
             const auto score = get_component<ScoreDelegateComponent>( self.get_owner( ) );
-            score->increase_score( fruit->get_fruit_value(  ) );
+            score->increase_score( fruit->get_fruit_value( ) );
         }
     }
 
 
-    void CollisionsComponent::handle_enemy_bubble_overlap( const engine::ColliderComponent& self, const engine::ColliderComponent& other,
+    void CollisionsComponent::handle_enemy_bubble_overlap( const engine::ColliderComponent& self,
+                                                           const engine::ColliderComponent& other,
                                                            const engine::CollisionInfo& )
     {
         if ( const auto bubble = get_component<BubbleComponent>( other.get_owner( ) );
@@ -175,12 +190,13 @@ namespace game
     }
 
 
-    void CollisionsComponent::handle_ally_enemy_overlap( const engine::ColliderComponent& self, const engine::ColliderComponent& other,
+    void CollisionsComponent::handle_ally_enemy_overlap( engine::ColliderComponent& self,
+                                                         engine::ColliderComponent& other,
                                                          const engine::CollisionInfo& info )
     {
         const auto capture = get_component<BubbleCaptureComponent>( other.get_owner( ) );
-        const auto ally = get_component<CharacterComponent>( self.get_owner( ) );
-        if ( ( capture && capture->is_captured( ) ) || ( ally && ally->is_iframing(  ).first ) )
+        if ( const auto ally = get_component<CharacterComponent>( self.get_owner( ) );
+            ( capture && capture->is_captured( ) ) || ( ally && ally->is_iframing( ).first ) )
         {
             return;
         }
@@ -198,8 +214,8 @@ namespace game
     }
 
 
-    void CollisionsComponent::handle_ally_death( const engine::ColliderComponent& self, const engine::ColliderComponent&,
-        const engine::CollisionInfo& )
+    void CollisionsComponent::handle_ally_death( engine::ColliderComponent& self, engine::ColliderComponent&,
+                                                 const engine::CollisionInfo& )
     {
         if ( const auto score = get_component<ScoreDelegateComponent>( self.get_owner( ) ); score != nullptr )
         {
@@ -215,7 +231,7 @@ namespace game
 
 
     void CollisionsComponent::handle_bubble_destroy( const engine::ColliderComponent& self, engine::ColliderComponent&,
-        const engine::CollisionInfo& )
+                                                     const engine::CollisionInfo& )
     {
         self.get_owner( ).mark_for_deletion( );
     }

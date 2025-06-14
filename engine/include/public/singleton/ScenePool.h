@@ -16,6 +16,7 @@
 
 namespace engine
 {
+    // todo: make tick and render inaccessible from outside
     class ScenePool final : public Singleton<ScenePool>
     {
         friend class Singleton;

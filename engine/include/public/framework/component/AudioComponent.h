@@ -25,7 +25,7 @@ namespace engine
 
         void increase_volume( float delta );
 
-        void play() const;
+        void play( int loops = 0 ) const;
         void set_playback_on_deletion();
 
         void begin_owner_deletion( ) override;

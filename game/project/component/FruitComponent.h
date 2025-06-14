@@ -11,7 +11,7 @@ namespace game
     class FruitComponent final : public engine::Component
     {
     public:
-        explicit FruitComponent( owner_t& owner, int value, int bounces );
+        explicit FruitComponent( owner_t& owner, int value, int bounces, glm::vec2 preferredDirection = {} );
         void tick( ) override;
         void bounce( glm::vec2 normal, float depth );
 

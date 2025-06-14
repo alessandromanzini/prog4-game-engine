@@ -25,7 +25,9 @@ namespace engine
         void remove( GameObject& object );
         void remove_all( );
 
-        GameObject& create_object( );
+        // todo: make const correct
+        [[nodiscard]] OptionalRef<GameObject> find_object( const std::function<bool(const GameObject&)>& predicate ) const;
+        [[nodiscard]] GameObject& create_object( );
 
         [[nodiscard]] const std::string& get_name( ) const;
         [[nodiscard]] uint16_t get_id( ) const;

@@ -5,6 +5,8 @@
 #include <framework/event/Observer.h>
 #include <framework/resource/Font.h>
 
+#include <memory>
+
 
 namespace game
 {

@@ -244,8 +244,8 @@ namespace engine
     void SdlSoundSystem::set_master_volume( const float volume )
     {
         master_volume_ = std::clamp( volume, 0.f, 1.f );
-        Mix_Volume( -1, master_volume_ * MIX_MAX_VOLUME );
-        Mix_VolumeMusic( master_volume_ * MIX_MAX_VOLUME );
+        Mix_Volume( -1, static_cast<int>( master_volume_ * MIX_MAX_VOLUME ) );
+        Mix_VolumeMusic( static_cast<int>( master_volume_ * MIX_MAX_VOLUME ) );
     }
 
 

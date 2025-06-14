@@ -9,6 +9,7 @@
 // | STANDARD HEADERS				|
 // +--------------------------------+
 #include <thread>
+#include <singleton/GameTime.h>
 
 using namespace engine::binding;
 
@@ -42,8 +43,7 @@ namespace engine
                 break;
 
             case DeviceType::GAMEPAD:
-                std::thread( &PlayerController::try_register_gamepad_impl, this, std::ref( context ),
-                             timeout ).detach( );
+                try_register_gamepad_impl( context, timeout );
                 break;
         }
     }
@@ -66,28 +66,27 @@ namespace engine
 
     void PlayerController::try_register_gamepad_impl( InputMappingContext& context, std::chrono::milliseconds timeout )
     {
-        while ( timeout > std::chrono::milliseconds( 0 ) )
+        if ( timeout < duration_cast<std::chrono::milliseconds>(std::chrono::duration<float>(REGISTER_ATTEMPT_TIME_STEP_ * 2)) )
         {
-            try
-            {
-                const DeviceInfo deviceInfo{ DeviceType::GAMEPAD, INPUT_SYSTEM.fetch_free_gamepad_id( ) };
+            return;
+        }
+        try
+        {
+            const DeviceInfo deviceInfo{ DeviceType::GAMEPAD, INPUT_SYSTEM.fetch_free_gamepad_id( ) };
 
-                context.register_device( *this, deviceInfo );
+            context.register_device( *this, deviceInfo );
 
-                has_registered_device_.set( true );
+            has_registered_device_.set( true );
 
-                device_registered( context, deviceInfo );
-
-                break;
-            }
-            catch ( std::runtime_error& )
-            {
-                // TODO: kill on shutdown (if program is terminated this causes issues)
-                has_registered_device_.set( false );
-            }
-
-            std::this_thread::sleep_for( REGISTER_ATTEMPT_TIME_STEP_ );
-            timeout -= REGISTER_ATTEMPT_TIME_STEP_;
+            device_registered( context, deviceInfo );
+        }
+        catch ( std::runtime_error& )
+        {
+            has_registered_device_.set( false );
+            GAME_TIME.set_timeout(REGISTER_ATTEMPT_TIME_STEP_, [&, this] {
+                timeout -= duration_cast<std::chrono::milliseconds>(std::chrono::duration<float>(REGISTER_ATTEMPT_TIME_STEP_));
+                try_register_gamepad_impl(context, timeout);
+            });
         }
     }
 

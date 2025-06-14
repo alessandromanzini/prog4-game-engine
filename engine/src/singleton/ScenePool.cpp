@@ -10,6 +10,7 @@
 // | STANDARD HEADERS				|
 // +--------------------------------+
 #include <cassert>
+#include <algorithm>
 
 
 namespace engine

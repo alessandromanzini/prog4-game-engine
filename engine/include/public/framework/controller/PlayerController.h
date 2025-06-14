@@ -38,7 +38,7 @@ namespace engine
 		virtual void device_registered( InputMappingContext& context, binding::DeviceInfo deviceInfo );
 
 	private:
-		static constexpr std::chrono::milliseconds REGISTER_ATTEMPT_TIME_STEP_{ 100 };
+		static constexpr float REGISTER_ATTEMPT_TIME_STEP_{ .1f };
 
 		threading::SafeResource<bool> has_registered_device_{ false };
 

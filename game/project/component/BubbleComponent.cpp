@@ -123,7 +123,11 @@ namespace game
             if ( has_captured_target( ) )
             {
                 captured_target_ptr_->set_parent( nullptr );
-                captured_target_ptr_->get_component<CharacterComponent>( ).value( ).set_physics_simulation( true );
+                if ( const auto character = captured_target_ptr_->get_component<CharacterComponent>( ) )
+                {
+                    character.value(  ).set_physics_simulation( true );
+                    character.value(  ).interrupt(  );
+                }
                 bubble_capture_component_ptr_->signal_released( );
             }
             get_owner( ).mark_for_deletion( );

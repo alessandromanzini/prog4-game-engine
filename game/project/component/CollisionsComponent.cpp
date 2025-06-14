@@ -135,25 +135,30 @@ namespace game
             bubble && bubble->has_captured_target( ) )
         {
             auto& fruit        = bubble->get_owner( ).get_owning_scene( ).create_object( );
+
             const auto capture = bubble->get_captured_target( );
+            if ( not capture )
+            {
+                return;
+            }
 
             if ( const auto gameover = get_component<GameOverDelegateComponent>( capture->get_owner( ) ); gameover != nullptr )
             {
                 gameover->signal_gameover( );
-                capture->get_owner(  ).mark_for_deletion( );
-                return;
+                bubble->get_owner( ).mark_for_deletion( );
+            }
+            else
+            {
+                create_fruit( fruit, capture->get_fruit_texture_path( ),
+                              capture->get_fruit_value( ),
+                              bubble->get_owner( ).get_world_transform( ).get_position( ),
+                              self.get_owner( ).get_world_transform( ).get_position( ) );
             }
 
-            create_fruit( fruit, capture->get_fruit_texture_path( ),
-                          capture->get_fruit_value( ),
-                          bubble->get_owner( ).get_world_transform( ).get_position( ),
-                          self.get_owner( ).get_world_transform( ).get_position( ) );
             bubble->get_owner( ).mark_for_deletion( );
-            return;
         }
-
         // If collision is vertical, bounce off
-        if ( dot( info.normal, glm::vec2{ 0.f, -1.f } ) == 1.f )
+        else if ( dot( info.normal, glm::vec2{ 0.f, -1.f } ) == 1.f )
         {
             constexpr float FLAT_BOUNCE_REBOUND{ -200.f };
             constexpr float RELATIVE_BOUNCE_REBOUND{ 1.25f };
@@ -177,12 +182,14 @@ namespace game
                                                          const engine::ColliderComponent& other,
                                                          const engine::CollisionInfo& )
     {
-        if ( const auto fruit = get_component<FruitComponent>( other.get_owner( ) ); fruit->is_capturable( ) )
+        if ( const auto fruit = get_component<FruitComponent>( other.get_owner( ) ); fruit && fruit->is_capturable( ) )
         {
             // destroy the fruit object
             other.get_owner( ).mark_for_deletion( );
-            const auto score = get_component<ScoreDelegateComponent>( self.get_owner( ) );
-            score->increase_score( fruit->get_fruit_value( ) );
+            if ( const auto score = get_component<ScoreDelegateComponent>( self.get_owner( ) ) )
+            {
+                score->increase_score( fruit->get_fruit_value( ) );
+            }
         }
     }
 
@@ -192,11 +199,15 @@ namespace game
                                                            const engine::CollisionInfo& )
     {
         if ( const auto bubble = get_component<BubbleComponent>( other.get_owner( ) );
-            bubble != nullptr && not bubble->has_captured_target( ) )
+            bubble && not bubble->has_captured_target( ) )
         {
             // If the enemy collides with the bubble, capture it
             bubble->capture( self.get_owner( ) );
-            get_component<CharacterComponent>( self.get_owner( ) )->interrupt( );
+            if ( const auto character = get_component<CharacterComponent>( self.get_owner( ) ) )
+            {
+                character->interrupt( );
+                character->lock( );
+            }
         }
     }
 
@@ -218,7 +229,7 @@ namespace game
     void CollisionsComponent::handle_bubble_bounce( const engine::ColliderComponent& self, engine::ColliderComponent&,
                                                     const engine::CollisionInfo& info )
     {
-        if ( const auto bubble = get_component<BubbleComponent>( self.get_owner( ) ); bubble != nullptr )
+        if ( const auto bubble = get_component<BubbleComponent>( self.get_owner( ) ); bubble )
         {
             bubble->bounce( info.normal, info.depth );
         }
@@ -228,18 +239,18 @@ namespace game
     void CollisionsComponent::handle_ally_death( engine::ColliderComponent& self, engine::ColliderComponent&,
                                                  const engine::CollisionInfo& )
     {
-        if ( const auto gameover = get_component<GameOverDelegateComponent>( self.get_owner( ) ); gameover != nullptr )
+        if ( const auto gameover = get_component<GameOverDelegateComponent>( self.get_owner( ) ); gameover )
         {
             gameover->signal_gameover( );
             self.get_owner(  ).mark_for_deletion( );
             return;
         }
-        if ( const auto score = get_component<ScoreDelegateComponent>( self.get_owner( ) ); score != nullptr )
+        if ( const auto score = get_component<ScoreDelegateComponent>( self.get_owner( ) ); score )
         {
             // If the ally collides with the enemy, signal player death
             score->signal_player_death( );
         }
-        if ( const auto character = get_component<CharacterComponent>( self.get_owner( ) ); character != nullptr )
+        if ( const auto character = get_component<CharacterComponent>( self.get_owner( ) ); character )
         {
             // If the ally collides with the enemy, reposition the character
             character->reposition( );

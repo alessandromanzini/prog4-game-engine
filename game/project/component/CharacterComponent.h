@@ -70,10 +70,13 @@ namespace game
         void attack( );
 
         void interrupt( );
+        void reposition( );
+        void lock( );
 
         void set_physics_simulation( bool simulate ) const;
-        void reposition( );
+
         [[nodiscard]] bool is_repositioning( ) const;
+        [[nodiscard]] bool is_locked( ) const;
         [[nodiscard]] bool is_falling( ) const;
         [[nodiscard]] std::pair<bool, float> is_iframing( ) const;
 

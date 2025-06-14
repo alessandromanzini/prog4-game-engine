@@ -18,6 +18,7 @@
 #include <state/character/AttackState.h>
 #include <state/character/character_conditions.h>
 #include <state/character/JumpState.h>
+#include <state/character/LockState.h>
 #include <state/character/RepositionState.h>
 
 namespace cnd = game::condition;
@@ -143,9 +144,21 @@ namespace game
     }
 
 
+    void CharacterComponent::lock( )
+    {
+        state_machine_.force_transition( UID( "lock" ) );
+    }
+
+
     bool CharacterComponent::is_repositioning( ) const
     {
         return state_machine_.get_current_state_id( ) == UID( "reposition" );
+    }
+
+
+    bool CharacterComponent::is_locked( ) const
+    {
+        return state_machine_.get_current_state_id( ) == UID( "lock" );
     }
 
 
@@ -159,7 +172,7 @@ namespace game
     {
         float iframes{ 0.f };
         blackboard_.retrieve( UID( "iframes" ), iframes );
-        return { iframes > 0.f || is_repositioning(  ), iframes };
+        return { iframes > 0.f || is_repositioning(  ) || is_locked(  ), iframes };
     }
 
 
@@ -220,6 +233,8 @@ namespace game
                                                   attack_command_ptr_.get( ), attack_on_enter_ );
 
         state_machine_.create_state<RepositionState>( UID( "reposition" ), &resources_.reposition_sprite, nullptr );
+
+        state_machine_.create_state<LockState>( UID( "lock" ), &resources_.reposition_sprite, nullptr );
     }
 
 

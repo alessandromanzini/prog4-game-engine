@@ -66,7 +66,9 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
         project/component/HighScoresDisplayComponent.cpp
         project/component/HighScoresDisplayComponent.h
         project/component/GameOverDelegateComponent.cpp
-        project/component/GameOverDelegateComponent.h)
+        project/component/GameOverDelegateComponent.h
+        project/state/character/LockState.cpp
+        project/state/character/LockState.h)
 
 # set maximum warning level and treat warnings as errors
 include(set_warning_level)

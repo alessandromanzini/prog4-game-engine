@@ -60,7 +60,7 @@ namespace game
             {
                 val = 'A';
             }
-            scores_[score_index_].first[letter_index_] = val;
+            scores_[score_index_].first[letter_index_] = static_cast<char>( val );
             display_scores( );
         }
     }

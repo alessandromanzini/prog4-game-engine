@@ -16,7 +16,7 @@ namespace game
         explicit LevelLoaderComponent( owner_t& owner, engine::GameObject& score, std::vector<engine::GameObject*> players,
                                        std::vector<const char*> levelPaths );
         void tick( ) override;
-        void skip_level( );
+        void destroy_all_enemies( );
 
     private:
         static constexpr float LEVEL_TRANSITION_SPEED_{ 200.f };
@@ -26,7 +26,6 @@ namespace game
         engine::GameObject& score_object_ref_;
         std::vector<engine::GameObject*> players_{};
 
-        bool quick_persistance_{ false };
         uint32_t current_level_{ 0 };
         uint32_t enemy_count_{ 0 };
         engine::GameObject* current_level_object_ptr_{ nullptr };

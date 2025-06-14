@@ -41,7 +41,7 @@ namespace game
                 } );
         if ( loader )
         {
-            loader.value(  ).get_component<game::LevelLoaderComponent>( ).value( ).skip_level( );
+            loader.value(  ).get_component<LevelLoaderComponent>( ).value( ).destroy_all_enemies( );
         }
     }
 

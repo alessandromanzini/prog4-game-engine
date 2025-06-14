@@ -51,7 +51,7 @@ namespace game
     }
 
 
-    void LevelLoaderComponent::skip_level( )
+    void LevelLoaderComponent::destroy_all_enemies( )
     {
         std::set<const engine::GameObject*> found;
         while ( true )

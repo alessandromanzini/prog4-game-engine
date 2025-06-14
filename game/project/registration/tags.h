@@ -14,6 +14,8 @@ namespace game
 
         PLATFORM,
 
+        ARCADE,
+        VERSUS,
         LEVEL_LOADER,
     };
 

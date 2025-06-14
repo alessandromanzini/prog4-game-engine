@@ -84,6 +84,13 @@ namespace engine
     }
 
 
+    void GameTime::clear_timeouts( )
+    {
+        // TODO> implement timer specific clear
+        timeouts_.clear();
+    }
+
+
     void GameTime::set_timing_type( const time::TimingType type )
     {
         switch ( type )

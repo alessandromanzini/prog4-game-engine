@@ -30,10 +30,13 @@ namespace engine
         void unload_scene( const std::string& name );
         void unload_all_scenes( );
 
-        void fixed_tick( );
-        void tick( );
+        void fixed_tick( ) const;
+        void tick( ) const;
         void render( ) const;
 
+        [[nodiscard]] bool does_scene_exist( const std::string& name ) const;
+
+        [[nodiscard]] Scene& get_active_scene( );
         [[nodiscard]] Scene& get_active_scene( ) const;
         [[nodiscard]] Scene& get_scene( const std::string& name ) const;
         [[nodiscard]] Scene& get_scene( uint16_t id ) const;

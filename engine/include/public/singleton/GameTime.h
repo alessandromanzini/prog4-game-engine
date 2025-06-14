@@ -72,6 +72,7 @@ namespace engine
          * @param delegate
          */
         void set_timeout( float seconds, std::function<void( )>&& delegate );
+        void clear_timeouts( );
 
     private:
         static constexpr int MS_PER_FRAME_{ 16 };

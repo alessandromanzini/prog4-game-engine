@@ -108,40 +108,30 @@ namespace game
 
     void JoinMenuComponent::confirm_selection( ) const
     {
-        auto& scene = engine::SCENE_POOL.create_scene( "game" );
-        engine::SCENE_POOL.select_scene( "game" );
         const auto font = engine::RESOURCE_MANAGER.load_font( "fonts/pixelify.ttf", 36 );
 
-        auto& score = scene.create_object( );
-        score.set_world_transform( engine::Transform::from_translation( { 45.f, 15.f } ) );
-        create_score( score, font );
-
-        std::vector<engine::GameObject*> characters{};
-        bool alt{};
-        for ( auto* controller : player_controllers_ )
+        switch ( selection_object_ptr_->get_children( )[selection_index_]->get_tag( ).uid )
         {
-            if ( controller->has_joined(  ) )
+            case engine::UID( ObjectTags::ARCADE ).uid:
             {
-                engine::GameObject& character = scene.create_object( );
-                if ( not alt )
-                {
-                    create_bub( character, &score.get_component<ScoreComponent>( ) );
-                }
-                else
-                {
-                    create_bob( character, &score.get_component<ScoreComponent>( ) );
-                }
-                controller->possess( &character );
-                characters.emplace_back( &character );
-                alt = !alt;
+                auto& scene = engine::SCENE_POOL.create_scene( "game" );
+                engine::SCENE_POOL.select_scene( "game" );
+                create_arcade( scene, player_controllers_, font );
+                break;
             }
-            controller->set_block_selection( true );
-        }
 
-        auto& levelLoader = scene.create_object( );
-        levelLoader.add_component<LevelLoaderComponent>( score, std::move( characters ),
-            std::vector{ "maps/level1.csv", "maps/level2.csv", "maps/level3.csv" } );
-        levelLoader.set_tag( engine::UID( ObjectTags::LEVEL_LOADER ) );
+            case engine::UID( ObjectTags::VERSUS ).uid:
+                if ( std::ranges::count_if( player_controllers_, []( auto controller ){ return controller->has_joined(  ); } ) >= 2 )
+                {
+                    auto& scene = engine::SCENE_POOL.create_scene( "game" );
+                    engine::SCENE_POOL.select_scene( "game" );
+                    create_versus( scene, player_controllers_, font );
+                }
+                break;
+
+            default:
+                return;
+        }
     }
 
 

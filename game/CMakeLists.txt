@@ -60,7 +60,13 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
         "project/state/character/AttackState.cpp"
         "project/state/character/JumpState.cpp"
         "project/component/LevelLoaderComponent.cpp"
-        "project/helpers/CsvReader.cpp" )
+        "project/helpers/CsvReader.cpp"
+        project/component/GameOverComponent.cpp
+        project/component/GameOverComponent.h
+        project/component/HighScoresDisplayComponent.cpp
+        project/component/HighScoresDisplayComponent.h
+        project/component/GameOverDelegateComponent.cpp
+        project/component/GameOverDelegateComponent.h)
 
 # set maximum warning level and treat warnings as errors
 include(set_warning_level)

@@ -13,8 +13,7 @@ namespace game
     class LevelLoaderComponent final : public engine::Component
     {
     public:
-        explicit LevelLoaderComponent( owner_t& owner, engine::GameObject& score, std::vector<engine::GameObject*> players,
-                                       std::vector<const char*> levelPaths );
+        explicit LevelLoaderComponent( owner_t& owner, std::vector<engine::GameObject*> players, std::vector<const char*> levelPaths, bool randomRound, bool spawnEnemies = true );
         void tick( ) override;
         void destroy_all_enemies( );
 
@@ -23,7 +22,6 @@ namespace game
         static constexpr float LEVEL_PERSISTANCE_SECONDS_{ 5.f };
 
         const std::vector<const char*> level_paths_{};
-        engine::GameObject& score_object_ref_;
         std::vector<engine::GameObject*> players_{};
 
         uint32_t current_level_{ 0 };
@@ -31,11 +29,14 @@ namespace game
         engine::GameObject* current_level_object_ptr_{ nullptr };
         engine::GameObject* next_level_object_ptr_{ nullptr };
 
+        const bool spawn_enemies_{ false };
+
         void load_level( const std::string& path, engine::GameObject& level );
+        void load_next_level( );
+        void load_random_level( );
         void reposition_players( ) const;
 
         void lower_enemy_count( );
-        void load_next_level( );
 
     };
 

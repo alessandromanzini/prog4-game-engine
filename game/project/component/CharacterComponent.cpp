@@ -120,6 +120,14 @@ namespace game
     }
 
 
+    void CharacterComponent::interrupt( )
+    {
+        blackboard_.edit( UID( "interrupt" ), true );
+        state_machine_.force_transition( UID( "idle" ) );
+        blackboard_.edit( UID( "interrupt" ), false );
+    }
+
+
     void CharacterComponent::set_physics_simulation( const bool simulate ) const
     {
         get_owner( ).get_component<BoxColliderComponent>( ).value( ).set_enabled( simulate );
@@ -188,6 +196,7 @@ namespace game
         blackboard_.store( UID( "repositioning" ), false );
         blackboard_.store( UID( "iframes" ), 0.f );
         blackboard_.store<Sprite2D*>( UID( "current_sprite" ), nullptr );
+        blackboard_.store( UID( "interrupt" ), false );
 
         // CREATE STATES
         state_machine_.create_state<fsm::State>( UID( "grounded" ) );

@@ -34,14 +34,14 @@ namespace engine
     }
 
 
-    void Subject::broadcast( const UID event, const event::broadcast_value_variant_t& value )
+    void Subject::broadcast( const UID event, const event::broadcast_value_variant_t& value ) const
     {
         if ( head_ptr_ == nullptr ){ return; }
 
         Observer* current = head_ptr_;
         while ( current != nullptr )
         {
-            current->notify( event, this, value );
+            current->notify( event, value );
             current = current->next_ptr_;
         }
     }

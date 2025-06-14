@@ -69,6 +69,8 @@ namespace game
         void jump( );
         void attack( );
 
+        void interrupt( );
+
         void set_physics_simulation( bool simulate ) const;
         void reposition( );
         [[nodiscard]] bool is_repositioning( ) const;

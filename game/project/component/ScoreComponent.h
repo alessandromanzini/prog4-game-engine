@@ -35,9 +35,6 @@ namespace game
 
         bool gameover_{ false };
 
-        [[nodiscard]] bool is_high_score( ) const;
-        void update_high_score( ) const;
-
     };
 
 }

@@ -19,16 +19,10 @@ namespace game
         lives_text_object_ptr_ = &get_owner( ).create_child( );
         lives_text_object_ptr_->add_component<engine::TextComponent>( "", font_ptr_ );
         lives_text_object_ptr_->set_local_transform( engine::Transform::from_translation( { 0.f, 25.f } ) );
-
-        gameover_text_object_ptr_ = &get_owner( ).create_child( );
-        gameover_text_object_ptr_->add_component<engine::TextComponent>( "", font_ptr_, true );
-        gameover_text_object_ptr_->set_world_transform(
-            engine::Transform::from_translation( engine::GAME_INSTANCE.get_screen_dimensions( ) / 2.f ) );
     }
 
 
-    void StatsDisplayComponent::notify( const engine::UID event, engine::Subject*,
-                                        const engine::event::broadcast_value_variant_t value )
+    void StatsDisplayComponent::notify( const engine::UID event, const engine::event::broadcast_value_variant_t value )
     {
         switch ( event.uid )
         {
@@ -37,9 +31,6 @@ namespace game
                 break;
             case engine::UID( ScoreEvents::PLAYER_DEATH ).uid:
                 update_lives_text( std::get<int>( value ) );
-                break;
-            case engine::UID( ScoreEvents::GAMEOVER ).uid:
-                update_gameover( std::get<bool>( value ) );
                 break;
             default:
                 return;
@@ -61,20 +52,6 @@ namespace game
         if ( const auto text = lives_text_object_ptr_->get_component<engine::TextComponent>( ); text.has_value( ) )
         {
             text.value( ).set_text( "LIVES: " + std::to_string( lives ) );
-        }
-    }
-
-
-    void StatsDisplayComponent::update_gameover( const bool highscore ) const
-    {
-        std::string gameoverText{ "GAMEOVER" };
-        if ( highscore )
-        {
-            gameoverText += " - NEW HIGHSCORE!";
-        }
-        if ( const auto text = gameover_text_object_ptr_->get_component<engine::TextComponent>( ); text.has_value( ) )
-        {
-            text.value( ).set_text( gameoverText );
         }
     }
 

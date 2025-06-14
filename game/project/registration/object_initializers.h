@@ -10,6 +10,7 @@
 namespace game
 {
     class ScoreComponent;
+    class CharacterController;
 
     void create_join_menu( engine::GameObject& join );
 
@@ -22,6 +23,9 @@ namespace game
 
     void create_grid( engine::GameObject& object );
     void create_score( engine::GameObject& object, std::shared_ptr<engine::Font> font );
+
+    void create_arcade( engine::Scene& scene, const std::vector<CharacterController*>& controllers, const std::shared_ptr<engine::Font>& font );
+    void create_versus( engine::Scene& scene, const std::vector<CharacterController*>& controllers, const std::shared_ptr<engine::Font>& font );
 
 }
 

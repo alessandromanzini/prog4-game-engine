@@ -13,20 +13,39 @@
 
 #include "CharacterComponent.h"
 
+#include <random>
+
 
 namespace game
 {
-    LevelLoaderComponent::LevelLoaderComponent( owner_t& owner, engine::GameObject& score,
-                                                std::vector<engine::GameObject*> players,
-                                                std::vector<const char*> levelPaths )
+    // Returns a random integer between min and max (inclusive)
+    int get_random_int( const int min, const int max )
+    {
+        static std::random_device rd;
+        static std::mt19937 gen{ rd( ) };
+        std::uniform_int_distribution<> distrib{ min, max };
+        return distrib( gen );
+    }
+
+
+    LevelLoaderComponent::LevelLoaderComponent( owner_t& owner, std::vector<engine::GameObject*> players,
+                                                std::vector<const char*> levelPaths, const bool randomRound,
+                                                const bool spawnEnemies )
         : Component{ owner }
         , level_paths_{ std::move( levelPaths ) }
-        , score_object_ref_{ score }
         , players_{ std::move( players ) }
+        , spawn_enemies_{ spawnEnemies }
     {
-        auto& scene               = engine::SCENE_POOL.get_active_scene( );
+        auto& scene               = engine::SCENE_POOL.get_scene( "game" );
         current_level_object_ptr_ = &scene.create_object( );
-        load_level( level_paths_[current_level_], *current_level_object_ptr_ );
+        if ( randomRound )
+        {
+            load_random_level( );
+        }
+        else
+        {
+            load_level( level_paths_[current_level_], *current_level_object_ptr_ );
+        }
         reposition_players( );
     }
 
@@ -119,19 +138,25 @@ namespace game
 
                 case 5:
                 {
-                    auto& zenchan = level.create_child( );
-                    create_zenchan( zenchan, { reader.get_float( 1 ), reader.get_float( 2 ) }, players_ );
-                    zenchan.on_deletion.bind( this, &LevelLoaderComponent::lower_enemy_count );
-                    ++enemy_count_;
+                    if ( spawn_enemies_ )
+                    {
+                        auto& zenchan = level.create_child( );
+                        create_zenchan( zenchan, { reader.get_float( 1 ), reader.get_float( 2 ) }, players_ );
+                        zenchan.on_deletion.bind( this, &LevelLoaderComponent::lower_enemy_count );
+                        ++enemy_count_;
+                    }
                     break;
                 }
 
                 case 6:
                 {
-                    auto& maita = level.create_child( );
-                    create_maita( maita, { reader.get_float( 1 ), reader.get_float( 2 ) }, players_ );
-                    maita.on_deletion.bind( this, &LevelLoaderComponent::lower_enemy_count );
-                    ++enemy_count_;
+                    if ( spawn_enemies_ )
+                    {
+                        auto& maita = level.create_child( );
+                        create_maita( maita, { reader.get_float( 1 ), reader.get_float( 2 ) }, players_ );
+                        maita.on_deletion.bind( this, &LevelLoaderComponent::lower_enemy_count );
+                        ++enemy_count_;
+                    }
                     break;
                 }
 
@@ -141,6 +166,37 @@ namespace game
 
             reader.next( );
         }
+    }
+
+
+    void LevelLoaderComponent::load_next_level( )
+    {
+        std::function createLevel = [this]
+            {
+                if ( not engine::SCENE_POOL.does_scene_exist( "game" ) )
+                {
+                    return;
+                }
+
+                auto& scene = engine::SCENE_POOL.get_scene( "game" );
+
+                next_level_object_ptr_ = &scene.create_object( );
+                next_level_object_ptr_->set_world_transform( engine::Transform::from_translation( {
+                    0.f, engine::GAME_INSTANCE.get_screen_dimensions( ).y
+                } ) );
+
+                current_level_ = ( current_level_ + 1 ) % level_paths_.size( );
+                load_level( level_paths_[current_level_], *next_level_object_ptr_ );
+                reposition_players( );
+            };
+        engine::GAME_TIME.set_timeout( LEVEL_PERSISTANCE_SECONDS_, std::move( createLevel ) );
+    }
+
+
+    void LevelLoaderComponent::load_random_level( )
+    {
+        current_level_ = get_random_int( 0, static_cast<int>( level_paths_.size( ) - 1 ) );
+        load_level( level_paths_[current_level_], *current_level_object_ptr_ );
     }
 
 
@@ -162,25 +218,6 @@ namespace game
         {
             load_next_level( );
         }
-    }
-
-
-    void LevelLoaderComponent::load_next_level( )
-    {
-        std::function createLevel = [this]
-            {
-                auto& scene = engine::SCENE_POOL.get_active_scene( );
-
-                next_level_object_ptr_ = &scene.create_object( );
-                next_level_object_ptr_->set_world_transform( engine::Transform::from_translation( {
-                    0.f, engine::GAME_INSTANCE.get_screen_dimensions( ).y
-                } ) );
-
-                current_level_ = ( current_level_ + 1 ) % level_paths_.size( );
-                load_level( level_paths_[current_level_], *next_level_object_ptr_ );
-                reposition_players( );
-            };
-        engine::GAME_TIME.set_timeout( LEVEL_PERSISTANCE_SECONDS_, std::move( createLevel ) );
     }
 
 }

@@ -1,30 +1,36 @@
 #include "object_initializers.h"
 
-#include <command/BubbleAttackCommand.h>
-#include <command/EmptyAttackCommand.h>
-#include <command/RockAttackCommand.h>
-#include <component/BubbleCaptureComponent.h>
 #include <framework/GameObject.h>
 #include <framework/component/physics/BoxColliderComponent.h>
 #include <framework/component/physics/PhysicsComponent.h>
+
+#include <command/BubbleAttackCommand.h>
+#include <command/EmptyAttackCommand.h>
+#include <command/RockAttackCommand.h>
+
+#include <controller/CharacterController.h>
 
 #include <singleton/ResourceManager.h>
 
 #include <registration/tags.h>
 
+#include <component/BubbleCaptureComponent.h>
 #include <component/CharacterComponent.h>
-
 #include <component/CollisionsComponent.h>
 #include <component/FruitComponent.h>
+#include <component/GameOverComponent.h>
+#include <component/GameOverDelegateComponent.h>
 #include <component/JoinMenuComponent.h>
+#include <component/LevelLoaderComponent.h>
 #include <component/MaitaComponent.h>
 #include <component/ScoreComponent.h>
 #include <component/ScoreDelegateComponent.h>
 #include <component/StatsDisplayComponent.h>
 #include <component/ZenChanComponent.h>
-#include <framework/component/TextureComponent.h>
+#include <framework/Scene.h>
 #include <framework/component/AudioComponent.h>
 #include <framework/component/TextComponent.h>
+#include <framework/component/TextureComponent.h>
 
 #include "audio.h"
 #include "object_stats.h"
@@ -47,10 +53,14 @@ namespace game
 
         object.add_component<CharacterComponent>( isBub ? stats::get_bub_resources( ) : stats::get_bob_resources( ),
                                                   std::make_unique<BubbleAttackCommand>( object, projectileSocket ),
-                                                  std::make_unique<JumpCommand>( object, stats::get_character_jump_force(  ) ),
-                                                  std::make_unique<MoveCommand>( object, stats::get_character_speed(  ) ),
+                                                  std::make_unique<JumpCommand>( object, stats::get_character_jump_force( ) ),
+                                                  std::make_unique<MoveCommand>( object, stats::get_character_speed( ) ),
                                                   true );
-        object.add_component<ScoreDelegateComponent>( score );
+
+        if ( score )
+        {
+            object.add_component<ScoreDelegateComponent>( score );
+        }
     }
 
 
@@ -73,10 +83,12 @@ namespace game
         auto& arcade = selection.create_child( );
         arcade.add_component<engine::TextComponent>( "arcade", font );
         arcade.set_world_transform( engine::Transform::from_translation( { 130.f, 410.f } ) );
+        arcade.set_tag( engine::UID( ObjectTags::ARCADE ) );
 
         auto& versus = selection.create_child( );
         versus.add_component<engine::TextComponent>( "versus", font );
         versus.set_world_transform( engine::Transform::from_translation( { 370.f, 410.f } ) );
+        versus.set_tag( engine::UID( ObjectTags::VERSUS ) );
 
         auto& audio = join.add_component<engine::AudioComponent>( "theme.mp3", engine::sound::SoundType::SOUND_TRACK );
         audio.set_volume( .25f );
@@ -139,7 +151,11 @@ namespace game
                                                   std::make_unique<MoveCommand>( object, stats::get_maita_speed( ) ),
                                                   false );
         object.add_component<BubbleCaptureComponent>( stats::get_maita_capture_resources( ) );
-        object.add_component<MaitaComponent>(  ).set_targets( std::move( targets ) );
+
+        if ( not targets.empty( ) )
+        {
+            object.add_component<MaitaComponent>( ).set_targets( std::move( targets ) );
+        }
     }
 
 
@@ -165,6 +181,82 @@ namespace game
 
         auto& score = object.add_component<ScoreComponent>( );
         score.add_observer( display );
+    }
+
+
+    void create_arcade( engine::Scene& scene, const std::vector<CharacterController*>& controllers,
+                        const std::shared_ptr<engine::Font>& font )
+    {
+        auto& gameover = scene.create_object( );
+        auto& score = scene.create_object( );
+        score.set_world_transform( engine::Transform::from_translation( { 45.f, 15.f } ) );
+        create_score( score, font );
+        score.get_component<ScoreComponent>(  ).value(  ).add_observer( gameover.add_component<GameOverComponent>( font ) );
+
+        std::vector<engine::GameObject*> characters{};
+        bool alt{};
+        for ( auto* controller : controllers )
+        {
+            if ( controller->has_joined( ) )
+            {
+                engine::GameObject& character = scene.create_object( );
+                if ( not alt )
+                {
+                    create_bub( character, &score.get_component<ScoreComponent>( ) );
+                }
+                else
+                {
+                    create_bob( character, &score.get_component<ScoreComponent>( ) );
+                }
+                controller->possess( &character );
+                characters.emplace_back( &character );
+                alt = !alt;
+            }
+            controller->set_block_selection( true );
+        }
+
+        auto& levelLoader = scene.create_object( );
+        levelLoader.add_component<LevelLoaderComponent>( std::move( characters ),
+                                                         std::vector{ "maps/level1.csv", "maps/level2.csv", "maps/level3.csv" },
+                                                         false, true );
+        levelLoader.set_tag( engine::UID( ObjectTags::LEVEL_LOADER ) );
+    }
+
+
+    void create_versus( engine::Scene& scene, const std::vector<CharacterController*>& controllers,
+                        const std::shared_ptr<engine::Font>& font )
+    {
+        auto& gameover = scene.create_object( );
+        auto& gameoverObserver = gameover.add_component<GameOverComponent>( font );
+
+        std::vector<engine::GameObject*> characters{};
+        bool alt{};
+        for ( auto* controller : controllers )
+        {
+            if ( controller->has_joined( ) )
+            {
+                engine::GameObject& character = scene.create_object( );
+                if ( not alt )
+                {
+                    create_bub( character, nullptr );
+                }
+                else
+                {
+                    create_maita( character, {} );
+                }
+                character.add_component<GameOverDelegateComponent>( ).add_observer( gameoverObserver );
+                controller->possess( &character );
+                characters.emplace_back( &character );
+                alt = !alt;
+            }
+            controller->set_block_selection( true );
+        }
+
+        auto& levelLoader = scene.create_object( );
+        levelLoader.add_component<LevelLoaderComponent>( std::move( characters ),
+                                                         std::vector{ "maps/level1.csv", "maps/level2.csv", "maps/level3.csv" },
+                                                         true, false );
+        levelLoader.set_tag( engine::UID( ObjectTags::LEVEL_LOADER ) );
     }
 
 }

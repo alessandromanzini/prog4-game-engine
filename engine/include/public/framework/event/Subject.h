@@ -35,7 +35,7 @@ namespace engine
         void add_observer( Observer& observer );
         void remove_observer( const Observer& observer );
 
-        void broadcast( UID event, const event::broadcast_value_variant_t& value = {} );
+        void broadcast( UID event, const event::broadcast_value_variant_t& value = {} ) const;
 
     private:
         Observer* head_ptr_{ nullptr };

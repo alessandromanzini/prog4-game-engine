@@ -17,14 +17,14 @@ namespace engine
     ScenePool& SCENE_POOL = ScenePool::get_instance( );
 
 
-    void ScenePool::fixed_tick( )
+    void ScenePool::fixed_tick( ) const
     {
         if ( not active_scene_ptr_ ) { return; }
         active_scene_ptr_->fixed_tick( );
     }
 
 
-    void ScenePool::tick( )
+    void ScenePool::tick( ) const
     {
         if ( not active_scene_ptr_ ) { return; }
         active_scene_ptr_->tick( );
@@ -36,6 +36,18 @@ namespace engine
     {
         if ( not active_scene_ptr_ ) { return; }
         active_scene_ptr_->render( );
+    }
+
+
+    bool ScenePool::does_scene_exist( const std::string& name ) const
+    {
+        return std::ranges::any_of( scenes_, [&]( auto& s ) { return s->get_name( ) == name; } );
+    }
+
+
+    Scene& ScenePool::get_active_scene( )
+    {
+        return *active_scene_ptr_;
     }
 
 
@@ -69,7 +81,7 @@ namespace engine
 
     void ScenePool::unload_scene( const std::string& name )
     {
-        std::erase_if( scenes_, [&name]( auto& s ){ return s->get_name( ) == name; } );
+        std::erase_if( scenes_, [&name]( auto& s ) { return s->get_name( ) == name; } );
     }
 
 

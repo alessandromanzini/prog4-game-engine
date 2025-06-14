@@ -1,40 +1,14 @@
 #include "ScoreComponent.h"
 
-#include <singleton/GameTime.h>
 #include <singleton/ResourceManager.h>
 #include <singleton/ScenePool.h>
 
-#include <fstream>
-#include <string>
 
 namespace game
 {
     ScoreComponent::ScoreComponent( owner_t& owner )
         : Component{ owner }
     {
-    }
-
-
-    bool ScoreComponent::is_high_score( ) const
-    {
-        const auto path = engine::RESOURCE_MANAGER.get_data_path(  ) / "highscore.txt";
-        int highScore{};
-        if ( std::ifstream input{ path }; input.is_open( ) )
-        {
-            input >> highScore;
-            input.close();
-        }
-        return score_ > highScore;
-    }
-
-
-    void ScoreComponent::update_high_score( ) const
-    {
-        const auto path = engine::RESOURCE_MANAGER.get_data_path(  ) / "highscore.txt";
-        if ( std::ofstream output(path, std::ios::trunc); output.is_open( ) )
-        {
-            output << score_ << std::endl;
-        }
     }
 
 
@@ -69,18 +43,8 @@ namespace game
         }
         if ( --player_lives_ < 0 )
         {
-            bool isHighScore = is_high_score( );
-            if ( isHighScore )
-            {
-                update_high_score(  );
-            }
-            subject_.broadcast( engine::UID( ScoreEvents::GAMEOVER ), isHighScore );
+            subject_.broadcast( engine::UID( ScoreEvents::GAMEOVER ), score_ );
             gameover_ = true;
-            engine::GAME_TIME.set_timeout( 3.f, [scene = engine::SCENE_POOL.get_active_scene( ).get_name( )]
-                {
-                    engine::SCENE_POOL.unload_scene( scene );
-                    engine::SCENE_POOL.select_first_scene( );
-                } );
         }
         else
         {

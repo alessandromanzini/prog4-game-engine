@@ -18,7 +18,9 @@ namespace game
     void AttackState::on_enter( engine::Blackboard& blackboard )
     {
         CharacterState::on_enter( blackboard );
-        if ( attack_on_enter_ )
+        bool interrupt{ false };
+        blackboard.retrieve( engine::UID( "interrupt" ), interrupt );
+        if ( not interrupt && attack_on_enter_ )
         {
             attack_command_ptr_->execute( );
         }
@@ -28,7 +30,9 @@ namespace game
     void AttackState::on_exit( engine::Blackboard& blackboard )
     {
         CharacterState::on_exit( blackboard );
-        if ( not attack_on_enter_ )
+        bool interrupt{ false };
+        blackboard.retrieve( engine::UID( "interrupt" ), interrupt );
+        if (  not interrupt && not attack_on_enter_ )
         {
             attack_command_ptr_->execute( );
         }

@@ -21,7 +21,7 @@ namespace engine
         Observer& operator=( const Observer& )     = delete;
         Observer& operator=( Observer&& ) noexcept = delete;
 
-        virtual void notify( UID event, Subject* subject, event::broadcast_value_variant_t value ) = 0;
+        virtual void notify( UID event, event::broadcast_value_variant_t value ) = 0;
 
     private:
         friend class Subject;

@@ -12,6 +12,7 @@
 #include "BubbleCaptureComponent.h"
 #include "CharacterComponent.h"
 #include "FruitComponent.h"
+#include "GameOverDelegateComponent.h"
 #include "RockComponent.h"
 #include "ScoreDelegateComponent.h"
 
@@ -42,6 +43,7 @@ namespace game
         overlap_handlers_.insert( { { UID( ObjectTags::ENEMY ), engine::NULL_UID }, handle_default_overlap } );
         overlap_handlers_.insert( { { UID( ObjectTags::ENEMY ), UID( ObjectTags::ROCK ) }, do_nothing } );
         overlap_handlers_.insert( { { UID( ObjectTags::ENEMY ), UID( ObjectTags::ALLY ) }, do_nothing } );
+        overlap_handlers_.insert( { { UID( ObjectTags::ENEMY ), UID( ObjectTags::FRUIT ) }, do_nothing } );
 
         overlap_handlers_.insert( { { UID( ObjectTags::BUBBLE ), UID( ObjectTags::BUBBLE ) }, handle_bubble_bounce } );
         overlap_handlers_.insert( { { UID( ObjectTags::BUBBLE ), UID( ObjectTags::ROCK ) }, handle_bubble_destroy } );
@@ -134,6 +136,14 @@ namespace game
         {
             auto& fruit        = bubble->get_owner( ).get_owning_scene( ).create_object( );
             const auto capture = bubble->get_captured_target( );
+
+            if ( const auto gameover = get_component<GameOverDelegateComponent>( capture->get_owner( ) ); gameover != nullptr )
+            {
+                gameover->signal_gameover( );
+                capture->get_owner(  ).mark_for_deletion( );
+                return;
+            }
+
             create_fruit( fruit, capture->get_fruit_texture_path( ),
                           capture->get_fruit_value( ),
                           bubble->get_owner( ).get_world_transform( ).get_position( ),
@@ -186,6 +196,7 @@ namespace game
         {
             // If the enemy collides with the bubble, capture it
             bubble->capture( self.get_owner( ) );
+            get_component<CharacterComponent>( self.get_owner( ) )->interrupt( );
         }
     }
 
@@ -217,6 +228,12 @@ namespace game
     void CollisionsComponent::handle_ally_death( engine::ColliderComponent& self, engine::ColliderComponent&,
                                                  const engine::CollisionInfo& )
     {
+        if ( const auto gameover = get_component<GameOverDelegateComponent>( self.get_owner( ) ); gameover != nullptr )
+        {
+            gameover->signal_gameover( );
+            self.get_owner(  ).mark_for_deletion( );
+            return;
+        }
         if ( const auto score = get_component<ScoreDelegateComponent>( self.get_owner( ) ); score != nullptr )
         {
             // If the ally collides with the enemy, signal player death

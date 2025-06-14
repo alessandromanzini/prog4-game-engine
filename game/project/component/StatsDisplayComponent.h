@@ -15,7 +15,7 @@ namespace game
     {
     public:
         StatsDisplayComponent( owner_t& owner, std::shared_ptr<engine::Font> font );
-        void notify( engine::UID event, engine::Subject* subject, engine::event::broadcast_value_variant_t value ) override;
+        void notify( engine::UID event, engine::event::broadcast_value_variant_t value ) override;
 
     private:
         std::shared_ptr<engine::Font> font_ptr_{ nullptr };

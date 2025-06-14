@@ -11,23 +11,21 @@ namespace game
     EnemyAiComponent::EnemyAiComponent( owner_t& owner )
         : Component{ owner }
     {
-        character_component_ptr_      = &get_owner( ).get_component<CharacterComponent>( );
-        bubble_capture_component_ptr_ = &get_owner( ).get_component<BubbleCaptureComponent>( );
-        assert( character_component_ptr_ && bubble_capture_component_ptr_ &&
-            "EnemyAiComponent::EnemyAiComponent: missing components" );
+        character_component_ptr_ = &get_owner( ).get_component<CharacterComponent>( );
+        assert( character_component_ptr_ && "EnemyAiComponent::EnemyAiComponent: missing components" );
     }
 
 
     void EnemyAiComponent::tick( )
     {
         // If the bubble capture component is captured, do not move
-        if ( bubble_capture_component_ptr_->is_captured( ) )
+        if ( character_component_ptr_->is_locked( ) )
         {
             return;
         }
 
         // Find the closest target
-        target_ptr_ = nullptr;
+        target_ptr_             = nullptr;
         const auto selfPosition = get_owner( ).get_world_transform( ).get_position( );
         float closestDistance{ std::numeric_limits<float>::max( ) };
         for ( const auto& target : targets_ )

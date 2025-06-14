@@ -10,6 +10,7 @@
 namespace game
 {
     class BubbleCaptureComponent;
+    class CharacterComponent;
     class BubbleComponent final : public engine::Component
     {
     public:
@@ -35,6 +36,7 @@ namespace game
         engine::Sprite2D* current_sprite_ptr_{ &spawn_sprite_ };
 
         engine::GameObject* captured_target_ptr_{ nullptr };
+        CharacterComponent* captured_character_component_ptr_{ nullptr };
         BubbleCaptureComponent* bubble_capture_component_ptr_{ nullptr };
 
         bool popped_{ false  };

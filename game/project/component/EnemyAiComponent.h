@@ -18,7 +18,6 @@ namespace game
 
 
     class CharacterComponent;
-    class BubbleCaptureComponent;
     class EnemyAiComponent : public engine::Component
     {
     public:
@@ -39,7 +38,6 @@ namespace game
         static constexpr glm::vec2 DEFAULT_COMMIT_RANGE_{ 1000.f, 60.f };
 
         CharacterComponent* character_component_ptr_{ nullptr };
-        BubbleCaptureComponent* bubble_capture_component_ptr_{ nullptr };
 
         std::vector<engine::GameObject*> targets_{};
         engine::GameObject* target_ptr_{ nullptr };

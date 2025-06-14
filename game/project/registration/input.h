@@ -13,6 +13,7 @@ namespace game
         JOIN,
         LEAVE,
         MODE_SELECTION,
+        NAME_SELECTION,
         CONFIRM,
 
         SKIP_LEVEL,

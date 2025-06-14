@@ -172,7 +172,7 @@ namespace game
     {
         float iframes{ 0.f };
         blackboard_.retrieve( UID( "iframes" ), iframes );
-        return { iframes > 0.f || is_repositioning(  ) || is_locked(  ), iframes };
+        return { iframes > 0.f || is_repositioning(  ), iframes };
     }
 
 

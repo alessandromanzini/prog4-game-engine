@@ -18,7 +18,7 @@
 
 namespace engine
 {
-    TextComponent::TextComponent( owner_t& owner, const std::string& text, std::shared_ptr<Font> font, bool centered )
+    TextComponent::TextComponent( owner_t& owner, const std::string& text, std::shared_ptr<Font> font, const bool centered )
         : Component( owner )
         , centered_{ centered }
         , font_ptr_{ std::move( font ) }
@@ -34,26 +34,7 @@ namespace engine
 
     void TextComponent::tick( )
     {
-        if ( needs_update_ )
-        {
-            constexpr SDL_Color color = { 255, 255, 255, 255 }; // only white text is supported now
-            const auto surf           = TTF_RenderText_Blended( font_ptr_->get_font( ), text_.c_str( ), color );
-            if ( surf == nullptr )
-            {
-                throw std::runtime_error( std::string( "Render text failed: " ) + SDL_GetError( ) );
-            }
-
-            auto texture = SDL_CreateTextureFromSurface( RENDERER.get_sdl_renderer( ), surf );
-            if ( texture == nullptr )
-            {
-                throw std::runtime_error(
-                    std::string( "Create text texture from surface failed: " ) + SDL_GetError( ) );
-            }
-
-            SDL_FreeSurface( surf );
-            text_texture_ptr_ = std::make_shared<Texture2D>( texture );
-            needs_update_     = false;
-        }
+        commit( );
     }
 
 
@@ -78,6 +59,37 @@ namespace engine
             text_         = text;
             needs_update_ = true;
         }
+    }
+
+
+    void TextComponent::commit( )
+    {
+        if ( needs_update_ )
+        {
+            constexpr SDL_Color color = { 255, 255, 255, 255 }; // only white text is supported now
+            const auto surf           = TTF_RenderText_Blended( font_ptr_->get_font( ), text_.c_str( ), color );
+            if ( surf == nullptr )
+            {
+                throw std::runtime_error( std::string( "Render text failed: " ) + SDL_GetError( ) );
+            }
+
+            auto texture = SDL_CreateTextureFromSurface( RENDERER.get_sdl_renderer( ), surf );
+            if ( texture == nullptr )
+            {
+                throw std::runtime_error(
+                    std::string( "Create text texture from surface failed: " ) + SDL_GetError( ) );
+            }
+
+            SDL_FreeSurface( surf );
+            text_texture_ptr_ = std::make_shared<Texture2D>( texture );
+            needs_update_     = false;
+        }
+    }
+
+
+    glm::vec2 TextComponent::get_text_size( ) const
+    {
+        return text_texture_ptr_->get_size( );
     }
 
 }

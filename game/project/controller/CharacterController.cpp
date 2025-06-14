@@ -5,6 +5,7 @@
 #include <registration/input.h>
 
 #include <cassert>
+#include <component/GameOverComponent.h>
 
 
 namespace game
@@ -37,6 +38,12 @@ namespace game
     }
 
 
+    void CharacterController::set_gameover_component( GameOverComponent* gameover )
+    {
+        game_over_component_ptr_ = gameover;
+    }
+
+
     void CharacterController::device_registered( engine::InputMappingContext& context,
                                                  const engine::binding::DeviceInfo deviceInfo )
     {
@@ -56,18 +63,19 @@ namespace game
 
         context.bind_to_input_action( this, engine::UID( IA::JOIN ), &CharacterController::join );
         context.bind_to_input_action( this, engine::UID( IA::LEAVE ), &CharacterController::leave );
-        context.bind_to_input_action( this, engine::UID( IA::MODE_SELECTION ), &CharacterController::select );
+        context.bind_to_input_action( this, engine::UID( IA::MODE_SELECTION ), &CharacterController::menu_select );
         context.bind_to_input_action( this, engine::UID( IA::CONFIRM ), &CharacterController::confirm );
+        context.bind_to_input_action( this, engine::UID( IA::NAME_SELECTION ), &CharacterController::name_select );
     }
 
 
-    void CharacterController::move( const glm::vec2 dir ) const
+    void CharacterController::move( const float dir ) const
     {
         if ( not has_pawn( ) )
         {
             return;
         }
-        state_ptr_->move( dir );
+        state_ptr_->move( { dir, 0.f } );
     }
 
 
@@ -106,7 +114,7 @@ namespace game
     }
 
 
-    void CharacterController::select( const float direction ) const
+    void CharacterController::menu_select( const float direction ) const
     {
         if ( not has_joined_ || block_selection_ )
         {
@@ -126,11 +134,41 @@ namespace game
 
     void CharacterController::confirm( ) const
     {
+        if ( has_joined_ && game_over_component_ptr_ )
+        {
+            game_over_component_ptr_->confirm( );
+            return;
+        }
         if ( not has_joined_ || block_selection_ )
         {
             return;
         }
         join_menu_component_ptr_->confirm_selection( );
+    }
+
+
+    void CharacterController::name_select( const glm::vec2 selection ) const
+    {
+        if ( not has_joined_ || not game_over_component_ptr_ )
+        {
+            return;
+        }
+        if ( selection.x == 1.f )
+        {
+            game_over_component_ptr_->letter_horz( false );
+        }
+        if ( selection.x == -1.f )
+        {
+            game_over_component_ptr_->letter_horz( true );
+        }
+        if ( selection.y == 1.f )
+        {
+            game_over_component_ptr_->letter_vert( true );
+        }
+        if ( selection.y == -1.f )
+        {
+            game_over_component_ptr_->letter_vert( false );
+        }
     }
 
 }

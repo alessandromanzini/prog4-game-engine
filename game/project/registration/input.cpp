@@ -24,8 +24,8 @@ namespace game
         imc.register_input_action( InputAction{ UID( IA::MOVE ), Modifier::NEGATE }, SDLK_a );
         imc.register_input_action( InputAction{ UID( IA::MOVE ) }, SDLK_d );
 
-        imc.register_input_action( InputAction{ UID( IA::MOVE ), Modifier::SWIZZLE, Modifier::NEGATE }, SDL_CONTROLLER_BUTTON_DPAD_UP );
-        imc.register_input_action( InputAction{ UID( IA::MOVE ), Modifier::SWIZZLE }, SDL_CONTROLLER_BUTTON_DPAD_DOWN );
+        // imc.register_input_action( InputAction{ UID( IA::MOVE ), Modifier::SWIZZLE, Modifier::NEGATE }, SDL_CONTROLLER_BUTTON_DPAD_UP );
+        // imc.register_input_action( InputAction{ UID( IA::MOVE ), Modifier::SWIZZLE }, SDL_CONTROLLER_BUTTON_DPAD_DOWN );
         imc.register_input_action( InputAction{ UID( IA::MOVE ), Modifier::NEGATE }, SDL_CONTROLLER_BUTTON_DPAD_LEFT );
         imc.register_input_action( InputAction{ UID( IA::MOVE ) }, SDL_CONTROLLER_BUTTON_DPAD_RIGHT );
 
@@ -60,6 +60,19 @@ namespace game
         imc.register_input_action( InputAction{ UID( IA::MODE_SELECTION ), Modifier::NEGATE }, SDL_CONTROLLER_BUTTON_DPAD_LEFT );
         imc.register_input_action( UID( IA::MODE_SELECTION ), SDLK_d );
         imc.register_input_action( InputAction{ UID( IA::MODE_SELECTION ), Modifier::NEGATE }, SDLK_a );
+
+        // +---------------------------+
+        // | MODE SELECTION            |
+        // +---------------------------+
+        imc.register_input_action( InputAction{ UID( IA::NAME_SELECTION ), Modifier::SWIZZLE, Modifier::NEGATE }, SDL_CONTROLLER_BUTTON_DPAD_UP );
+        imc.register_input_action( InputAction{ UID( IA::NAME_SELECTION ), Modifier::SWIZZLE }, SDL_CONTROLLER_BUTTON_DPAD_DOWN );
+        imc.register_input_action( InputAction{ UID( IA::NAME_SELECTION ), Modifier::NEGATE }, SDL_CONTROLLER_BUTTON_DPAD_LEFT );
+        imc.register_input_action( InputAction{ UID( IA::NAME_SELECTION ) }, SDL_CONTROLLER_BUTTON_DPAD_RIGHT );
+
+        imc.register_input_action( InputAction{ UID( IA::NAME_SELECTION ), Modifier::SWIZZLE, Modifier::NEGATE }, SDLK_w );
+        imc.register_input_action( InputAction{ UID( IA::NAME_SELECTION ), Modifier::SWIZZLE }, SDLK_s );
+        imc.register_input_action( InputAction{ UID( IA::NAME_SELECTION ), Modifier::NEGATE }, SDLK_a );
+        imc.register_input_action( InputAction{ UID( IA::NAME_SELECTION ) }, SDLK_d );
 
         // +---------------------------+
         // | CONFIRM                   |

@@ -11,6 +11,7 @@
 // +--------------------------------+
 #include <memory>
 #include <string>
+#include <vec2.hpp>
 
 
 namespace engine
@@ -26,6 +27,8 @@ namespace engine
         void render( ) const override;
 
         void set_text( const std::string& text );
+        void commit( );
+        [[nodiscard]] glm::vec2 get_text_size( ) const;
 
     private:
         const bool centered_{ false };

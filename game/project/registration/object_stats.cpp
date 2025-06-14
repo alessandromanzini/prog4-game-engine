@@ -144,26 +144,6 @@ namespace game::stats
     BubbleCaptureResources get_zen_chan_capture_resources( )
     {
         return {
-            .green_bubble_sprite = engine::Sprite2D{
-                "characters/zen_chan/zen_chan_bubble_green_1x3.png",
-                static_cast<uint8_t>( 1u ), static_cast<uint8_t>( 3u ),
-                0.2f, 2.f
-            },
-            .blue_bubble_sprite = engine::Sprite2D{
-                "characters/zen_chan/zen_chan_bubble_blue_1x3.png",
-                static_cast<uint8_t>( 1u ), static_cast<uint8_t>( 3u ),
-                0.2f, 2.f
-            },
-            .yellow_bubble_sprite = engine::Sprite2D{
-                "characters/zen_chan/zen_chan_bubble_yellow_1x3.png",
-                static_cast<uint8_t>( 1u ), static_cast<uint8_t>( 3u ),
-                0.2f, 2.f
-            },
-            .red_bubble_sprite = engine::Sprite2D{
-                "characters/zen_chan/zen_chan_bubble_red_1x3.png",
-                static_cast<uint8_t>( 1u ), static_cast<uint8_t>( 3u ),
-                0.2f, 2.f
-            },
             .fruit_texture_path = "characters/zen_chan/zen_chan_fruit.png",
             .fruit_value = 100
         };
@@ -196,7 +176,7 @@ namespace game::stats
             .attack_sprite = engine::Sprite2D{
                 "characters/maita/maita_attack_1x5.png",
                 static_cast<uint8_t>( 1u ), static_cast<uint8_t>( 5u ),
-                0.3f, 2.f, { -14.f, 0.f }
+                0.2f, 2.f, { -14.f, 0.f }
             },
             .reposition_sprite = engine::Sprite2D{
                 "characters/maita/maita_walk_1x2.png",
@@ -213,26 +193,6 @@ namespace game::stats
     BubbleCaptureResources get_maita_capture_resources( )
     {
         return {
-            .green_bubble_sprite = engine::Sprite2D{
-                "characters/maita/maita_bubble_green_1x3.png",
-                static_cast<uint8_t>( 1u ), static_cast<uint8_t>( 3u ),
-                0.2f, 2.f
-            },
-            .blue_bubble_sprite = engine::Sprite2D{
-                "characters/maita/maita_bubble_blue_1x3.png",
-                static_cast<uint8_t>( 1u ), static_cast<uint8_t>( 3u ),
-                0.2f, 2.f
-            },
-            .yellow_bubble_sprite = engine::Sprite2D{
-                "characters/maita/maita_bubble_yellow_1x3.png",
-                static_cast<uint8_t>( 1u ), static_cast<uint8_t>( 3u ),
-                0.2f, 2.f
-            },
-            .red_bubble_sprite = engine::Sprite2D{
-                "characters/maita/maita_bubble_red_1x3.png",
-                static_cast<uint8_t>( 1u ), static_cast<uint8_t>( 3u ),
-                0.2f, 2.f
-            },
             .fruit_texture_path = "characters/maita/maita_fruit.png",
             .fruit_value = 200
         };

@@ -188,10 +188,12 @@ namespace game
                         const std::shared_ptr<engine::Font>& font )
     {
         auto& gameover = scene.create_object( );
+        auto& gameoverComponent = gameover.add_component<GameOverComponent>( font );
+
         auto& score = scene.create_object( );
         score.set_world_transform( engine::Transform::from_translation( { 45.f, 15.f } ) );
         create_score( score, font );
-        score.get_component<ScoreComponent>(  ).value(  ).add_observer( gameover.add_component<GameOverComponent>( font ) );
+        score.get_component<ScoreComponent>(  ).value(  ).add_observer( gameoverComponent );
 
         std::vector<engine::GameObject*> characters{};
         bool alt{};
@@ -199,6 +201,7 @@ namespace game
         {
             if ( controller->has_joined( ) )
             {
+                controller->set_gameover_component( &gameoverComponent );
                 engine::GameObject& character = scene.create_object( );
                 if ( not alt )
                 {
@@ -227,7 +230,7 @@ namespace game
                         const std::shared_ptr<engine::Font>& font )
     {
         auto& gameover = scene.create_object( );
-        auto& gameoverObserver = gameover.add_component<GameOverComponent>( font );
+        auto& gameoverObserver = gameover.add_component<GameOverComponent>( font, false );
 
         std::vector<engine::GameObject*> characters{};
         bool alt{};

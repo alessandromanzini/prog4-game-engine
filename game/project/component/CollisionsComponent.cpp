@@ -203,11 +203,6 @@ namespace game
         {
             // If the enemy collides with the bubble, capture it
             bubble->capture( self.get_owner( ) );
-            if ( const auto character = get_component<CharacterComponent>( self.get_owner( ) ) )
-            {
-                character->interrupt( );
-                character->lock( );
-            }
         }
     }
 
@@ -216,9 +211,9 @@ namespace game
                                                          engine::ColliderComponent& other,
                                                          const engine::CollisionInfo& info )
     {
-        const auto capture = get_component<BubbleCaptureComponent>( other.get_owner( ) );
-        if ( const auto ally = get_component<CharacterComponent>( self.get_owner( ) );
-            ( capture && capture->is_captured( ) ) || ( ally && ally->is_iframing( ).first ) )
+        const auto ally = get_component<CharacterComponent>( self.get_owner( ) );
+        const auto enemy = get_component<CharacterComponent>( other.get_owner( ) );
+        if ( ( enemy && enemy->is_locked( ) ) || ( ally && ally->is_iframing( ).first ) )
         {
             return;
         }

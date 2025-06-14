@@ -41,6 +41,7 @@ namespace game
         for ( const auto controller : player_controllers_ )
         {
             controller->set_block_selection( false );
+            controller->set_gameover_component( nullptr );
         }
     }
 

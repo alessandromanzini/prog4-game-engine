@@ -16,8 +16,8 @@ namespace game
         : Component{ owner }
         , bubble_speed_{ bubbleSpeed }
         , direction_{ initialDirection }
-        , spawn_sprite_{ "characters/bub/bubble_spawn_1x6.png", 1u, 6u, 0.15f, 2.f, { -14.f, -16.f }, false }
-        , default_sprite_{ "characters/bub/bubble_lifetime_1x3.png", 1u, 3u, 2.f, 2.f, { -14.f, -16.f }, false } { }
+        , spawn_sprite_{ "characters/bubble/bubble_spawn_1x6.png", 1u, 6u, 0.15f, 2.f, { -14.f, -16.f }, false }
+        , default_sprite_{ "characters/bubble/bubble_lifetime_1x3.png", 1u, 3u, 2.f, 2.f, { -14.f, -16.f }, false } { }
 
 
     void BubbleComponent::tick( )
@@ -34,7 +34,7 @@ namespace game
 
     void BubbleComponent::render( ) const
     {
-        if ( not popped_ && not has_captured_target(  ) )
+        if ( not popped_ )
         {
             engine::RENDERER.set_z_index( 5 );
             current_sprite_ptr_->render( get_owner( ).get_world_transform( ).get_position( ) );
@@ -78,12 +78,15 @@ namespace game
         captured_target_ptr_ = &target;
         captured_target_ptr_->set_parent( &get_owner( ) );
         captured_target_ptr_->set_local_transform( engine::Transform::from_translation( { -14.f, -16.f } ) );
-        captured_target_ptr_->get_component<CharacterComponent>( ).value( ).set_physics_simulation( false );
 
-        const auto capture = target.get_component<BubbleCaptureComponent>( );
-        assert( capture.has_value( ) && "Target must have a BubbleCaptureComponent to be captured!" );
-        capture.value( ).signal_captured( );
-        bubble_capture_component_ptr_ = &capture.value( );
+        captured_character_component_ptr_ = &captured_target_ptr_->get_component<CharacterComponent>( );
+        bubble_capture_component_ptr_ = &captured_target_ptr_->get_component<BubbleCaptureComponent>( );
+        assert( captured_character_component_ptr_ && bubble_capture_component_ptr_ &&
+                "BubbleComponent::capture: Target must have CharacterComponent and BubbleCaptureComponent!" );
+
+        captured_character_component_ptr_->set_physics_simulation( false );
+        captured_character_component_ptr_->interrupt( );
+        captured_character_component_ptr_->lock( );
 
         current_sprite_ptr_ = &default_sprite_;
     }
@@ -103,19 +106,6 @@ namespace game
             popped_         = default_sprite_.is_animation_completed( );
             speed_modifier_ = .5f;
             pathing_        = false;
-
-            if ( has_captured_target( ) )
-            {
-                switch ( current_sprite_ptr_->get_frame_index( ) )
-                {
-                    case 1:
-                        bubble_capture_component_ptr_->signal_yellow_stage( );
-                        break;
-                    case 2:
-                        bubble_capture_component_ptr_->signal_red_stage( );
-                        break;
-                }
-            }
         }
 
         if ( popped_ )
@@ -123,12 +113,8 @@ namespace game
             if ( has_captured_target( ) )
             {
                 captured_target_ptr_->set_parent( nullptr );
-                if ( const auto character = captured_target_ptr_->get_component<CharacterComponent>( ) )
-                {
-                    character.value(  ).set_physics_simulation( true );
-                    character.value(  ).interrupt(  );
-                }
-                bubble_capture_component_ptr_->signal_released( );
+                captured_character_component_ptr_->set_physics_simulation( true );
+                captured_character_component_ptr_->interrupt( );
             }
             get_owner( ).mark_for_deletion( );
         }

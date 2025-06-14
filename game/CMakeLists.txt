@@ -63,8 +63,6 @@ add_executable(${TARGET_NAME} ${TARGET_PARAM}
         "project/helpers/CsvReader.cpp"
         project/component/GameOverComponent.cpp
         project/component/GameOverComponent.h
-        project/component/HighScoresDisplayComponent.cpp
-        project/component/HighScoresDisplayComponent.h
         project/component/GameOverDelegateComponent.cpp
         project/component/GameOverDelegateComponent.h
         project/state/character/LockState.cpp
